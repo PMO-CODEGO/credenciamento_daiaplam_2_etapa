@@ -1,0 +1,36 @@
+# Ambiente
+.env
+*.env.local
+# Certificados (ex.: CA do banco no Aiven)
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Uploads e documentos gerados (nunca versionar)
+backend/uploads/
+backend/storage/
+backend/app/static/uploads/
+*.pdf
+!frontend/assets/**/*.pdf
+
+# Banco de dados local
+*.sqlite3
+database/data/
+
+# Docker
+docker/volumes/
+
+# Logs
+*.log
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
