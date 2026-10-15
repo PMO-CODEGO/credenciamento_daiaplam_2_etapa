@@ -3,31 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Início — Credenciamento DIANOT</title>
+  <title>Formulário — Credenciamento DIANOT</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/config.js"></script>
+  <script src="js/links.js"></script>
 </head>
 <body>
   <div class="page">
     <header class="letterhead">
-      <a class="letterhead__home" href="index.html" title="Voltar para a tela inicial"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
+      <a class="letterhead__home" href="home.html" title="Tela inicial"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
       <div class="letterhead__text">
         <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
         <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
       </div>
     </header>
+
     <main class="card">
       <div class="card__intro">
-        <h2 class="card__title" id="boas-vindas">Bem-vindo</h2>
-        <p class="card__desc" id="dados-usuario"></p>
-        <p class="card__desc">As próximas etapas do credenciamento serão liberadas aqui.</p>
+        <h2 class="card__title">Formulário</h2>
+        <p class="card__desc" id="usuario-logado"></p>
       </div>
-      <div class="card__footer">
-        <button type="button" class="btn-secondary" id="btn-sair">Sair</button>
-      </div>
+
+      <h3 class="section-title">Anexo II — Documentos de apresentação integral e obrigatória (nesta ordem)</h3>
+      <ul class="doc-list">
+        <li class="doc-list__item">
+          <a class="doc-list__link" href="#" data-link="anexo2">
+            <span class="doc-list__tag">Anexo II</span>
+            <span class="doc-list__title">Documentos de apresentação integral e obrigatória (nesta ordem)</span>
+          </a>
+        </li>
+        <li class="doc-list__item">
+          <a class="doc-list__link" href="#" data-link="inciso1">
+            <span class="doc-list__tag">Inciso I</span>
+            <span class="doc-list__title">Formulário Padrão para Solicitação de Área (ANEXO IV)</span>
+          </a>
+        </li>
+      </ul>
+      <p class="field__hint field__hint--warn" id="aviso-link" hidden>Este link será disponibilizado em breve.</p>
+
+      <form id="form-solicitacao" novalidate>
+        <h3 class="section-title">Distrito de interesse: DIANOT 2ª ETAPA</h3>
+        <div class="field">
+          <label for="area_m2">Área solicitada/demandada (em m²)</label>
+          <input type="text" id="area_m2" name="area_m2" inputmode="decimal" placeholder="Ex.: 1.000,00" autocomplete="off">
+          <p class="field__hint">Informe em metros quadrados, com duas casas depois da vírgula.</p>
+          <p class="field__error" data-error-for="area_m2"></p>
+        </div>
+
+        <h3 class="section-title">Dados cadastrais da empresa</h3>
+        <div class="field">
+          <label for="nome_empresarial">Nome empresarial</label>
+          <input type="text" id="nome_empresarial" name="nome_empresarial" maxlength="255" autocomplete="organization">
+          <p class="field__error" data-error-for="nome_empresarial"></p>
+        </div>
+        <div class="field">
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" name="cnpj" readonly>
+          <p class="field__hint">É o CNPJ do seu login.</p>
+        </div>
+        <div class="field">
+          <label for="endereco_correspondencia">Endereço para correspondência</label>
+          <input type="text" id="endereco_correspondencia" name="endereco_correspondencia" maxlength="500" autocomplete="street-address">
+          <p class="field__error" data-error-for="endereco_correspondencia"></p>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Endereço eletrônico (e-mail)</label>
+            <input type="email" id="email" name="email" maxlength="255" autocomplete="email">
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+          <div class="field">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel">
+            <p class="field__error" data-error-for="telefone"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">Dados cadastrais do administrador da sociedade</h3>
+        <div class="field">
+          <label for="administrador_nome">Nome</label>
+          <input type="text" id="administrador_nome" name="administrador_nome" maxlength="255">
+          <p class="field__error" data-error-for="administrador_nome"></p>
+        </div>
+        <div class="field">
+          <label for="administrador_cpf">CPF</label>
+          <input type="text" id="administrador_cpf" name="administrador_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
+          <p class="field__error" data-error-for="administrador_cpf"></p>
+        </div>
+
+        <h3 class="section-title">Nº do CNAE / Descrição da atividade</h3>
+        <p class="section-desc">Conforme a Tabela de CNAEs do Anexo X. Digite o código (ou parte da descrição) e escolha na lista.</p>
+        <div class="field">
+          <label for="cnae">Nº do CNAE</label>
+          <input type="text" id="cnae" name="cnae" list="cnae-sugestoes" maxlength="40" placeholder="0000-0/00" autocomplete="off">
+          <datalist id="cnae-sugestoes"></datalist>
+          <p class="field__hint" id="cnae-status"></p>
+          <p class="field__error" data-error-for="cnae"></p>
+        </div>
+        <div class="field">
+          <label for="cnae_descricao">Descrição da atividade</label>
+          <input type="text" id="cnae_descricao" readonly placeholder="Preenchida automaticamente quando o CNAE for válido">
+        </div>
+
+        <div class="feedback" id="feedback" hidden></div>
+
+        <div class="card__footer">
+          <button type="button" class="btn-secondary" id="btn-sair">Sair</button>
+          <button type="submit" class="btn-primary" id="btn-salvar">Salvar solicitação</button>
+        </div>
+      </form>
     </main>
   </div>
-  <script src="js/auth.js"></script>
-  <script>CodegoAuth.iniciarHome();</script>
+  <script src="js/solicitacao.js"></script>
 </body>
 </html>

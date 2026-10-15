@@ -10,7 +10,9 @@ from sqlalchemy import text
 from app.config import settings
 from app.database import Base, engine, wait_for_db
 from app.models import orm  # noqa: F401 — registra as tabelas no create_all
-from app.routers import auth
+from app.routers import auth, solicitacao
+from app.database import SessionLocal
+from app.services.cnae import carga_inicial
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,6 +24,8 @@ logging.basicConfig(
 # (em produção, prefira gerenciar via Alembic/migrations)
 wait_for_db()
 Base.metadata.create_all(bind=engine)
+with SessionLocal() as _db:
+    carga_inicial(_db)
 
 app = FastAPI(
     title="Credenciamento DIANOT 2ª etapa",
@@ -80,6 +84,7 @@ def configuracao_publica():
 
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Autenticação"])
+app.include_router(solicitacao.router, prefix="/api", tags=["Solicitação de área"])
 
 # Site servido pelo próprio backend (SERVIR_FRONTEND=true, ex.: no Render). Fica
 # por último para as rotas da API e o /health terem prioridade.

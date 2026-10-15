@@ -32,6 +32,11 @@ docker compose up --build
 - reCAPTCHA nas duas telas (`RECAPTCHA_ENABLED`, `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY`).
 - Limite de tentativas: 5 logins errados/15 min por IP+CNPJ; 10 cadastros/hora por IP.
 
+## Formulário de solicitação de área (tela após o login)
+- `frontend/home.html` + `js/solicitacao.js`: links dos anexos (`js/links.js` — preencher quando existirem), área em m² (2 casas), dados da empresa, do administrador e CNAE.
+- `GET /api/cnae/{codigo}`, `GET /api/cnae?q=` · `GET/PUT /api/solicitacoes/minha` (uma solicitação por empresa, editável).
+- CNAE validado contra a tabela `cnaes`. A carga inicial vem de `backend/app/data/cnaes.csv` (formato `codigo;descricao`) e hoje tem só **códigos de exemplo**: substituir pela Tabela de CNAEs do Anexo X.
+
 ## Segurança
 - `.env` nunca vai para o Git; em produção `APP_ENV=production` (docs fechadas) e `APP_SECRET_KEY` próprio.
 
@@ -41,4 +46,5 @@ docker compose up --build
 ## Roadmap
 1. Base do projeto ✅
 2. Tela de login (CNPJ + senha, reCAPTCHA) e cadastro de usuário ✅
-3. Próximas telas do credenciamento
+3. Formulário de solicitação de área (Anexo IV) ✅ — falta carregar a tabela de CNAEs do Anexo X e os links dos anexos
+4. Próximas telas (envio de documentos)
