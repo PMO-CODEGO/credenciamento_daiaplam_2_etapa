@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Credenciamento DIANOT 2ª etapa — CODEGO</title>
+  <title>Entrar — Credenciamento DIANOT</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
 </head>
 <body>
   <div class="page">
     <header class="letterhead">
-      <a class="letterhead__home" href="index.html"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
+      <a class="letterhead__home" href="index.html" title="Voltar para a tela inicial"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
       <div class="letterhead__text">
         <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
         <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
@@ -17,10 +18,38 @@
     </header>
     <main class="card">
       <div class="card__intro">
-        <h2 class="card__title">Em construção</h2>
-        <p class="card__desc">A tela de login será a próxima etapa.</p>
+        <h2 class="card__title">Acesse sua conta</h2>
+        <p class="card__desc">Entre com o CNPJ da empresa e a senha cadastrada.</p>
       </div>
+
+      <form id="form-login" novalidate>
+        <div class="field">
+          <label for="cnpj">Login (CNPJ)</label>
+          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" autocomplete="username" maxlength="18" placeholder="00.000.000/0000-00">
+          <p class="field__error" data-error-for="cnpj"></p>
+        </div>
+
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" autocomplete="current-password" maxlength="72">
+          <p class="field__error" data-error-for="senha"></p>
+        </div>
+
+        <div class="field">
+          <div id="recaptcha"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
+        </div>
+
+        <div class="feedback feedback--error" id="feedback" hidden></div>
+
+        <div class="card__footer card__footer--stack">
+          <button type="submit" class="btn-primary" id="btn-enviar">Entrar</button>
+          <p class="card__footer-note">Não tem login? <a href="cadastro.html">Cadastre-se</a></p>
+        </div>
+      </form>
     </main>
   </div>
+  <script src="js/auth.js"></script>
+  <script>CodegoAuth.iniciarLogin();</script>
 </body>
 </html>

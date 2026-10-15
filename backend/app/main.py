@@ -9,6 +9,8 @@ from sqlalchemy import text
 
 from app.config import settings
 from app.database import Base, engine, wait_for_db
+from app.models import orm  # noqa: F401 — registra as tabelas no create_all
+from app.routers import auth
 
 logging.basicConfig(
     level=logging.INFO,
@@ -70,11 +72,14 @@ def health_check_banco():
 @app.get("/api/config")
 def configuracao_publica():
     """Configurações que o site precisa saber (nada sigiloso)."""
-    return {"recaptcha_enabled": settings.recaptcha_enabled}
+    return {
+        "recaptcha_enabled": settings.recaptcha_enabled,
+        "recaptcha_site_key": settings.recaptcha_site_key if settings.recaptcha_enabled else "",
+    }
 
 
 
-# Rotas (autenticação etc.) entram nas próximas etapas.
+app.include_router(auth.router, prefix="/api/auth", tags=["Autenticação"])
 
 # Site servido pelo próprio backend (SERVIR_FRONTEND=true, ex.: no Render). Fica
 # por último para as rotas da API e o /health terem prioridade.

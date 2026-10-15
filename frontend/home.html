@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início — Credenciamento DIANOT</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="letterhead">
+      <a class="letterhead__home" href="index.html" title="Voltar para a tela inicial"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
+      </div>
+    </header>
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title" id="boas-vindas">Bem-vindo</h2>
+        <p class="card__desc" id="dados-usuario"></p>
+        <p class="card__desc">As próximas etapas do credenciamento serão liberadas aqui.</p>
+      </div>
+      <div class="card__footer">
+        <button type="button" class="btn-secondary" id="btn-sair">Sair</button>
+      </div>
+    </main>
+  </div>
+  <script src="js/auth.js"></script>
+  <script>CodegoAuth.iniciarHome();</script>
+</body>
+</html>

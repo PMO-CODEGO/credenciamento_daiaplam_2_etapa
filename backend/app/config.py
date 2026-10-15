@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     # reCAPTCHA (desligado por padrão para rodar local sem chaves reais).
     recaptcha_enabled: bool = False
     recaptcha_secret_key: str = ""
+    # Chave PÚBLICA do site (pode ir ao navegador); a secreta nunca.
+    recaptcha_site_key: str = ""
+
+    # Sessão (JWT)
+    token_expira_minutos: int = 60
 
     class Config:
         env_file = ".env"

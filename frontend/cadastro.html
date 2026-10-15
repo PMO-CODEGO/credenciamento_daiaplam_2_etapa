@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro — Credenciamento DIANOT</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="letterhead">
+      <a class="letterhead__home" href="index.html" title="Voltar para a tela inicial"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
+      </div>
+    </header>
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Cadastro de usuário</h2>
+        <p class="card__desc">Seu login de acesso será o CNPJ da empresa. Defina uma senha com pelo menos 8 caracteres, com letras e números.</p>
+      </div>
+
+      <form id="form-cadastro" novalidate>
+        <div class="field">
+          <label for="cnpj">CNPJ (será o seu login)</label>
+          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" autocomplete="username" maxlength="18" placeholder="00.000.000/0000-00">
+          <p class="field__error" data-error-for="cnpj"></p>
+        </div>
+
+        <div class="field">
+          <label for="nome_empresarial">Nome da empresa (Razão Social)</label>
+          <input type="text" id="nome_empresarial" name="nome_empresarial" autocomplete="organization" maxlength="255">
+          <p class="field__error" data-error-for="nome_empresarial"></p>
+        </div>
+
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" autocomplete="email" maxlength="255">
+          <p class="field__error" data-error-for="email"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" autocomplete="new-password" maxlength="72">
+            <p class="field__error" data-error-for="senha"></p>
+          </div>
+          <div class="field">
+            <label for="senha2">Confirmar senha</label>
+            <input type="password" id="senha2" name="senha2" autocomplete="new-password" maxlength="72">
+            <p class="field__error" data-error-for="senha2"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div id="recaptcha"></div>
+          <p class="field__error" data-error-for="recaptcha"></p>
+        </div>
+
+        <div class="feedback feedback--error" id="feedback" hidden></div>
+
+        <div class="card__footer">
+          <button type="submit" class="btn-primary" id="btn-enviar">Cadastrar</button>
+          <p class="card__footer-note">Já tem login? <a href="index.html">Entrar</a></p>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script src="js/auth.js"></script>
+  <script>CodegoAuth.iniciarCadastro();</script>
+</body>
+</html>
