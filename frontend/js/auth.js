@@ -33,13 +33,22 @@ const CodegoAuth = (function () {
     });
   }
 
-  function erro(campo, msg) {
-    const el = document.querySelector(`[data-error-for="${campo}"]`);
-    if (el) el.textContent = msg || '';
-  }
+  const erro = CodegoForm.erro;
   function limparErros(form) {
-    form.querySelectorAll('[data-error-for]').forEach((e) => (e.textContent = ''));
+    CodegoForm.limparErros(form);
     const fb = $('feedback'); fb.hidden = true; fb.textContent = '';
+  }
+
+  // Preparação comum das telas de login e cadastro.
+  function prepararForm(form) {
+    mascararCnpj($('cnpj'));
+    CodegoForm.alternarSenhas(form);
+    CodegoForm.limparAoEditar(form);
+    // CNPJ conferido ao sair do campo, não só no envio.
+    $('cnpj').addEventListener('blur', () => {
+      if ($('cnpj').value && !cnpjValido($('cnpj').value)) erro('cnpj', 'Informe um CNPJ válido.');
+    });
+    iniciarRecaptcha();
   }
   function mostrarFeedback(msg) {
     const fb = $('feedback'); fb.textContent = msg; fb.hidden = false;
@@ -72,8 +81,8 @@ const CodegoAuth = (function () {
     recaptchaAtivo && recaptchaId !== null ? grecaptcha.getResponse(recaptchaId) : '';
   const resetRecaptcha = () => { if (recaptchaAtivo && recaptchaId !== null) grecaptcha.reset(recaptchaId); };
 
-  async function enviar(caminho, corpo, btn) {
-    btn.disabled = true;
+  async function enviar(caminho, corpo, btn, textoOcupado) {
+    CodegoForm.ocupado(btn, textoOcupado);
     try {
       const resp = await fetch(`${API()}${caminho}`, {
         method: 'POST',
@@ -92,7 +101,7 @@ const CodegoAuth = (function () {
       resetRecaptcha();
       return null;
     } finally {
-      btn.disabled = false;
+      CodegoForm.livre(btn);
     }
   }
 
@@ -103,8 +112,7 @@ const CodegoAuth = (function () {
 
   function iniciarLogin() {
     const form = $('form-login');
-    mascararCnpj($('cnpj'));
-    iniciarRecaptcha();
+    prepararForm(form);
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
       limparErros(form);
@@ -112,20 +120,25 @@ const CodegoAuth = (function () {
       if (!cnpjValido($('cnpj').value)) { erro('cnpj', 'Informe um CNPJ válido.'); ok = false; }
       if (!$('senha').value) { erro('senha', 'Informe a senha.'); ok = false; }
       if (recaptchaAtivo && !tokenRecaptcha()) { erro('recaptcha', 'Confirme que você não é um robô.'); ok = false; }
-      if (!ok) return;
+      if (!ok) { CodegoForm.focarPrimeiroErro(form); return; }
       const dados = await enviar('/api/auth/login', {
         cnpj: somenteDigitos($('cnpj').value),
         senha: $('senha').value,
         g_recaptcha_response: tokenRecaptcha(),
-      }, $('btn-enviar'));
-      if (dados) salvarSessao(dados);
+      }, $('btn-enviar'), 'Entrando…');
+      if (dados) return salvarSessao(dados);
+      // Login recusado: o CNPJ fica, a senha fica selecionada para redigitar.
+      $('senha').focus();
+      $('senha').select();
     });
   }
 
   function iniciarCadastro() {
     const form = $('form-cadastro');
-    mascararCnpj($('cnpj'));
-    iniciarRecaptcha();
+    prepararForm(form);
+    $('senha2').addEventListener('blur', () => {
+      if ($('senha2').value && $('senha2').value !== $('senha').value) erro('senha2', 'As senhas não conferem.');
+    });
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
       limparErros(form);
@@ -139,14 +152,14 @@ const CodegoAuth = (function () {
       }
       if (senha !== $('senha2').value) { erro('senha2', 'As senhas não conferem.'); ok = false; }
       if (recaptchaAtivo && !tokenRecaptcha()) { erro('recaptcha', 'Confirme que você não é um robô.'); ok = false; }
-      if (!ok) return;
+      if (!ok) { CodegoForm.focarPrimeiroErro(form); return; }
       const dados = await enviar('/api/auth/cadastro', {
         cnpj: somenteDigitos($('cnpj').value),
         nome_empresarial: $('nome_empresarial').value.trim(),
         email: $('email').value.trim(),
         senha,
         g_recaptcha_response: tokenRecaptcha(),
-      }, $('btn-enviar'));
+      }, $('btn-enviar'), 'Cadastrando…');
       if (dados) salvarSessao(dados);
     });
   }

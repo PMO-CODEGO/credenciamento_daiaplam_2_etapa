@@ -39,7 +39,7 @@
           </a>
         </li>
       </ul>
-      <p class="field__hint field__hint--warn" id="aviso-link" hidden>Este link será disponibilizado em breve.</p>
+      <p class="field__hint field__hint--warn" id="aviso-link" role="status" hidden>Este link será disponibilizado em breve.</p>
 
       <form id="form-solicitacao" novalidate>
         <h3 class="section-title">Distrito de interesse: DIANOT 2ª ETAPA</h3>
@@ -97,7 +97,7 @@
           <label for="cnae">Nº do CNAE</label>
           <input type="text" id="cnae" name="cnae" list="cnae-sugestoes" maxlength="40" placeholder="0000-0/00" autocomplete="off">
           <datalist id="cnae-sugestoes"></datalist>
-          <p class="field__hint" id="cnae-status"></p>
+          <p class="field__hint" id="cnae-status" aria-live="polite"></p>
           <p class="field__error" data-error-for="cnae"></p>
         </div>
         <div class="field">
@@ -105,7 +105,7 @@
           <input type="text" id="cnae_descricao" readonly placeholder="Preenchida automaticamente quando o CNAE for válido">
         </div>
 
-        <div class="feedback" id="feedback" hidden></div>
+        <div class="feedback" id="feedback" aria-live="polite" hidden></div>
 
         <div class="card__footer">
           <button type="button" class="btn-secondary" id="btn-sair">Sair</button>
@@ -114,6 +114,7 @@
       </form>
     </main>
   </div>
+  <script src="js/form.js"></script>
   <script src="js/solicitacao.js"></script>
 </body>
 </html>

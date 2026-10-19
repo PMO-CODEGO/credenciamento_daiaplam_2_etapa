@@ -952,3 +952,159 @@ textarea.textarea--compact {
 /* Rodapé empilhado: botão em cima, link embaixo (tela de login) */
 .card__footer--stack { flex-direction: column; align-items: stretch; text-align: center; }
 .card__footer--stack .card__footer-note { max-width: none; font-size: 13px; }
+
+/* ------------------------------------------------------------------ */
+/* Interação: resposta ao toque, estados e mensagens                   */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Login e cadastro: página estreita (formulário curto, leitura direta) */
+.page:has(.card--narrow) {
+  max-width: 600px;
+}
+
+/* Campos: troca de borda suave; somente leitura com cara de não editável */
+input,
+select,
+textarea {
+  transition: border-color 150ms ease;
+}
+
+input[readonly] {
+  background: var(--paper);
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+.field--invalid input:focus-visible,
+.field--invalid select:focus-visible,
+.field--invalid textarea:focus-visible {
+  outline-color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* Botões: afundam levemente ao clicar (confirma que o clique foi recebido) */
+.btn-primary,
+.btn-secondary,
+.feedback__link,
+.doc-toggle__btn {
+  transition: transform 160ms var(--ease-out), background-color 150ms ease, color 150ms ease;
+}
+
+.btn-primary:active:not(:disabled),
+.btn-secondary:active:not(:disabled),
+.feedback__link:active {
+  transform: scale(0.97);
+}
+
+.doc-list__link {
+  transition: transform 160ms var(--ease-out), border-color 150ms ease, background-color 150ms ease;
+}
+
+.doc-list__link:active {
+  transform: scale(0.99);
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Botão ocupado ("Entrando…", "Salvando…"): continua legível e mostra que está trabalhando */
+.btn-primary[aria-busy="true"] {
+  opacity: 0.85;
+  cursor: progress;
+}
+
+.btn-primary[aria-busy="true"]::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  vertical-align: -1px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: girar 600ms linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mensagens surgem com um leve deslize em vez de "pular" na tela */
+.feedback,
+#aviso-link {
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+@starting-style {
+  .feedback,
+  #aviso-link {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* Mostrar/ocultar senha */
+.field__password {
+  position: relative;
+}
+
+.field__password input {
+  padding-right: 80px;
+}
+
+.field__password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .field__password-toggle:hover {
+    background: var(--paper);
+  }
+}
+
+.field__password-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary:active:not(:disabled),
+  .btn-secondary:active:not(:disabled),
+  .feedback__link:active,
+  .doc-list__link:active {
+    transform: none;
+  }
+
+  .btn-primary[aria-busy="true"]::before {
+    animation-duration: 1.5s;
+  }
+
+  @starting-style {
+    .feedback,
+    #aviso-link {
+      transform: none;
+    }
+  }
+}

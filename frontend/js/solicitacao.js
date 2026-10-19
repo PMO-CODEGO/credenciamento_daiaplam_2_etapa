@@ -7,12 +7,27 @@
 
   let token = null;
   try { token = sessionStorage.getItem(CHAVE); } catch (_) {}
+  // Alterações digitadas e ainda não salvas (o formulário é longo: não perder).
+  let alterado = false;
   function sair() {
+    alterado = false;
     try { sessionStorage.removeItem(CHAVE); } catch (_) {}
     window.location.href = 'index.html';
   }
   if (!token) { sair(); return; }
-  $('btn-sair').addEventListener('click', sair);
+  $('btn-sair').addEventListener('click', () => {
+    if (alterado && !window.confirm('Há alterações não salvas. Sair mesmo assim?')) return;
+    sair();
+  });
+  window.addEventListener('beforeunload', (ev) => {
+    if (alterado) { ev.preventDefault(); ev.returnValue = ''; }
+  });
+  CodegoForm.limparAoEditar($('form-solicitacao'));
+  $('form-solicitacao').addEventListener('input', () => {
+    alterado = true;
+    // Um "salvo com sucesso" antigo não vale mais depois de nova edição.
+    if ($('feedback').classList.contains('feedback--success')) $('feedback').hidden = true;
+  });
 
   async function api(caminho, opcoes = {}) {
     const resp = await fetch(`${API}${caminho}`, {
@@ -162,13 +177,13 @@
   })();
 
   // ---------- Envio ----------
-  function erro(campo, msg) { const el = document.querySelector(`[data-error-for="${campo}"]`); if (el) el.textContent = msg || ''; }
+  const erro = CodegoForm.erro;
   function mostrar(tipo, msg) {
     const fb = $('feedback'); fb.className = `feedback feedback--${tipo}`; fb.textContent = msg; fb.hidden = false;
   }
   $('form-solicitacao').addEventListener('submit', async (ev) => {
     ev.preventDefault();
-    document.querySelectorAll('[data-error-for]').forEach((e) => (e.textContent = ''));
+    CodegoForm.limparErros($('form-solicitacao'));
     $('feedback').hidden = true;
 
     await pendente; // espera a conferência do CNAE em andamento
@@ -182,9 +197,13 @@
     if ($('administrador_nome').value.trim().length < 3) { erro('administrador_nome', 'Informe o nome do administrador.'); ok = false; }
     if (!cpfValido($('administrador_cpf').value)) { erro('administrador_cpf', 'Informe um CPF válido.'); ok = false; }
     if (!cnaeValido) { erro('cnae', 'Informe um CNAE válido, que conste na tabela.'); ok = false; }
-    if (!ok) { mostrar('error', 'Corrija os campos destacados e tente novamente.'); return; }
+    if (!ok) {
+      mostrar('error', 'Corrija os campos destacados e tente novamente.');
+      CodegoForm.focarPrimeiroErro($('form-solicitacao'));
+      return;
+    }
 
-    $('btn-salvar').disabled = true;
+    CodegoForm.ocupado($('btn-salvar'), 'Salvando…');
     try {
       const s = await api('/api/solicitacoes/minha', {
         method: 'PUT',
@@ -201,11 +220,12 @@
         }),
       });
       preencher(s);
+      alterado = false;
       mostrar('success', 'Solicitação salva com sucesso. Você pode voltar e alterar os dados quando precisar.');
     } catch (e) {
       mostrar('error', e instanceof TypeError ? 'Falha de conexão. Tente novamente.' : e.message);
     } finally {
-      $('btn-salvar').disabled = false;
+      CodegoForm.livre($('btn-salvar'));
     }
   });
 })();

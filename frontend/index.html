@@ -16,7 +16,7 @@
         <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
       </div>
     </header>
-    <main class="card">
+    <main class="card card--narrow">
       <div class="card__intro">
         <h2 class="card__title">Acesse sua conta</h2>
         <p class="card__desc">Entre com o CNPJ da empresa e a senha cadastrada.</p>
@@ -25,7 +25,7 @@
       <form id="form-login" novalidate>
         <div class="field">
           <label for="cnpj">Login (CNPJ)</label>
-          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" autocomplete="username" maxlength="18" placeholder="00.000.000/0000-00">
+          <input type="text" id="cnpj" name="cnpj" inputmode="numeric" autocomplete="username" maxlength="18" placeholder="00.000.000/0000-00" autofocus>
           <p class="field__error" data-error-for="cnpj"></p>
         </div>
 
@@ -40,7 +40,7 @@
           <p class="field__error" data-error-for="recaptcha"></p>
         </div>
 
-        <div class="feedback feedback--error" id="feedback" hidden></div>
+        <div class="feedback feedback--error" id="feedback" role="alert" hidden></div>
 
         <div class="card__footer card__footer--stack">
           <button type="submit" class="btn-primary" id="btn-enviar">Entrar</button>
@@ -49,6 +49,7 @@
       </form>
     </main>
   </div>
+  <script src="js/form.js"></script>
   <script src="js/auth.js"></script>
   <script>CodegoAuth.iniciarLogin();</script>
 </body>
