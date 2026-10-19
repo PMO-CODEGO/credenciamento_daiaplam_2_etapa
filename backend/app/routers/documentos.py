@@ -49,14 +49,14 @@ def enviar(
     usuario: Usuario = Depends(usuario_atual),
     db: Session = Depends(get_db),
 ):
-    if tipo not in docs.TIPOS_POR_CHAVE:
+    if tipo not in docs.TIPOS_POR_CHAVE and tipo not in docs.TIPOS_EXTRAS:
         raise HTTPException(status_code=404, detail="Tipo de documento desconhecido.")
     ja_enviados = db.query(Documento).filter(Documento.usuario_id == usuario.id, Documento.tipo == tipo).count()
     if ja_enviados >= docs.MAX_ARQUIVOS_POR_TIPO:
         raise HTTPException(
             status_code=422, detail=f"Limite de {docs.MAX_ARQUIVOS_POR_TIPO} arquivos neste item. Remova um para enviar outro."
         )
-    relativo, content_type, tamanho = docs.salvar(usuario.id, arquivo)
+    relativo, content_type, tamanho = docs.salvar(usuario.id, arquivo, aceita_excel=tipo in docs.TIPOS_EXTRAS)
     d = Documento(
         usuario_id=usuario.id,
         tipo=tipo,

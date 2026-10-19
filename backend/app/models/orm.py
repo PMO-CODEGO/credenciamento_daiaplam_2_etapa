@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, func
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, func
 
 from app.database import Base
 
@@ -77,3 +77,14 @@ class Documento(Base):
     content_type = Column(String(100), nullable=False)
     tamanho = Column(Integer, nullable=False)
     data_envio = Column(DateTime, server_default=func.now())
+
+
+class Cronograma(Base):
+    """Cronograma Físico de Obras (Inciso XII) preenchido no formulário — um por empresa."""
+
+    __tablename__ = "cronogramas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
+    dados = Column(JSON, nullable=False)  # campos do formulário (ver schemas/cronograma.py)
+    data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())

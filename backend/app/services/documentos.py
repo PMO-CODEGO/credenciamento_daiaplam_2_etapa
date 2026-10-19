@@ -33,6 +33,17 @@ FORMATOS = {
 }
 EXTENSOES = {".pdf": "pdf", ".jpg": "jpg", ".jpeg": "jpg", ".png": "png"}
 
+# Tipos que não aparecem na lista do Anexo II (têm tela própria), mas usam o mesmo
+# envio de arquivos. chave -> (rótulo, formatos extras aceitos além de PDF/JPG/PNG).
+FORMATOS_EXTRAS = {
+    "xlsx": (b"PK\x03\x04", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+    "xls": (b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1", "application/vnd.ms-excel"),
+}
+EXTENSOES_EXTRAS = {".xlsx": "xlsx", ".xls": "xls"}
+TIPOS_EXTRAS = {
+    "inciso12": ("Inciso XII — Cronograma Físico de Obras (arquivo próprio)", True),
+}
+
 
 def _pasta() -> str:
     return os.path.join(settings.storage_dir, "documentos")
@@ -42,12 +53,21 @@ def caminho_absoluto(relativo: str) -> str:
     return os.path.join(_pasta(), relativo)
 
 
-def salvar(usuario_id: int, arquivo: UploadFile) -> tuple[str, str, int]:
+def salvar(usuario_id: int, arquivo: UploadFile, aceita_excel: bool = False) -> tuple[str, str, int]:
     """Valida e grava o arquivo. Devolve (caminho relativo, content_type, tamanho)."""
     nome = arquivo.filename or ""
-    formato = EXTENSOES.get(os.path.splitext(nome)[1].lower())
+    extensao = os.path.splitext(nome)[1].lower()
+    formatos = dict(FORMATOS)
+    extensoes = dict(EXTENSOES)
+    if aceita_excel:
+        formatos.update(FORMATOS_EXTRAS)
+        extensoes.update(EXTENSOES_EXTRAS)
+    formato = extensoes.get(extensao)
     if formato is None:
-        raise HTTPException(status_code=422, detail="Formato não aceito. Envie PDF, JPG ou PNG.")
+        raise HTTPException(
+            status_code=422,
+            detail="Formato não aceito. Envie PDF, JPG, PNG ou Excel." if aceita_excel else "Formato não aceito. Envie PDF, JPG ou PNG.",
+        )
 
     limite = settings.upload_max_mb * 1024 * 1024
     conteudo = arquivo.file.read(limite + 1)
@@ -55,9 +75,9 @@ def salvar(usuario_id: int, arquivo: UploadFile) -> tuple[str, str, int]:
         raise HTTPException(status_code=413, detail=f"Arquivo maior que {settings.upload_max_mb} MB.")
     if not conteudo:
         raise HTTPException(status_code=422, detail="O arquivo está vazio.")
-    assinatura, content_type = FORMATOS[formato]
+    assinatura, content_type = formatos[formato]
     if not conteudo.startswith(assinatura):
-        raise HTTPException(status_code=422, detail="O conteúdo do arquivo não corresponde a um PDF, JPG ou PNG válido.")
+        raise HTTPException(status_code=422, detail="O conteúdo do arquivo não corresponde ao formato informado.")
 
     relativo = os.path.join(str(usuario_id), f"{uuid.uuid4().hex}.{formato}")
     destino = caminho_absoluto(relativo)

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /*
+      Reprodução do "Modelo do Cronograma" do Regulamento de Alienação de Áreas
+      (Anexo V, pág. 31). Medidas em pt tiradas do PDF oficial (A4 paisagem).
+      O Regulamento usa as fontes Lato e Antenna; como a Antenna é comercial,
+      usamos a Encode Sans (OFL) nas larguras Expanded/Semi Expanded.
+    */
+    @font-face { font-family: "Lato"; font-weight: 300; src: url("assets/fonts/Lato-Light.ttf"); }
+    @font-face { font-family: "Lato"; font-weight: 400; src: url("assets/fonts/Lato-Regular.ttf"); }
+    /* Substitutos da Antenna, escolhidos por largura e espessura medidas no PDF oficial. */
+    @font-face { font-family: "Regulamento"; font-weight: 300; src: url("assets/fonts/EncodeSansExpanded-Regular.ttf"); }
+    @font-face { font-family: "Regulamento"; font-weight: 700; src: url("assets/fonts/EncodeSansSemiExpanded-Bold.ttf"); }
+
+    @page {
+      size: A4 landscape;
+      /* A tabela começa em (126.1pt, 75pt), logo abaixo do cabeçalho (no modelo ela
+         fica em 126.4pt, abaixo do título "MODELO DO CRONOGRAMA", que não usamos),
+         e tem 589.6pt de largura, como no modelo. */
+      margin: 75pt 126.1pt 18pt;
+    }
+    body {
+      margin: 0;
+      font-family: "Regulamento", sans-serif;
+      font-weight: 300;
+      font-size: 9pt;
+      color: #231f20;
+    }
+
+    /* Cabeçalho do Regulamento (repetido em todas as páginas) */
+    .cab-logo {
+      position: fixed;
+      left: -84.6pt;   /* 41.5pt na página */
+      top: -48.7pt;    /* 26.3pt na página */
+      width: 69.7pt;
+      height: 32.2pt;
+    }
+    .cab-linha {
+      position: fixed;
+      left: -8.2pt;    /* 117.9pt na página */
+      top: -32.95pt;   /* 42.3pt na página */
+      width: 400.8pt;
+      /* Azul do Regulamento com transparência: sai #9396b4 sobre o branco. */
+      border-top: 0.5pt solid #9396b4;
+    }
+    .cab-texto {
+      position: fixed;
+      left: 417.4pt;   /* 543.5pt na página */
+      top: -37.5pt;    /* 37.5pt na página */
+      font-family: "Lato", sans-serif;
+      font-weight: 300;
+      font-size: 6pt;
+      letter-spacing: 2.336pt;
+      color: #9396b4;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .cab-pagina {
+      position: fixed;
+      left: 654.8pt;   /* 780.9pt na página */
+      top: -40.9pt;    /* 34.1pt na página */
+      width: 18.3pt;
+      height: 14.2pt;
+      background: #237570;
+      color: #ffffff;
+      font-family: "Lato", sans-serif;
+      font-weight: 400;
+      font-size: 9pt;
+      line-height: 12.8pt;
+      text-align: center;
+    }
+
+    table {
+      width: 589.6pt;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    td {
+      border: 0.25pt solid #231f20;
+      height: 20.75pt;
+      padding: 0 0 0 11.3pt;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    td.centro {
+      padding: 0;
+      text-align: center;
+    }
+    b {
+      font-weight: 700;
+    }
+
+    .dados td.titulo-tabela {
+      height: 23.95pt;
+      padding: 0;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* A grade do cronograma encosta na tabela de dados, sem linha dupla. */
+    .cronograma {
+      margin-top: -0.25pt;
+    }
+    .cronograma + .cronograma {
+      margin-top: 10pt;
+    }
+    /* Cada tabela do cronograma fica inteira na mesma página. */
+    .cronograma {
+      page-break-inside: avoid;
+    }
+    .cronograma col.servico {
+      width: 122.3pt;
+    }
+    .cronograma .trimestre {
+      font-weight: 700;
+      /* Trimestre com só 1 mês (coluna estreita): o rótulo quebra em duas linhas. */
+      white-space: normal;
+      line-height: 10.8pt;
+      padding: 2pt 0;
+    }
+
+    .protocolo {
+      position: fixed;
+      right: 0;
+      bottom: -11pt;
+      font-family: "Regulamento", sans-serif;
+      font-weight: 700;
+      font-size: 9pt;
+      color: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+
+  <img class="cab-logo" src="{{ logo_data_uri }}" alt="Companhia de Desenvolvimento Econômico de Goiás">
+  <div class="cab-linha"></div>
+  <div class="cab-texto">REGULAMENTO DE ALIENAÇÃO DE ÁREAS • 2026</div>
+  <div class="cab-pagina">31</div>
+
+  <table class="dados">
+    <tr>
+      <td class="titulo-tabela" colspan="2">Cronograma Físico da Obra (CFO)</td>
+    </tr>
+    <tr>
+      <td colspan="2">Nome da empresa: <b>{{ nome_empresa }}</b></td>
+    </tr>
+    <tr>
+      <td colspan="2">Endereço: <b>{{ endereco }}</b></td>
+    </tr>
+    <tr>
+      <td colspan="2">Área da Empresa: <b>{{ area_empresa }} m2</b></td>
+    </tr>
+    <tr>
+      <td colspan="2">Área a ser Construída: <b>{{ area_construida }} m2</b></td>
+    </tr>
+    <tr>
+      <td>Previsão início das Obras: <b>{{ inicio_obras }}</b></td>
+      <td>Previsão Término das Obras: <b>{{ termino_obras }}</b></td>
+    </tr>
+  </table>
+
+  {% for bloco in blocos %}
+  <table class="cronograma" style="width: {{ bloco.largura }}pt">
+    <colgroup>
+      <col class="servico">
+      {% for mes in bloco.meses %}<col style="width: {{ bloco.largura_mes }}pt">{% endfor %}
+    </colgroup>
+    <tr>
+      <td></td>
+      {% for trimestre in bloco.trimestres %}
+      <td class="centro trimestre" colspan="{{ trimestre.colunas }}">{{ trimestre.rotulo }}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <td>Serviços/ Mês</td>
+      {% for mes in bloco.meses %}
+      <td class="centro">{{ mes.rotulo }}</td>
+      {% endfor %}
+    </tr>
+    {% for linha in bloco.linhas %}
+    <tr>
+      <td>{{ linha.descricao }}</td>
+      {% for celula in linha.celulas %}
+      <td class="centro">{{ celula }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+
+  <div class="protocolo">{{ rodape }}</div>
+
+</body>
+</html>
