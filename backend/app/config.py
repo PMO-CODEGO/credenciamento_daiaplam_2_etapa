@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     # Sessão (JWT)
     token_expira_minutos: int = 60
 
+    # Documentos enviados (uploads): pasta no disco e tamanho máximo por arquivo.
+    storage_dir: str = "/app/storage"
+    upload_max_mb: int = 10
+
     class Config:
         env_file = ".env"
         extra = "ignore"

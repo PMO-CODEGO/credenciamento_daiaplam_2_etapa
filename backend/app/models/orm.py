@@ -52,3 +52,18 @@ class Solicitacao(Base):
 
     data_criacao = Column(DateTime, server_default=func.now())
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class Documento(Base):
+    """Arquivo enviado pela empresa para um dos incisos do Anexo II."""
+
+    __tablename__ = "documentos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, index=True)
+    tipo = Column(String(30), nullable=False)  # chave do inciso (ex.: "inciso2")
+    nome_original = Column(String(255), nullable=False)
+    arquivo = Column(String(255), nullable=False)  # caminho relativo no armazenamento
+    content_type = Column(String(100), nullable=False)
+    tamanho = Column(Integer, nullable=False)
+    data_envio = Column(DateTime, server_default=func.now())
