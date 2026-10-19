@@ -95,6 +95,32 @@
   }
   const formatarArea = (valor) =>
     Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // Enquanto digita, o campo só aceita números e uma vírgula (até 2 casas).
+  // O ponto digitado vira vírgula (teclado numérico); colado, "1.000,50" e
+  // "1000.50" são entendidos. Os pontos de milhar voltam ao sair do campo.
+  function limparArea(texto, digitado) {
+    let t = texto.replace(/[^\d.,]/g, '');
+    if (digitado) t = t.replace(/\./g, ',');
+    else if (!t.includes(',') && /^\d+\.\d{1,2}$/.test(t)) t = t.replace('.', ',');
+    t = t.replace(/\./g, '');
+    const i = t.indexOf(',');
+    if (i === -1) return t.slice(0, 12);
+    return `${t.slice(0, i).slice(0, 12)},${t.slice(i + 1).replace(/,/g, '').slice(0, 2)}`;
+  }
+  $('area_m2').addEventListener('input', (ev) => {
+    const campo = ev.target;
+    const digitado = ev.inputType === 'insertText';
+    const pos = campo.selectionStart;
+    const limpo = limparArea(campo.value, digitado);
+    if (limpo === campo.value) return;
+    // Mantém o cursor no lugar, descontando os caracteres removidos antes dele.
+    const antes = limparArea(campo.value.slice(0, pos), digitado).length;
+    campo.value = limpo;
+    campo.setSelectionRange(antes, antes);
+  });
+  $('area_m2').addEventListener('focus', () => {
+    $('area_m2').value = $('area_m2').value.replace(/\./g, '');
+  });
   $('area_m2').addEventListener('blur', () => {
     const r = lerArea($('area_m2').value);
     if (r.valor) $('area_m2').value = formatarArea(r.valor);
