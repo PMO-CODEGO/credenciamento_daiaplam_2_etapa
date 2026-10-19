@@ -12,6 +12,8 @@ class Usuario(Base):
     cnpj = Column(String(14), nullable=False, unique=True, index=True)
     nome_empresarial = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False)
+    representante_nome = Column(String(255))  # Representante Legal (nulo nos cadastros antigos)
+    representante_cpf = Column(String(11))
     senha_hash = Column(String(255), nullable=False)
     ativo = Column(Boolean, nullable=False, default=True)
     data_criacao = Column(DateTime, server_default=func.now())

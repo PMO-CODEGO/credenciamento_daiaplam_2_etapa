@@ -12,6 +12,7 @@ from app.services.seguranca import (
     criar_token,
     decodificar_token,
     gerar_hash_senha,
+    gerar_senha_aleatoria,
     verificar_senha,
 )
 
@@ -45,7 +46,7 @@ def usuario_atual(
 
 @router.post("/cadastro", response_model=TokenOut, status_code=201)
 def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depends(get_db)):
-    """Cria o usuário: o login é o CNPJ; a pessoa define a senha."""
+    """Cria o usuário: o login é o CNPJ; a senha é gerada aleatoriamente e mostrada uma só vez."""
     chave = _ip(request)
     if _cadastros.bloqueado(chave):
         raise HTTPException(status_code=429, detail="Muitas tentativas. Tente novamente mais tarde.")
@@ -58,11 +59,14 @@ def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depend
     if db.query(Usuario).filter(Usuario.cnpj == payload.cnpj).first():
         raise HTTPException(status_code=409, detail="Este CNPJ já possui cadastro. Use a tela de login.")
 
+    senha = gerar_senha_aleatoria()
     usuario = Usuario(
         cnpj=payload.cnpj,
         nome_empresarial=payload.nome_empresarial,
         email=payload.email,
-        senha_hash=gerar_hash_senha(payload.senha),
+        representante_nome=payload.representante_nome,
+        representante_cpf=payload.representante_cpf,
+        senha_hash=gerar_hash_senha(senha),
     )
     db.add(usuario)
     try:
@@ -71,7 +75,9 @@ def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depend
         db.rollback()
         raise HTTPException(status_code=409, detail="Este CNPJ já possui cadastro. Use a tela de login.")
     db.refresh(usuario)
-    return TokenOut(access_token=criar_token(usuario.id, usuario.cnpj), usuario=_para_out(usuario))
+    return TokenOut(
+        access_token=criar_token(usuario.id, usuario.cnpj), usuario=_para_out(usuario), senha_gerada=senha
+    )
 
 
 @router.post("/login", response_model=TokenOut)

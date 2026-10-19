@@ -2,7 +2,7 @@ import re
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.schemas.validacoes import cnpj_valido, somente_digitos
+from app.schemas.validacoes import cnpj_valido, cpf_valido, somente_digitos
 
 
 def _cnpj(v: str) -> str:
@@ -16,7 +16,8 @@ class CadastroUsuarioIn(BaseModel):
     cnpj: str
     nome_empresarial: str = Field(min_length=3, max_length=255)
     email: EmailStr
-    senha: str = Field(max_length=72)
+    representante_nome: str = Field(min_length=3, max_length=255)
+    representante_cpf: str
     g_recaptcha_response: str = ""
 
     @field_validator("cnpj")
@@ -24,19 +25,25 @@ class CadastroUsuarioIn(BaseModel):
     def _v_cnpj(cls, v):
         return _cnpj(v)
 
-    @field_validator("nome_empresarial")
+    @field_validator("nome_empresarial", "representante_nome")
     @classmethod
     def _v_nome(cls, v):
         return " ".join(v.split())
 
-    @field_validator("senha")
+    @field_validator("representante_nome")
     @classmethod
-    def _v_senha(cls, v):
-        if len(v) < 8:
-            raise ValueError("A senha deve ter pelo menos 8 caracteres.")
-        if not re.search(r"[A-Za-z]", v) or not re.search(r"[0-9]", v):
-            raise ValueError("A senha deve ter letras e números.")
+    def _v_nome_pessoa(cls, v):
+        if not re.fullmatch(r"[^\W\d_]+(?:[ '.-][^\W\d_]+)*\.?", v):
+            raise ValueError("Informe o nome completo do Representante Legal (apenas letras).")
         return v
+
+    @field_validator("representante_cpf")
+    @classmethod
+    def _v_cpf(cls, v):
+        digitos = somente_digitos(v)
+        if not cpf_valido(digitos):
+            raise ValueError("CPF do Representante Legal inválido.")
+        return digitos
 
 
 class LoginIn(BaseModel):
@@ -61,3 +68,5 @@ class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"
     usuario: UsuarioOut
+    # Só no cadastro: a senha gerada aparece uma única vez (no banco fica só o hash).
+    senha_gerada: str | None = None

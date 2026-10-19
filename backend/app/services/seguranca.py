@@ -1,4 +1,6 @@
 """Senhas (bcrypt), tokens de sessão (JWT) e limite de tentativas de login."""
+import secrets
+import string
 import time
 from collections import defaultdict, deque
 from datetime import datetime, timedelta, timezone
@@ -67,3 +69,17 @@ class LimiteTentativas:
 
     def zerar(self, chave: str) -> None:
         self._eventos.pop(chave, None)
+
+
+# Sem caracteres que se confundem na leitura (0/O, 1/l/I).
+_LETRAS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+_NUMEROS = "23456789"
+
+
+def gerar_senha_aleatoria(tamanho: int = 12) -> str:
+    """Senha aleatória (secrets) com letras maiúsculas, minúsculas e números."""
+    sorteio = [secrets.choice(string.ascii_uppercase.replace("O", "").replace("I", "")),
+               secrets.choice(_LETRAS.lower()), secrets.choice(_NUMEROS)]
+    sorteio += [secrets.choice(_LETRAS + _NUMEROS) for _ in range(tamanho - len(sorteio))]
+    secrets.SystemRandom().shuffle(sorteio)
+    return "".join(sorteio)

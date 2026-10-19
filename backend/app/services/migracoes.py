@@ -13,6 +13,10 @@ from sqlalchemy.engine import Engine
 logger = logging.getLogger("codego.migracoes")
 
 COLUNAS = {
+    "usuarios": [
+        ("representante_nome", "VARCHAR(255) NULL"),
+        ("representante_cpf", "VARCHAR(11) NULL"),
+    ],
     "solicitacoes": [
         ("representante_nome", "VARCHAR(255) NULL"),
         ("representante_cargo", "VARCHAR(100) NULL"),

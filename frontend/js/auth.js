@@ -33,22 +33,33 @@ const CodegoAuth = (function () {
     });
   }
 
-  const erro = CodegoForm.erro;
-  function limparErros(form) {
-    CodegoForm.limparErros(form);
-    const fb = $('feedback'); fb.hidden = true; fb.textContent = '';
+  function cpfValido(v) {
+    const d = somenteDigitos(v);
+    if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false;
+    for (const n of [9, 10]) {
+      let soma = 0;
+      for (let i = 0; i < n; i += 1) soma += Number(d[i]) * (n + 1 - i);
+      if (((soma * 10) % 11) % 10 !== Number(d[n])) return false;
+    }
+    return true;
   }
 
-  // Preparação comum das telas de login e cadastro.
-  function prepararForm(form) {
-    mascararCnpj($('cnpj'));
-    CodegoForm.alternarSenhas(form);
-    CodegoForm.limparAoEditar(form);
-    // CNPJ conferido ao sair do campo, não só no envio.
-    $('cnpj').addEventListener('blur', () => {
-      if ($('cnpj').value && !cnpjValido($('cnpj').value)) erro('cnpj', 'Informe um CNPJ válido.');
+  function mascararCpf(input) {
+    input.addEventListener('input', () => {
+      input.value = somenteDigitos(input.value).slice(0, 11)
+        .replace(/^(\d{3})(\d)/, '$1.$2')
+        .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+        .replace(/\.(\d{3})(\d)/, '.$1-$2');
     });
-    iniciarRecaptcha();
+  }
+
+  function erro(campo, msg) {
+    const el = document.querySelector(`[data-error-for="${campo}"]`);
+    if (el) el.textContent = msg || '';
+  }
+  function limparErros(form) {
+    form.querySelectorAll('[data-error-for]').forEach((e) => (e.textContent = ''));
+    const fb = $('feedback'); fb.hidden = true; fb.textContent = '';
   }
   function mostrarFeedback(msg) {
     const fb = $('feedback'); fb.textContent = msg; fb.hidden = false;
@@ -61,7 +72,12 @@ const CodegoAuth = (function () {
       .then((cfg) => {
         const caixa = $('recaptcha');
         const campo = caixa.closest('.field');
-        if (!cfg || !cfg.recaptcha_enabled || !cfg.recaptcha_site_key) {
+        if (cfg && cfg.recaptcha_enabled && !cfg.recaptcha_site_key) {
+          caixa.textContent = 'reCAPTCHA ligado, mas sem RECAPTCHA_SITE_KEY no servidor.';
+          caixa.className = 'field__error';
+          return;
+        }
+        if (!cfg || !cfg.recaptcha_enabled) {
           // Falha ao ler a config: não esconde nada (o servidor continua exigindo).
           if (cfg) campo.hidden = true;
           return;
@@ -81,8 +97,8 @@ const CodegoAuth = (function () {
     recaptchaAtivo && recaptchaId !== null ? grecaptcha.getResponse(recaptchaId) : '';
   const resetRecaptcha = () => { if (recaptchaAtivo && recaptchaId !== null) grecaptcha.reset(recaptchaId); };
 
-  async function enviar(caminho, corpo, btn, textoOcupado) {
-    CodegoForm.ocupado(btn, textoOcupado);
+  async function enviar(caminho, corpo, btn) {
+    btn.disabled = true;
     try {
       const resp = await fetch(`${API()}${caminho}`, {
         method: 'POST',
@@ -101,7 +117,7 @@ const CodegoAuth = (function () {
       resetRecaptcha();
       return null;
     } finally {
-      CodegoForm.livre(btn);
+      btn.disabled = false;
     }
   }
 
@@ -110,9 +126,47 @@ const CodegoAuth = (function () {
     window.location.href = 'home.html';
   }
 
+  // Depois do cadastro: mostra a senha gerada (única vez) antes de entrar no sistema.
+  function mostrarSenhaGerada(dados) {
+    try { sessionStorage.setItem(CHAVE, dados.access_token); } catch (_) {}
+    const card = document.querySelector('main.card');
+    card.innerHTML = `
+      <div class="card__intro">
+        <h2 class="card__title">Cadastro concluído</h2>
+        <p class="card__desc">Guarde a senha abaixo: ela é mostrada <strong>somente agora</strong> e será pedida em todo acesso, junto com o CNPJ.</p>
+      </div>
+      <div class="field">
+        <label>Login (CNPJ)</label>
+        <input type="text" id="login-final" readonly>
+      </div>
+      <div class="field">
+        <label for="senha-gerada">Senha gerada</label>
+        <input type="text" id="senha-gerada" readonly autocomplete="off" spellcheck="false" style="font-family: monospace; font-size: 1.15rem; letter-spacing: .05em;">
+        <p class="field__hint" id="copiado" aria-live="polite"></p>
+      </div>
+      <div class="card__footer">
+        <button type="button" class="btn-secondary" id="btn-copiar">Copiar senha</button>
+        <button type="button" class="btn-primary" id="btn-continuar" disabled>Continuar</button>
+      </div>
+      <label class="field__hint" style="display:flex; gap:8px; align-items:center; margin-top:14px;">
+        <input type="checkbox" id="anotei"> Já guardei a senha em local seguro.
+      </label>`;
+    $('login-final').value = dados.usuario.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+    $('senha-gerada').value = dados.senha_gerada;
+    $('senha-gerada').addEventListener('focus', (e) => e.target.select());
+    $('btn-copiar').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(dados.senha_gerada); $('copiado').textContent = 'Senha copiada.'; }
+      catch (_) { $('senha-gerada').select(); $('copiado').textContent = 'Selecione e copie a senha manualmente (Ctrl+C).'; }
+    });
+    $('anotei').addEventListener('change', (e) => { $('btn-continuar').disabled = !e.target.checked; });
+    $('btn-continuar').addEventListener('click', () => { window.location.href = 'home.html'; });
+    window.scrollTo({ top: 0 });
+  }
+
   function iniciarLogin() {
     const form = $('form-login');
-    prepararForm(form);
+    mascararCnpj($('cnpj'));
+    iniciarRecaptcha();
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
       limparErros(form);
@@ -120,47 +174,43 @@ const CodegoAuth = (function () {
       if (!cnpjValido($('cnpj').value)) { erro('cnpj', 'Informe um CNPJ válido.'); ok = false; }
       if (!$('senha').value) { erro('senha', 'Informe a senha.'); ok = false; }
       if (recaptchaAtivo && !tokenRecaptcha()) { erro('recaptcha', 'Confirme que você não é um robô.'); ok = false; }
-      if (!ok) { CodegoForm.focarPrimeiroErro(form); return; }
+      if (!ok) return;
       const dados = await enviar('/api/auth/login', {
         cnpj: somenteDigitos($('cnpj').value),
         senha: $('senha').value,
         g_recaptcha_response: tokenRecaptcha(),
-      }, $('btn-enviar'), 'Entrando…');
-      if (dados) return salvarSessao(dados);
-      // Login recusado: o CNPJ fica, a senha fica selecionada para redigitar.
-      $('senha').focus();
-      $('senha').select();
+      }, $('btn-enviar'));
+      if (dados) salvarSessao(dados);
     });
   }
 
   function iniciarCadastro() {
     const form = $('form-cadastro');
-    prepararForm(form);
-    $('senha2').addEventListener('blur', () => {
-      if ($('senha2').value && $('senha2').value !== $('senha').value) erro('senha2', 'As senhas não conferem.');
-    });
+    mascararCnpj($('cnpj'));
+    mascararCpf($('representante_cpf'));
+    iniciarRecaptcha();
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
       limparErros(form);
       let ok = true;
-      const senha = $('senha').value;
       if (!cnpjValido($('cnpj').value)) { erro('cnpj', 'Informe um CNPJ válido.'); ok = false; }
       if ($('nome_empresarial').value.trim().length < 3) { erro('nome_empresarial', 'Informe o nome da empresa.'); ok = false; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim())) { erro('email', 'Informe um e-mail válido.'); ok = false; }
-      if (senha.length < 8 || !/[A-Za-z]/.test(senha) || !/[0-9]/.test(senha)) {
-        erro('senha', 'Mínimo de 8 caracteres, com letras e números.'); ok = false;
+      if (!/^[\p{L}]+([ '.-][\p{L}]+)+\.?$/u.test($('representante_nome').value.trim())) {
+        erro('representante_nome', 'Informe o nome completo do Representante Legal.'); ok = false;
       }
-      if (senha !== $('senha2').value) { erro('senha2', 'As senhas não conferem.'); ok = false; }
+      if (!cpfValido($('representante_cpf').value)) { erro('representante_cpf', 'Informe um CPF válido.'); ok = false; }
       if (recaptchaAtivo && !tokenRecaptcha()) { erro('recaptcha', 'Confirme que você não é um robô.'); ok = false; }
-      if (!ok) { CodegoForm.focarPrimeiroErro(form); return; }
+      if (!ok) return;
       const dados = await enviar('/api/auth/cadastro', {
         cnpj: somenteDigitos($('cnpj').value),
         nome_empresarial: $('nome_empresarial').value.trim(),
         email: $('email').value.trim(),
-        senha,
+        representante_nome: $('representante_nome').value.trim(),
+        representante_cpf: somenteDigitos($('representante_cpf').value),
         g_recaptcha_response: tokenRecaptcha(),
-      }, $('btn-enviar'), 'Cadastrando…');
-      if (dados) salvarSessao(dados);
+      }, $('btn-enviar'));
+      if (dados) mostrarSenhaGerada(dados);
     });
   }
 
