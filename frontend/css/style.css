@@ -1313,3 +1313,10 @@ input[readonly] {
     transform: none;
   }
 }
+
+/* Texto que abre um bloco sem título próprio (ex.: envio dos documentos) */
+.section-desc--separada {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
