@@ -23,7 +23,8 @@
     if (alterado) { ev.preventDefault(); ev.returnValue = ''; }
   });
   CodegoForm.limparAoEditar($('form-solicitacao'));
-  $('form-solicitacao').addEventListener('input', () => {
+  $('form-solicitacao').addEventListener('input', (ev) => {
+    if (ev.target.type === 'file') return; // documentos são salvos na hora do envio
     alterado = true;
     // Um "salvo com sucesso" antigo não vale mais depois de nova edição.
     if ($('feedback').classList.contains('feedback--success')) $('feedback').hidden = true;
@@ -197,6 +198,7 @@
     if ($('administrador_nome').value.trim().length < 3) { erro('administrador_nome', 'Informe o nome do administrador.'); ok = false; }
     if (!cpfValido($('administrador_cpf').value)) { erro('administrador_cpf', 'Informe um CPF válido.'); ok = false; }
     if (!cnaeValido) { erro('cnae', 'Informe um CNAE válido, que conste na tabela.'); ok = false; }
+    if (!DianotDocumentos.conferirObrigatorios()) ok = false;
     if (!ok) {
       mostrar('error', 'Corrija os campos destacados e tente novamente.');
       CodegoForm.focarPrimeiroErro($('form-solicitacao'));

@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.orm import Cnae, Solicitacao, Usuario
+from app.models.orm import Cnae, Documento, Solicitacao, Usuario
 from app.routers.auth import usuario_atual
 from app.schemas.solicitacao import CnaeOut, SolicitacaoIn, SolicitacaoOut
 from app.schemas.validacoes import somente_digitos
 from app.services import cnae as cnae_service
+from app.services import documentos as docs
 
 router = APIRouter()
 
@@ -54,6 +55,10 @@ def salvar_solicitacao(
     c = cnae_service.buscar(db, payload.cnae)
     if c is None:
         raise HTTPException(status_code=422, detail="CNAE inválido: não consta na tabela de CNAEs aceitos.")
+    enviados = {t for (t,) in db.query(Documento.tipo).filter(Documento.usuario_id == usuario.id).distinct()}
+    faltando = [docs.TIPOS_POR_CHAVE[t][0].split(" — ")[0] for t in docs.OBRIGATORIOS if t not in enviados]
+    if faltando:
+        raise HTTPException(status_code=422, detail=f"Envie os documentos obrigatórios: {', '.join(faltando)}.")
 
     sol = db.query(Solicitacao).filter(Solicitacao.usuario_id == usuario.id).first()
     if sol is None:
