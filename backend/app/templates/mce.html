@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /*
+      Reprodução do "Modelo MCE — CODEGO (Rev. 2 – 22/02/2024)". Medidas em pt
+      tiradas do PDF oficial (A4 retrato). O modelo usa Arial e Times New Roman;
+      as Liberation Sans e Liberation Serif têm exatamente as mesmas medidas.
+      O papel timbrado (logos, marca d'água, endereço e bandeira) é a imagem de
+      fundo do próprio modelo.
+    */
+    @page {
+      size: A4;
+      margin: 71.3pt 39.9pt 64pt 56.6pt;
+      background: url("{{ fundo_data_uri }}") no-repeat;
+      background-size: 591.4pt 860.7pt;
+      /* A posição do fundo conta a partir da área do texto (margens 56.6pt e
+         71.3pt); no modelo a imagem começa em (3.9pt, -18.2pt) da página. */
+      background-position: -52.7pt -89.5pt;
+
+      @bottom-center {
+        content: counter(page) "/" counter(pages);
+        font-family: "Liberation Serif", "Times New Roman", serif;
+        font-size: 10pt;
+        color: #000000;
+        vertical-align: bottom;
+        padding-bottom: 3.4pt;
+      }
+    }
+    body {
+      margin: 0;
+      font-family: "Liberation Sans", Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 11.5pt;
+      color: #1f1f1f;
+    }
+    p {
+      margin: 0;
+    }
+
+    /* Rodapé "Rev. 2" e protocolo interno (repetidos em todas as páginas) */
+    .revisao {
+      position: fixed;
+      left: 0;
+      top: 712.8pt;    /* 784.1pt na página */
+      font-family: "Liberation Serif", "Times New Roman", serif;
+      font-size: 10pt;
+      line-height: 11pt;
+      color: #000000;
+    }
+    .protocolo {
+      position: fixed;
+      left: 0;
+      top: 727pt;
+      font-size: 8pt;
+      font-weight: 700;
+      line-height: 11pt;
+      color: #1a1a1a;
+    }
+
+    /* Faixas brancas atrás do texto, cobrindo a marca d'água, como no modelo */
+    .titulo, .secao, .subsecao, .itens li, .observacao, .declaracao > * {
+      background: #ffffff;
+    }
+
+    .titulo {
+      margin-top: 13.4pt;
+      font-weight: bold;
+      font-size: 16pt;
+      line-height: 17.8pt;
+      text-align: center;
+      text-decoration: underline;
+      text-decoration-thickness: 1.2pt;
+      text-underline-offset: 2pt;
+    }
+    .secao {
+      margin: 0 -1.1pt 0 -1.4pt;
+      padding-left: 1.4pt;
+      font-weight: bold;
+      font-size: 14pt;
+      line-height: 15.7pt;
+    }
+    .subsecao {
+      margin: 0 -1.1pt 0 -1.4pt;
+      padding-left: 1.4pt;
+      font-weight: bold;
+      font-size: 12pt;
+      line-height: 13.4pt;
+      hyphens: auto;
+    }
+
+    .itens {
+      list-style: none;
+      margin: 14.8pt 0 0;
+      padding: 0;
+    }
+    .itens li {
+      position: relative;
+      margin: 0 -1.1pt 0 16.5pt;
+      padding: 0 0 6.7pt 19.2pt;
+      text-align: justify;
+      hyphens: auto;
+    }
+    .itens li::before {
+      content: "•";
+      position: absolute;
+      left: 1.4pt;
+      top: 0;
+    }
+    .itens li:last-child {
+      padding-bottom: 0;
+    }
+    .itens .valor {
+      white-space: pre-line;
+    }
+
+    .observacao {
+      margin: 13.6pt -1.1pt 0 16.5pt;
+      padding-left: 1.4pt;
+      text-align: justify;
+      hyphens: auto;
+    }
+    .observacao .obs-titulo {
+      font-weight: bold;
+      margin-bottom: 14.3pt;
+    }
+    .observacao p + p {
+      margin-top: 14.3pt;
+    }
+    /* 1.4: título na mesma linha do texto */
+    .observacao.obs-1-4 .obs-titulo {
+      display: inline;
+    }
+    /* 2.3: texto recuado, logo abaixo do título e sem espaço entre parágrafos */
+    .observacao.obs-2-3 .obs-titulo {
+      margin-bottom: 6.4pt;
+    }
+    .observacao.obs-2-3 p + p {
+      margin-top: 0;
+    }
+    .observacao.obs-2-3 p:not(.obs-titulo) {
+      padding-left: 4.8pt;
+    }
+    /* 3.1: "Observação:" alinhado à margem da seção */
+    .observacao.obs-3-1 .obs-titulo {
+      margin-left: -17.9pt;
+      padding-left: 0;
+    }
+
+    /* As seções seguem direto, sem página nova forçada; um título nunca
+       fica sozinho no pé da página. */
+    .secao, .subsecao, .obs-titulo {
+      page-break-after: avoid;
+    }
+
+    /* 6. Declaração */
+    .declaracao {
+      margin-top: 44.5pt;
+      page-break-inside: avoid;
+    }
+    .declaracao .secao {
+      margin-left: 16.7pt;
+      padding-left: 1.4pt;
+    }
+    .declaracao .texto, .declaracao .local-data, .declaracao .obs-finais {
+      margin-left: 20pt;
+      margin-right: -1.1pt;
+      padding-left: 1.4pt;
+      text-align: justify;
+    }
+    .declaracao .texto {
+      margin-top: 14.4pt;
+    }
+    .declaracao .local-data {
+      margin-top: 42.2pt;
+    }
+    .declaracao .assinatura {
+      margin-top: 14.4pt;
+      text-align: center;
+    }
+    .declaracao .assinatura .traco {
+      font-weight: bold;
+      font-size: 12pt;
+      line-height: 13.4pt;
+    }
+    .declaracao .assinatura p + p {
+      margin-top: 6pt;
+    }
+    .declaracao .assinatura .traco + p {
+      margin-top: 14.4pt;
+    }
+    .declaracao .obs-finais {
+      margin-top: 14pt;
+      font-weight: bold;
+    }
+    .declaracao .itens {
+      margin-top: 14.1pt;
+    }
+    .declaracao .itens li {
+      padding-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <p class="revisao">Rev. 2 – 22/02/2024</p>
+  <p class="protocolo">{{ rodape }}</p>
+
+  <p class="titulo">Memorial de Caracterização do Empreendimento (MCE)</p>
+
+  {% for secao in secoes %}
+    {# Espaços antes das seções e subseções iguais aos do modelo #}
+    {% set s = loop.index %}
+    {% set estilo_secao = "margin-top: 42pt;" if s == 1 else "margin-top: 44.5pt;" %}
+    <p class="secao" style="{{ estilo_secao }}">{{ secao.titulo }}</p>
+
+    {% for subsecao in secao.subsecoes %}
+      {% set codigo = subsecao.titulo.split(" ")[0] %}
+      {% if loop.first %}
+        {% set estilo_sub = "margin-top: " ~ ("30.7pt" if s in (1, 3) else "14.5pt") ~ ";" %}
+      {% elif codigo == "2.2." %}
+        {% set estilo_sub = "margin-top: 31.7pt;" %}
+      {% else %}
+        {% set estilo_sub = "margin-top: " ~ ("30.2pt" if s <= 3 and codigo != "2.3." else "14.0pt") ~ ";" %}
+      {% endif %}
+      <p class="subsecao" style="{{ estilo_sub }}">{{ subsecao.titulo }}</p>
+
+      <ul class="itens">
+        {% for item in subsecao.itens %}
+        <li><strong>{{ item.rotulo }}:</strong> <span class="valor">{{ item.valor }}</span></li>
+        {% endfor %}
+      </ul>
+
+      {% if subsecao.observacao %}
+      {% set obs = "obs-" ~ codigo.rstrip(".").replace(".", "-") %}
+      <div class="observacao {{ obs }}">
+        {% if obs == "obs-1-4" %}
+        <p><span class="obs-titulo">{{ subsecao.observacao_titulo }}</span> {{ subsecao.observacao[0] }}</p>
+        {% else %}
+        <p class="obs-titulo">{{ subsecao.observacao_titulo }}</p>
+        {% for paragrafo in subsecao.observacao %}
+        <p>{{ paragrafo }}</p>
+        {% endfor %}
+        {% endif %}
+      </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  <div class="declaracao">
+    <p class="secao">6. DECLARAÇÃO</p>
+
+    <p class="texto">
+      Declaramos, sob as penas da lei, que as informações prestadas neste Memorial de
+      Caracterização do Empreendimento (MCE) são verdadeiras e precisas.
+    </p>
+
+    <p class="local-data"><strong>Local</strong> {{ local }} <strong>e Data:</strong> {{ data }}</p>
+
+    <div class="assinatura">
+      <p class="traco">_____________________________________</p>
+      <p>Assinatura do Responsável</p>
+      <p>{{ responsavel_nome }}</p>
+      <p>{{ responsavel_cargo }}</p>
+      <p>{{ razao_social }} — CNPJ {{ cnpj }}</p>
+    </div>
+
+    <p class="obs-finais">Observações Finais:</p>
+    <ul class="itens">
+      <li>Este MCE é um modelo e pode ser adaptado de acordo com as necessidades do empreendimento.</li>
+      <li>É importante consultar a legislação ambiental vigente para verificar as exigências específicas para o seu tipo de atividade.</li>
+    </ul>
+  </div>
+
+</body>
+</html>

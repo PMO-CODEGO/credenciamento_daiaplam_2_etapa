@@ -88,3 +88,16 @@ class Cronograma(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
     dados = Column(JSON, nullable=False)  # campos do formulário (ver schemas/cronograma.py)
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class Mce(Base):
+    """MCE (Inciso XIII, Anexo VII) preenchido no formulário + ciência da rede de água e esgoto."""
+
+    __tablename__ = "mce"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
+    dados = Column(JSON)  # campos do formulário (ver schemas/mce.py); nulo se só enviou arquivo
+    ciencia_rede = Column(String(10))  # "aceito" ou "recuso"
+    ciencia_em = Column(DateTime)
+    data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())

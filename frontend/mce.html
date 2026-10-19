@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial de Caracterização (MCE) — Credenciamento DIANOT</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="page">
+
+    <header class="letterhead">
+      <a class="letterhead__home" href="home.html" title="Voltar ao formulário"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
+      </div>
+    </header>
+
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">Inciso XIII — Memorial de Caracterização do Empreendimento (Anexo VII)</h2>
+        <p class="card__desc">
+          Preencha o memorial para gerar o documento em PDF no modelo oficial do MCE
+          <strong>ou</strong> envie o seu próprio memorial em arquivo (PDF, JPG, PNG ou Excel).
+          Campos que não se aplicam podem ficar em branco e aparecerão como "Não informado".
+          Ao final, responda também a ciência da rede de água e esgoto fornecida pela CODEGO.
+        </p>
+        <p class="field__hint" id="situacao" aria-live="polite">Carregando…</p>
+      </div>
+
+      <form id="form-mce" novalidate>
+
+        <h3 class="section-title">1. Identificação do Empreendimento</h3>
+        <h4 class="subsection-title">1.1. Dados Cadastrais</h4>
+        <div class="field">
+          <label for="razao_social">Razão Social</label>
+          <input type="text" id="razao_social" name="razao_social">
+          <p class="field__error" data-error-for="razao_social"></p>
+        </div>
+
+        <div class="field">
+          <label for="nome_fantasia">Nome Fantasia (se houver)</label>
+          <input type="text" id="nome_fantasia" name="nome_fantasia">
+          <p class="field__error" data-error-for="nome_fantasia"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="cnpj">CNPJ</label>
+            <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00">
+            <p class="field__error" data-error-for="cnpj"></p>
+          </div>
+
+          <div class="field">
+            <label for="inscricao_estadual">Inscrição Estadual</label>
+            <input type="text" id="inscricao_estadual" name="inscricao_estadual">
+            <p class="field__error" data-error-for="inscricao_estadual"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cep">CEP</label>
+          <input type="text" id="cep" name="cep" inputmode="numeric" maxlength="9" placeholder="00000-000">
+          <p class="field__hint" id="cep-status"></p>
+          <p class="field__error" data-error-for="cep"></p>
+        </div>
+
+        <div class="field">
+          <label for="endereco">Endereço Completo</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade-UF">
+          <p class="field__error" data-error-for="endereco"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" inputmode="tel" placeholder="(00) 00000-0000">
+            <p class="field__error" data-error-for="telefone"></p>
+          </div>
+
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" autocomplete="email">
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_nome">Nome do Responsável</label>
+            <input type="text" id="responsavel_nome" name="responsavel_nome">
+            <p class="field__error" data-error-for="responsavel_nome"></p>
+          </div>
+
+          <div class="field">
+            <label for="responsavel_cargo">Cargo do Responsável</label>
+            <input type="text" id="responsavel_cargo" name="responsavel_cargo">
+            <p class="field__error" data-error-for="responsavel_cargo"></p>
+          </div>
+        </div>
+
+        <h4 class="subsection-title">1.2. Natureza do Empreendimento</h4>
+        <div class="field">
+          <label for="cnae_principal">CNAE Principal</label>
+          <input type="text" id="cnae_principal" name="cnae_principal" placeholder="Ex.: 1091-1/01">
+          <p class="field__error" data-error-for="cnae_principal"></p>
+        </div>
+
+        <div class="field">
+          <label for="atividade_principal">Descrição da Atividade Principal</label>
+          <textarea id="atividade_principal" name="atividade_principal" class="textarea--compact" rows="3"></textarea>
+          <p class="field__error" data-error-for="atividade_principal"></p>
+        </div>
+
+        <div class="field">
+          <label for="cnaes_secundarios">CNAEs Secundários (se houver)</label>
+          <input type="text" id="cnaes_secundarios" name="cnaes_secundarios">
+          <p class="field__error" data-error-for="cnaes_secundarios"></p>
+        </div>
+
+        <div class="field">
+          <label for="atividades_secundarias">Descrição das Atividades Secundárias (se houver)</label>
+          <textarea id="atividades_secundarias" name="atividades_secundarias" class="textarea--compact" rows="3"></textarea>
+          <p class="field__error" data-error-for="atividades_secundarias"></p>
+        </div>
+
+        <h4 class="subsection-title">1.3. Situação do Empreendimento</h4>
+        <div class="field">
+          <label for="situacao_implantacao">Situação do empreendimento</label>
+          <select id="situacao_implantacao" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="em_implantacao">Em implantação</option>
+            <option value="ja_implantado">Já implantado</option>
+          </select>
+          <p class="field__error" data-error-for="situacao_implantacao"></p>
+          <!-- O modelo tem as duas perguntas (Em Implantação / Já Implantado);
+               a escolha acima preenche as duas de forma coerente. -->
+          <input type="hidden" id="em_implantacao" name="em_implantacao" value="">
+          <input type="hidden" id="ja_implantado" name="ja_implantado" value="">
+        </div>
+
+        <div class="field" data-mostrar-se="em_implantacao" hidden>
+          <label for="previsao_funcionamento">Previsão para entrar em Funcionamento</label>
+          <input type="month" id="previsao_funcionamento" name="previsao_funcionamento">
+          <p class="field__error" data-error-for="previsao_funcionamento"></p>
+        </div>
+
+        <div class="field" data-mostrar-se="ja_implantado" hidden>
+          <label for="data_inicio_operacoes">Data de Início das Operações</label>
+          <input type="date" id="data_inicio_operacoes" name="data_inicio_operacoes">
+          <p class="field__error" data-error-for="data_inicio_operacoes"></p>
+        </div>
+
+        <div class="field">
+          <label for="licencas_ambientais_situacao">Licenças Ambientais</label>
+          <textarea id="licencas_ambientais_situacao" name="licencas_ambientais_situacao" class="textarea--compact" rows="3" placeholder="Listar as Licenças Ambientais e seus Órgãos Emissores"></textarea>
+          <p class="field__error" data-error-for="licencas_ambientais_situacao"></p>
+        </div>
+
+        <h4 class="subsection-title">1.4. Caracterização da Área</h4>
+        <div class="field-row">
+          <div class="field">
+            <label for="area_total_terreno">Área Total do Terreno (m²)</label>
+            <input type="text" id="area_total_terreno" name="area_total_terreno" data-tipo="area" inputmode="decimal" placeholder="Ex.: 12.500">
+            <p class="field__error" data-error-for="area_total_terreno"></p>
+          </div>
+
+          <div class="field">
+            <label for="area_construida">Área Construída (m²)</label>
+            <input type="text" id="area_construida" name="area_construida" data-tipo="area" inputmode="decimal" placeholder="Ex.: 4.800">
+            <p class="field__error" data-error-for="area_construida"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="area_verde">Área Verde (m²)</label>
+            <input type="text" id="area_verde" name="area_verde" data-tipo="area" inputmode="decimal" placeholder="Ex.: 2.700">
+            <p class="field__error" data-error-for="area_verde"></p>
+          </div>
+
+          <div class="field">
+            <label for="percentual_area_verde">Percentual de Área Verde</label>
+            <input type="text" id="percentual_area_verde" value="" placeholder="Calculado automaticamente" readonly aria-readonly="true">
+            <p class="field__hint" id="percentual_area_verde-aviso">Mínimo de 20% da área total.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="uso_solo">Uso do Solo (Zoneamento)</label>
+          <input type="text" id="uso_solo" name="uso_solo">
+          <p class="field__error" data-error-for="uso_solo"></p>
+        </div>
+
+        <div class="field">
+          <label for="topografia">Topografia</label>
+          <textarea id="topografia" name="topografia" class="textarea--compact" rows="3" placeholder="Descrição da Topografia"></textarea>
+          <p class="field__error" data-error-for="topografia"></p>
+        </div>
+
+        <div class="field">
+          <label for="vegetacao">Vegetação</label>
+          <textarea id="vegetacao" name="vegetacao" class="textarea--compact" rows="3" placeholder="Descrição da Vegetação"></textarea>
+          <p class="field__error" data-error-for="vegetacao"></p>
+        </div>
+
+        <div class="field">
+          <label for="hidrografia">Hidrografia</label>
+          <textarea id="hidrografia" name="hidrografia" class="textarea--compact" rows="3" placeholder="Descrição da Hidrografia"></textarea>
+          <p class="field__error" data-error-for="hidrografia"></p>
+        </div>
+
+        <h4 class="subsection-title">1.5. Mão de Obra</h4>
+        <p class="section-desc">Quantidade de funcionários em cada setor. O total é calculado automaticamente.</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="mao_obra_escritorio">Escritório</label>
+            <input type="text" id="mao_obra_escritorio" name="mao_obra_escritorio" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
+            <p class="field__error" data-error-for="mao_obra_escritorio"></p>
+          </div>
+
+          <div class="field">
+            <label for="mao_obra_industria">Indústria</label>
+            <input type="text" id="mao_obra_industria" name="mao_obra_industria" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
+            <p class="field__error" data-error-for="mao_obra_industria"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="mao_obra_externos">Externos</label>
+            <input type="text" id="mao_obra_externos" name="mao_obra_externos" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
+            <p class="field__error" data-error-for="mao_obra_externos"></p>
+          </div>
+
+          <div class="field">
+            <label for="mao_obra_outros">Outros</label>
+            <input type="text" id="mao_obra_outros" name="mao_obra_outros" data-tipo="int" inputmode="numeric" maxlength="6" placeholder="0">
+            <p class="field__error" data-error-for="mao_obra_outros"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="mao_obra_total">Total</label>
+          <input type="text" id="mao_obra_total" value="0" readonly aria-readonly="true">
+          <p class="field__error" data-error-for="mao_obra_total"></p>
+        </div>
+
+        <h4 class="subsection-title">1.6. Jornada de Trabalho</h4>
+        <div class="field">
+          <label for="horario_funcionamento">Horário de Funcionamento</label>
+          <input type="text" id="horario_funcionamento" name="horario_funcionamento" placeholder="Ex.: 7h às 17h">
+          <p class="field__error" data-error-for="horario_funcionamento"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="dias_semana">Dias da Semana</label>
+            <input type="text" id="dias_semana" name="dias_semana" placeholder="Ex.: segunda a sexta">
+            <p class="field__error" data-error-for="dias_semana"></p>
+          </div>
+
+          <div class="field">
+            <label for="numero_turnos">Número de Turnos</label>
+            <input type="text" id="numero_turnos" name="numero_turnos">
+            <p class="field__error" data-error-for="numero_turnos"></p>
+          </div>
+        </div>
+
+        <h4 class="subsection-title">1.7. Diversificação e Ampliação</h4>
+        <div class="field">
+          <label for="previsao_diversificacao">Previsão de Diversificação das Atividades</label>
+          <select id="previsao_diversificacao" name="previsao_diversificacao" data-tipo="simnao" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="previsao_diversificacao"></p>
+        </div>
+
+        <div class="field" data-mostrar-se="previsao_diversificacao" hidden>
+          <label for="novas_atividades">Descrição das Novas Atividades</label>
+          <textarea id="novas_atividades" name="novas_atividades" class="textarea--compact" rows="3"></textarea>
+          <p class="field__error" data-error-for="novas_atividades"></p>
+        </div>
+
+        <div class="field">
+          <label for="previsao_ampliacao">Previsão de Ampliação da Produção</label>
+          <select id="previsao_ampliacao" name="previsao_ampliacao" data-tipo="simnao" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="previsao_ampliacao"></p>
+        </div>
+
+        <div class="field" data-mostrar-se="previsao_ampliacao" hidden>
+          <label for="percentual_ampliacao">Percentual de Ampliação Prevista</label>
+          <input type="text" id="percentual_ampliacao" name="percentual_ampliacao">
+          <p class="field__error" data-error-for="percentual_ampliacao"></p>
+        </div>
+
+        <h3 class="section-title">2. Insumos e Produtos</h3>
+        <h4 class="subsection-title">2.1. Matérias-primas</h4>
+        <p class="section-desc">Para cada matéria-prima, use uma linha por item.</p>
+        <div class="field">
+          <label for="mp_descricao">Descrição</label>
+          <textarea id="mp_descricao" name="mp_descricao" class="textarea--compact" rows="3" placeholder="Listar as Matérias-primas"></textarea>
+          <p class="field__error" data-error-for="mp_descricao"></p>
+        </div>
+
+        <div class="field">
+          <label for="mp_quantidade_diaria">Quantidade Diária</label>
+          <textarea id="mp_quantidade_diaria" name="mp_quantidade_diaria" class="textarea--compact" rows="3" placeholder="Quantidade diária de cada matéria-prima"></textarea>
+          <p class="field__error" data-error-for="mp_quantidade_diaria"></p>
+        </div>
+
+        <div class="field">
+          <label for="mp_unidade">Unidade de Medida</label>
+          <input type="text" id="mp_unidade" name="mp_unidade" placeholder="Unidade de medida de cada matéria-prima">
+          <p class="field__error" data-error-for="mp_unidade"></p>
+        </div>
+
+        <div class="field">
+          <label for="mp_origem">Origem</label>
+          <input type="text" id="mp_origem" name="mp_origem" placeholder="Origem de cada matéria-prima">
+          <p class="field__error" data-error-for="mp_origem"></p>
+        </div>
+
+        <div class="field">
+          <label for="mp_armazenamento">Forma de Armazenamento</label>
+          <input type="text" id="mp_armazenamento" name="mp_armazenamento" placeholder="Forma de armazenamento de cada matéria-prima">
+          <p class="field__error" data-error-for="mp_armazenamento"></p>
+        </div>
+
+        <h4 class="subsection-title">2.2. Produtos Fabricados</h4>
+        <p class="section-desc">Para cada produto, use uma linha por item.</p>
+        <div class="field">
+          <label for="pf_descricao">Descrição</label>
+          <textarea id="pf_descricao" name="pf_descricao" class="textarea--compact" rows="3" placeholder="Listar os Produtos Fabricados"></textarea>
+          <p class="field__error" data-error-for="pf_descricao"></p>
+        </div>
+
+        <div class="field">
+          <label for="pf_quantidade_diaria">Quantidade Diária</label>
+          <textarea id="pf_quantidade_diaria" name="pf_quantidade_diaria" class="textarea--compact" rows="3" placeholder="Quantidade diária de cada produto fabricado"></textarea>
+          <p class="field__error" data-error-for="pf_quantidade_diaria"></p>
+        </div>
+
+        <div class="field">
+          <label for="pf_unidade">Unidade de Medida</label>
+          <input type="text" id="pf_unidade" name="pf_unidade" placeholder="Unidade de medida de cada produto fabricado">
+          <p class="field__error" data-error-for="pf_unidade"></p>
+        </div>
+
+        <div class="field">
+          <label for="pf_destino">Destino</label>
+          <input type="text" id="pf_destino" name="pf_destino" placeholder="Destino de cada produto fabricado">
+          <p class="field__error" data-error-for="pf_destino"></p>
+        </div>
+
+        <div class="field">
+          <label for="pf_armazenamento">Forma de Armazenamento</label>
+          <input type="text" id="pf_armazenamento" name="pf_armazenamento" placeholder="Forma de armazenamento de cada produto fabricado">
+          <p class="field__error" data-error-for="pf_armazenamento"></p>
+        </div>
+
+        <h4 class="subsection-title">2.3. Caracterização do Fluxo Produtivo</h4>
+        <p class="section-desc">O fluxograma deve conter entradas, processos (equipamentos, operações, condições de operação e controle de qualidade), saídas, armazenamento e movimentação de materiais. O desenho do fluxograma pode ser enviado como anexo na etapa de Mensagens.</p>
+        <div class="field">
+          <label for="fluxograma">Fluxograma Geral dos Processos</label>
+          <textarea id="fluxograma" name="fluxograma" class="textarea--compact" rows="3" placeholder="Resumo do fluxograma ou referência ao arquivo anexado"></textarea>
+          <p class="field__error" data-error-for="fluxograma"></p>
+        </div>
+
+        <div class="field">
+          <label for="processos_produtivos">Descrição dos Processos Produtivos</label>
+          <textarea id="processos_produtivos" name="processos_produtivos" class="textarea--compact" rows="3" placeholder="Matéria-prima, Processo e Produto Final"></textarea>
+          <p class="field__error" data-error-for="processos_produtivos"></p>
+        </div>
+
+        <h3 class="section-title">3. Consumo de Recursos</h3>
+        <h4 class="subsection-title">3.1. Água</h4>
+        <p class="section-desc">Caso a fonte de abastecimento seja alternativa (não fornecida pela CODEGO), apresente outorga ou dispensa de outorga.</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="agua_consumo_mensal">Consumo Mensal (m³)</label>
+            <input type="text" id="agua_consumo_mensal" name="agua_consumo_mensal" placeholder="Previsão de consumo mensal de água">
+            <p class="field__error" data-error-for="agua_consumo_mensal"></p>
+          </div>
+
+          <div class="field">
+            <label for="agua_origem">Origem</label>
+            <input type="text" id="agua_origem" name="agua_origem" placeholder="Rede de abastecimento, poço artesiano, etc.">
+            <p class="field__error" data-error-for="agua_origem"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="agua_finalidade">Finalidade</label>
+          <input type="text" id="agua_finalidade" name="agua_finalidade" placeholder="Consumo humano, industrial, etc.">
+          <p class="field__error" data-error-for="agua_finalidade"></p>
+        </div>
+
+        <div class="field">
+          <label for="agua_tratamento">Sistema de Tratamento de Água (se houver)</label>
+          <textarea id="agua_tratamento" name="agua_tratamento" class="textarea--compact" rows="3"></textarea>
+          <p class="field__error" data-error-for="agua_tratamento"></p>
+        </div>
+
+        <h4 class="subsection-title">3.2. Energia Elétrica</h4>
+        <div class="field-row">
+          <div class="field">
+            <label for="energia_consumo_diario">Consumo Diário</label>
+            <input type="text" id="energia_consumo_diario" name="energia_consumo_diario">
+            <p class="field__error" data-error-for="energia_consumo_diario"></p>
+          </div>
+
+          <div class="field">
+            <label for="energia_unidade">Unidade de Medida</label>
+            <input type="text" id="energia_unidade" name="energia_unidade" placeholder="Ex.: kWh">
+            <p class="field__error" data-error-for="energia_unidade"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="energia_tensao">Tensão</label>
+          <input type="text" id="energia_tensao" name="energia_tensao" placeholder="Ex.: 380 V">
+          <p class="field__error" data-error-for="energia_tensao"></p>
+        </div>
+
+        <div class="field">
+          <label for="energia_finalidade">Finalidade</label>
+          <input type="text" id="energia_finalidade" name="energia_finalidade" placeholder="Iluminação, força motriz, etc.">
+          <p class="field__error" data-error-for="energia_finalidade"></p>
+        </div>
+
+        <div class="field">
+          <label for="energia_equipamentos">Relação de Equipamentos</label>
+          <textarea id="energia_equipamentos" name="energia_equipamentos" class="textarea--compact" rows="3" placeholder="Equipamentos do processo produtivo: quantidades, capacidades nominais e potência instalada (kW)"></textarea>
+          <p class="field__error" data-error-for="energia_equipamentos"></p>
+        </div>
+
+        <h4 class="subsection-title">3.3. Combustíveis</h4>
+        <div class="field">
+          <label for="combustivel_tipo">Tipo de Combustível</label>
+          <input type="text" id="combustivel_tipo" name="combustivel_tipo" placeholder="Listar os tipos de combustíveis utilizados">
+          <p class="field__error" data-error-for="combustivel_tipo"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="combustivel_consumo_diario">Consumo Diário</label>
+            <input type="text" id="combustivel_consumo_diario" name="combustivel_consumo_diario">
+            <p class="field__error" data-error-for="combustivel_consumo_diario"></p>
+          </div>
+
+          <div class="field">
+            <label for="combustivel_unidade">Unidade de Medida</label>
+            <input type="text" id="combustivel_unidade" name="combustivel_unidade">
+            <p class="field__error" data-error-for="combustivel_unidade"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="combustivel_finalidade">Finalidade</label>
+          <input type="text" id="combustivel_finalidade" name="combustivel_finalidade" placeholder="Geração de calor, energia, etc.">
+          <p class="field__error" data-error-for="combustivel_finalidade"></p>
+        </div>
+
+        <h4 class="subsection-title">3.4. Outros Recursos</h4>
+        <div class="field">
+          <label for="outros_recursos_descricao">Descrição</label>
+          <input type="text" id="outros_recursos_descricao" name="outros_recursos_descricao" placeholder="Gás natural, ar comprimido, etc.">
+          <p class="field__error" data-error-for="outros_recursos_descricao"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="outros_recursos_consumo_diario">Consumo Diário</label>
+            <input type="text" id="outros_recursos_consumo_diario" name="outros_recursos_consumo_diario">
+            <p class="field__error" data-error-for="outros_recursos_consumo_diario"></p>
+          </div>
+
+          <div class="field">
+            <label for="outros_recursos_unidade">Unidade de Medida</label>
+            <input type="text" id="outros_recursos_unidade" name="outros_recursos_unidade">
+            <p class="field__error" data-error-for="outros_recursos_unidade"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="outros_recursos_finalidade">Finalidade</label>
+          <input type="text" id="outros_recursos_finalidade" name="outros_recursos_finalidade">
+          <p class="field__error" data-error-for="outros_recursos_finalidade"></p>
+        </div>
+
+        <h3 class="section-title">4. Geração de Resíduos</h3>
+        <h4 class="subsection-title">4.1. Resíduos Sólidos</h4>
+        <div class="field">
+          <label for="rs_classe">Classe</label>
+          <input type="text" id="rs_classe" name="rs_classe" placeholder="Classe I, II, III, IV, A, B, C, D, etc.">
+          <p class="field__error" data-error-for="rs_classe"></p>
+        </div>
+
+        <div class="field">
+          <label for="rs_descricao">Descrição</label>
+          <textarea id="rs_descricao" name="rs_descricao" class="textarea--compact" rows="3" placeholder="Listar os tipos de resíduos sólidos gerados"></textarea>
+          <p class="field__error" data-error-for="rs_descricao"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="rs_quantidade_diaria">Quantidade Diária</label>
+            <input type="text" id="rs_quantidade_diaria" name="rs_quantidade_diaria">
+            <p class="field__error" data-error-for="rs_quantidade_diaria"></p>
+          </div>
+
+          <div class="field">
+            <label for="rs_unidade">Unidade de Medida</label>
+            <input type="text" id="rs_unidade" name="rs_unidade">
+            <p class="field__error" data-error-for="rs_unidade"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="rs_armazenamento">Forma de Armazenamento</label>
+          <input type="text" id="rs_armazenamento" name="rs_armazenamento">
+          <p class="field__error" data-error-for="rs_armazenamento"></p>
+        </div>
+
+        <div class="field">
+          <label for="rs_destino_final">Destino Final</label>
+          <input type="text" id="rs_destino_final" name="rs_destino_final" placeholder="Aterro sanitário, reciclagem, reuso, etc.">
+          <p class="field__error" data-error-for="rs_destino_final"></p>
+        </div>
+
+        <div class="field">
+          <label for="rs_licenca_transporte">Licença de Operação da Empresa de Transporte (se houver)</label>
+          <input type="text" id="rs_licenca_transporte" name="rs_licenca_transporte" placeholder="Número da licença">
+          <p class="field__error" data-error-for="rs_licenca_transporte"></p>
+        </div>
+
+        <h4 class="subsection-title">4.2. Resíduos Líquidos</h4>
+        <p class="section-desc">Se o Distrito não possuir Estação de Tratamento de Esgoto, informe a solução de esgotamento sanitário adotada. Projetos de ETE devem ser submetidos à Gerência com a respectiva ART.</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="rl_vazao_diaria">Vazão Diária</label>
+            <input type="text" id="rl_vazao_diaria" name="rl_vazao_diaria" placeholder="Previsão de lançamento de efluentes">
+            <p class="field__error" data-error-for="rl_vazao_diaria"></p>
+          </div>
+
+          <div class="field">
+            <label for="rl_unidade">Unidade de Medida</label>
+            <input type="text" id="rl_unidade" name="rl_unidade" placeholder="m³/dia, L/s, etc.">
+            <p class="field__error" data-error-for="rl_unidade"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="rl_origem">Origem</label>
+          <input type="text" id="rl_origem" name="rl_origem" placeholder="Processo industrial, sanitário, etc.">
+          <p class="field__error" data-error-for="rl_origem"></p>
+        </div>
+
+        <div class="field">
+          <label for="rl_caracterizacao">Caracterização</label>
+          <textarea id="rl_caracterizacao" name="rl_caracterizacao" class="textarea--compact" rows="3" placeholder="pH, DBO, DQO, sólidos suspensos, etc."></textarea>
+          <p class="field__error" data-error-for="rl_caracterizacao"></p>
+        </div>
+
+        <div class="field">
+          <label for="rl_tratamento">Forma de Tratamento</label>
+          <textarea id="rl_tratamento" name="rl_tratamento" class="textarea--compact" rows="3" placeholder="Descrição do sistema de tratamento de efluentes"></textarea>
+          <p class="field__error" data-error-for="rl_tratamento"></p>
+        </div>
+
+        <div class="field">
+          <label for="rl_destino_final">Destino Final</label>
+          <input type="text" id="rl_destino_final" name="rl_destino_final" placeholder="Rede pública de esgoto, corpo d'água, etc.">
+          <p class="field__error" data-error-for="rl_destino_final"></p>
+        </div>
+
+        <div class="field">
+          <label for="rl_licenca_ete">Licença de Operação da Estação de Tratamento (se houver)</label>
+          <input type="text" id="rl_licenca_ete" name="rl_licenca_ete" placeholder="Número da licença">
+          <p class="field__error" data-error-for="rl_licenca_ete"></p>
+        </div>
+
+        <h4 class="subsection-title">4.3. Emissões Atmosféricas</h4>
+        <div class="field">
+          <label for="ea_descricao">Descrição</label>
+          <textarea id="ea_descricao" name="ea_descricao" class="textarea--compact" rows="3" placeholder="Listar os poluentes atmosféricos emitidos"></textarea>
+          <p class="field__error" data-error-for="ea_descricao"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="ea_quantidade_diaria">Quantidade Diária</label>
+            <input type="text" id="ea_quantidade_diaria" name="ea_quantidade_diaria">
+            <p class="field__error" data-error-for="ea_quantidade_diaria"></p>
+          </div>
+
+          <div class="field">
+            <label for="ea_unidade">Unidade de Medida</label>
+            <input type="text" id="ea_unidade" name="ea_unidade">
+            <p class="field__error" data-error-for="ea_unidade"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="ea_ponto_emissao">Ponto de Emissão</label>
+          <textarea id="ea_ponto_emissao" name="ea_ponto_emissao" class="textarea--compact" rows="3" placeholder="Descrição dos pontos de emissão"></textarea>
+          <p class="field__error" data-error-for="ea_ponto_emissao"></p>
+        </div>
+
+        <div class="field">
+          <label for="ea_controle">Controle de Poluição</label>
+          <textarea id="ea_controle" name="ea_controle" class="textarea--compact" rows="3" placeholder="Filtros, precipitadores eletrostáticos, etc."></textarea>
+          <p class="field__error" data-error-for="ea_controle"></p>
+        </div>
+
+        <div class="field">
+          <label for="ea_monitoramento">Monitoramento (se houver)</label>
+          <textarea id="ea_monitoramento" name="ea_monitoramento" class="textarea--compact" rows="3" placeholder="Sistema de monitoramento de emissões"></textarea>
+          <p class="field__error" data-error-for="ea_monitoramento"></p>
+        </div>
+
+        <h3 class="section-title">5. Controle Ambiental</h3>
+        <h4 class="subsection-title">5.1. Licenças Ambientais</h4>
+        <p class="section-desc">Quando o empreendimento estiver em regularização, apresente as licenças conforme o andamento.</p>
+        <div class="field">
+          <label for="licenca_municipal">Licença Municipal</label>
+          <input type="text" id="licenca_municipal" name="licenca_municipal" placeholder="Número da licença">
+          <p class="field__error" data-error-for="licenca_municipal"></p>
+        </div>
+
+        <div class="field">
+          <label for="licenca_estadual">Licença Estadual</label>
+          <input type="text" id="licenca_estadual" name="licenca_estadual" placeholder="Número da licença">
+          <p class="field__error" data-error-for="licenca_estadual"></p>
+        </div>
+
+        <div class="field">
+          <label for="licenca_federal">Licença Federal (se houver)</label>
+          <input type="text" id="licenca_federal" name="licenca_federal" placeholder="Número da licença">
+          <p class="field__error" data-error-for="licenca_federal"></p>
+        </div>
+
+        <h4 class="subsection-title">5.2. Plano de Controle Ambiental (PCA)</h4>
+        <div class="field">
+          <label for="pca">Plano de Controle Ambiental</label>
+          <select id="pca" name="pca" data-tipo="simnao" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+          <p class="field__error" data-error-for="pca"></p>
+        </div>
+
+        <div class="field" data-mostrar-se="pca" hidden>
+          <label for="pca_data_revisao">Data da Última Revisão</label>
+          <input type="date" id="pca_data_revisao" name="pca_data_revisao">
+          <p class="field__error" data-error-for="pca_data_revisao"></p>
+        </div>
+
+        <h4 class="subsection-title">5.3. Monitoramento Ambiental</h4>
+        <div class="field-row">
+          <div class="field">
+            <label for="monitoramento_agua">Monitoramento de Água</label>
+            <select id="monitoramento_agua" name="monitoramento_agua" data-tipo="simnao" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="monitoramento_agua"></p>
+          </div>
+
+          <div class="field">
+            <label for="monitoramento_ar">Monitoramento de Ar</label>
+            <select id="monitoramento_ar" name="monitoramento_ar" data-tipo="simnao" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="monitoramento_ar"></p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="monitoramento_ruido">Monitoramento de Ruído</label>
+            <select id="monitoramento_ruido" name="monitoramento_ruido" data-tipo="simnao" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="monitoramento_ruido"></p>
+          </div>
+
+          <div class="field">
+            <label for="monitoramento_outros">Outros</label>
+            <select id="monitoramento_outros" name="monitoramento_outros" data-tipo="simnao" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <p class="field__error" data-error-for="monitoramento_outros"></p>
+          </div>
+        </div>
+
+        <div class="field" data-mostrar-se="monitoramento_ruido" hidden>
+          <label for="monitoramento_ruido_descricao">Equipamentos que produzem ruídos e vibrações</label>
+          <textarea id="monitoramento_ruido_descricao" name="monitoramento_ruido_descricao" class="textarea--compact" rows="3" placeholder="Enumere os equipamentos, seus horários de operação e as estratégias de controle de ruído"></textarea>
+          <p class="field__error" data-error-for="monitoramento_ruido_descricao"></p>
+        </div>
+
+        <h3 class="section-title">6. Declaração</h3>
+        <p class="section-desc">Declaramos, sob as penas da lei, que as informações prestadas neste Memorial de Caracterização do Empreendimento (MCE) são verdadeiras e precisas.</p>
+        <div class="field">
+          <label for="local_cidade_uf">Local (Cidade e Estado)</label>
+          <input type="text" id="local_cidade_uf" name="local_cidade_uf" placeholder="Ex.: Anápolis-GO">
+          <p class="field__error" data-error-for="local_cidade_uf"></p>
+        </div>
+
+        <div class="feedback" id="feedback" aria-live="polite" hidden></div>
+
+        <div class="card__footer">
+          <a class="btn-secondary" href="home.html">← Voltar ao formulário</a>
+          <button type="submit" class="btn-primary" id="btn-submit">Salvar e gerar PDF</button>
+        </div>
+
+      </form>
+
+      <h3 class="section-title">Ou envie o seu próprio memorial</h3>
+      <p class="section-desc section-desc--separada" id="texto-upload"></p>
+      <div id="upload-mce" class="doc-uploads"></div>
+
+      <h3 class="section-title">Ciência da rede de água e esgoto</h3>
+      <p class="section-desc">
+        Declaro ter ciência de que a rede de abastecimento de água e de coleta de esgoto do distrito
+        DIANOT 2ª etapa é fornecida pela CODEGO e de que o empreendimento deverá conectar-se a ela,
+        nos termos do Regulamento.
+      </p>
+      <fieldset class="field ciencia" id="ciencia">
+        <legend class="visualmente-oculto">Ciência da rede de água e esgoto</legend>
+        <label class="ciencia__opcao"><input type="radio" name="ciencia_rede" value="aceito"> <span>Aceito</span></label>
+        <label class="ciencia__opcao"><input type="radio" name="ciencia_rede" value="recuso"> <span>Recuso</span></label>
+        <p class="field__hint" id="ciencia-status" aria-live="polite"></p>
+        <p class="field__error" id="erro-ciencia" role="alert"></p>
+      </fieldset>
+    </main>
+
+  </div>
+
+  <script src="js/mce.js"></script>
+</body>
+</html>
