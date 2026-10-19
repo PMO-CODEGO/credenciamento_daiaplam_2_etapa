@@ -110,6 +110,66 @@
           <p class="field__hint">Carregando documentos…</p>
         </div>
 
+        <div class="declaracao" id="declaracao">
+          <div class="field-row">
+            <div class="field">
+              <label for="representante_nome">Nome do representante legal</label>
+              <input type="text" id="representante_nome" name="representante_nome" maxlength="255" autocomplete="name">
+              <p class="field__hint">Preenchido com o administrador; altere se quem assina for outra pessoa (ex.: procurador).</p>
+              <p class="field__error" data-error-for="representante_nome"></p>
+            </div>
+            <div class="field">
+              <label for="representante_cargo">Cargo</label>
+              <input type="text" id="representante_cargo" name="representante_cargo" maxlength="100" placeholder="Ex.: Sócio-administrador" autocomplete="organization-title">
+              <p class="field__error" data-error-for="representante_cargo"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="ocupacao_percentual">Percentual da área pleiteada que será ocupado</label>
+            <div class="field__sufixo">
+              <input type="text" id="ocupacao_percentual" name="ocupacao_percentual" inputmode="numeric" maxlength="2" autocomplete="off" aria-describedby="ocupacao-dica">
+              <span aria-hidden="true">%</span>
+            </div>
+            <p class="field__hint" id="ocupacao-dica">Mínimo de 33% e máximo de 80%.</p>
+            <p class="field__error" data-error-for="ocupacao_percentual"></p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="obra_inicio">Início previsto da obra (mês/ano)</label>
+              <input type="month" id="obra_inicio" name="obra_inicio">
+              <p class="field__error" data-error-for="obra_inicio"></p>
+            </div>
+            <div class="field">
+              <label for="obra_fim">Fim previsto da obra (mês/ano)</label>
+              <input type="month" id="obra_fim" name="obra_fim" aria-describedby="obra-dica">
+              <p class="field__hint" id="obra-dica">Até 2 anos: no máximo 24 meses, contando o mês de início e o de fim.</p>
+              <p class="field__error" data-error-for="obra_fim"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="declaracao_cidade">Cidade da assinatura</label>
+            <input type="text" id="declaracao_cidade" name="declaracao_cidade" maxlength="100" value="Goiânia" autocomplete="address-level2">
+            <p class="field__error" data-error-for="declaracao_cidade"></p>
+          </div>
+
+          <article class="declaracao__texto" aria-label="Declaração">
+            <p class="declaracao__destinatario">À Companhia de Desenvolvimento Econômico de Goiás - CODEGO<br>Comissão Especial Mista de Licitação<br>Goiânia - GO</p>
+            <p>A Empresa <strong data-decl="razao"></strong> (razão social), portadora do CNPJ <strong data-decl="cnpj"></strong>, responsável legal <strong data-decl="responsavel"></strong>, através da presente, declara para os devidos fins, que atenderá os requisitos mínimos (a seguir), do Anexo V do Regulamento de Alienações de Áreas, a serem contemplados no Projeto de Ocupação de Área (POA), compromete-se a ocupar <strong data-decl="percentual"></strong> da área pleiteada (sendo a ocupação mínima permitida de 33% (trinta e três por cento) e a máxima de 80% (oitenta por cento)), bem como, apresentar o cronograma previsto de obras (não ultrapassando 02 (dois) anos para sua conclusão, indicando a previsão mês/ano do início e fim da obra). Ao mesmo tempo que, compromete-se a entregar à CODEGO, quadrimestralmente, relatório demonstrativo do cumprimento das obrigações sobre a evolução das obras, depois de recebida a autorização de construção. E por ser verdade, assina a presente declaração sob as penas da Lei.</p>
+            <p class="declaracao__cronograma">Cronograma previsto de obras: início em <strong data-decl="inicio"></strong> e fim em <strong data-decl="fim"></strong>.</p>
+            <p class="declaracao__local"><span data-decl="cidade"></span>, em <span data-decl="data"></span></p>
+            <p class="declaracao__assinatura"><strong data-decl="responsavel"></strong><br><span data-decl="cargo"></span><br><span class="declaracao__assinado" data-decl="assinado"></span></p>
+            <p class="declaracao__declarante"><span data-decl="razao"></span><br>CNPJ <span data-decl="cnpj"></span></p>
+          </article>
+
+          <div class="field">
+            <label class="checkbox-item" for="declaracao_aceita">
+              <input type="checkbox" id="declaracao_aceita" name="declaracao_aceita">
+              <span>Li a declaração acima, confirmo que as informações são verdadeiras e a assino eletronicamente, sob as penas da Lei.</span>
+            </label>
+            <p class="field__error" data-error-for="declaracao_aceita"></p>
+          </div>
+        </div>
+
         <div class="feedback" id="feedback" aria-live="polite" hidden></div>
 
         <div class="card__footer">

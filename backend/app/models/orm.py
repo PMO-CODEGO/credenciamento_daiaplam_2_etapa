@@ -50,6 +50,16 @@ class Solicitacao(Base):
     cnae_codigo = Column(String(7), ForeignKey("cnaes.codigo"), nullable=False)
     cnae_descricao = Column(String(500), nullable=False)
 
+    # Declaração de compromisso (Anexo V do Regulamento), aceita no formulário.
+    # Colunas aceitam nulo só por causa das solicitações salvas antes dela.
+    representante_nome = Column(String(255))
+    representante_cargo = Column(String(100))
+    ocupacao_percentual = Column(Integer)  # 33 a 80
+    obra_inicio = Column(String(7))  # "AAAA-MM"
+    obra_fim = Column(String(7))  # "AAAA-MM"
+    declaracao_cidade = Column(String(100))
+    declaracao_aceita_em = Column(DateTime)  # data da assinatura (aceite) mais recente
+
     data_criacao = Column(DateTime, server_default=func.now())
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())
 

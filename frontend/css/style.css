@@ -1320,3 +1320,116 @@ input[readonly] {
   padding-top: 20px;
   border-top: 1px solid var(--border);
 }
+
+/* ------------------------------------------------------------------ */
+/* Declaração de compromisso (aceite no formulário)                    */
+/* ------------------------------------------------------------------ */
+
+.declaracao {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.field__sufixo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 120px;
+}
+
+.field__sufixo span {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.declaracao__texto {
+  margin: 8px 0 20px;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius);
+  background: #fbfbf8;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.declaracao__texto p {
+  margin: 0 0 14px;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.declaracao__texto p:last-child {
+  margin-bottom: 0;
+}
+
+.declaracao__destinatario {
+  text-align: left !important;
+}
+
+.declaracao__texto strong {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+/* Lacuna ainda não preenchida: mostra o traço, como no papel */
+.declaracao__texto [data-decl].is-vazio {
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.declaracao__local {
+  margin-top: 20px !important;
+  text-align: right !important;
+}
+
+.declaracao__assinatura,
+.declaracao__declarante {
+  text-align: center !important;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.declaracao__assinatura {
+  margin-top: 28px !important;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-strong);
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.declaracao__assinado {
+  color: var(--primary-dark);
+  font-size: 12px;
+}
+
+.field--invalid .checkbox-item {
+  color: var(--danger);
+}
+
+@media (max-width: 560px) {
+  .declaracao__texto {
+    padding: 18px 16px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .declaracao__texto p {
+    text-align: left;
+  }
+}
+
+.declaracao__cronograma {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  text-align: left !important;
+}
+
+.declaracao__texto .declaracao__assinatura {
+  margin: 28px auto 14px;
+}

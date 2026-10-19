@@ -13,6 +13,7 @@ from app.models import orm  # noqa: F401 — registra as tabelas no create_all
 from app.routers import auth, documentos, solicitacao
 from app.database import SessionLocal
 from app.services.cnae import carga_inicial
+from app.services import migracoes
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,6 +25,7 @@ logging.basicConfig(
 # (em produção, prefira gerenciar via Alembic/migrations)
 wait_for_db()
 Base.metadata.create_all(bind=engine)
+migracoes.aplicar(engine)
 with SessionLocal() as _db:
     carga_inicial(_db)
 

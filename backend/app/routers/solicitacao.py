@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -74,6 +76,14 @@ def salvar_solicitacao(
     sol.administrador_cpf = payload.administrador_cpf
     sol.cnae_codigo = c.codigo
     sol.cnae_descricao = c.descricao
+    sol.representante_nome = payload.representante_nome
+    sol.representante_cargo = payload.representante_cargo
+    sol.ocupacao_percentual = payload.ocupacao_percentual
+    sol.obra_inicio = payload.obra_inicio
+    sol.obra_fim = payload.obra_fim
+    sol.declaracao_cidade = payload.declaracao_cidade
+    # Cada salvamento reassina a declaração com os dados atuais.
+    sol.declaracao_aceita_em = datetime.now()
     db.commit()
     db.refresh(sol)
     return sol

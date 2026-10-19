@@ -177,6 +177,72 @@
   $('cnae').addEventListener('change', () => { if (!/[A-Za-zÀ-ÿ]/.test($('cnae').value)) conferirCnae(); });
   $('cnae').addEventListener('blur', () => { if (!cnaeValido && digitos($('cnae').value).length === 7) conferirCnae(); });
 
+  // ---------- Declaração de compromisso ----------
+  const UNIDADES = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez',
+    'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
+  const DEZENAS = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+  const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro',
+    'outubro', 'novembro', 'dezembro'];
+  function porExtenso(n) { // 0 a 99
+    if (n < 20) return UNIDADES[n];
+    const d = Math.floor(n / 10), u = n % 10;
+    return u ? `${DEZENAS[d]} e ${UNIDADES[u]}` : DEZENAS[d];
+  }
+  const mesAno = (v) => (/^\d{4}-\d{2}$/.test(v || '') ? `${v.slice(5)}/${v.slice(0, 4)}` : '');
+  const dataPorExtenso = (d) => `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+  // Meses da obra contando o de início e o de fim (null se faltar alguma data).
+  function mesesObra(inicio, fim) {
+    if (!inicio || !fim) return null;
+    const [ai, mi] = inicio.split('-').map(Number);
+    const [af, mf] = fim.split('-').map(Number);
+    return (af - ai) * 12 + (mf - mi) + 1;
+  }
+  const percentual = () => Number(digitos($('ocupacao_percentual').value)) || 0;
+
+  let aceitaEm = null; // data da última assinatura salva
+  let representanteEditado = false;
+  // Campos que mudam o texto da declaração: alterar algum desfaz o aceite.
+  const CAMPOS_DECLARACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
+    'ocupacao_percentual', 'obra_inicio', 'obra_fim', 'declaracao_cidade', 'administrador_nome']);
+
+  function lacuna(chave, texto) {
+    document.querySelectorAll(`[data-decl="${chave}"]`).forEach((el) => {
+      el.textContent = texto || '______';
+      el.classList.toggle('is-vazio', !texto);
+    });
+  }
+  function atualizarDeclaracao() {
+    lacuna('razao', $('nome_empresarial').value.trim());
+    lacuna('cnpj', $('cnpj').value);
+    lacuna('responsavel', $('representante_nome').value.trim());
+    lacuna('cargo', $('representante_cargo').value.trim());
+    const p = percentual();
+    lacuna('percentual', p >= 33 && p <= 80 ? `${p}% (${porExtenso(p)} por cento)` : '');
+    lacuna('inicio', mesAno($('obra_inicio').value));
+    lacuna('fim', mesAno($('obra_fim').value));
+    lacuna('cidade', $('declaracao_cidade').value.trim());
+    lacuna('data', dataPorExtenso(aceitaEm || new Date()));
+    const hora = aceitaEm && aceitaEm.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    document.querySelector('[data-decl="assinado"]').textContent = aceitaEm && $('declaracao_aceita').checked
+      ? `Assinado eletronicamente em ${aceitaEm.toLocaleDateString('pt-BR')} às ${hora}`
+      : '';
+  }
+
+  $('ocupacao_percentual').addEventListener('input', (e) => (e.target.value = digitos(e.target.value).slice(0, 2)));
+  $('representante_nome').addEventListener('input', () => { representanteEditado = true; });
+  // Enquanto não for alterado, o representante acompanha o administrador.
+  $('administrador_nome').addEventListener('input', () => {
+    if (!representanteEditado) $('representante_nome').value = $('administrador_nome').value;
+  });
+  $('form-solicitacao').addEventListener('input', (ev) => {
+    if (CAMPOS_DECLARACAO.has(ev.target.id) && $('declaracao_aceita').checked) {
+      $('declaracao_aceita').checked = false; // o texto mudou: precisa aceitar de novo
+    }
+    atualizarDeclaracao();
+  });
+  $('declaracao_aceita').addEventListener('change', atualizarDeclaracao);
+  atualizarDeclaracao();
+
   // ---------- Carregar dados ----------
   function preencher(s) {
     $('area_m2').value = formatarArea(s.area_m2);
@@ -188,6 +254,16 @@
     $('administrador_cpf').value = mascaraCpf(s.administrador_cpf);
     $('cnae').value = mascaraCnae(s.cnae_codigo);
     conferirCnae();
+    $('representante_nome').value = s.representante_nome || s.administrador_nome;
+    representanteEditado = !!s.representante_nome && s.representante_nome !== s.administrador_nome;
+    $('representante_cargo').value = s.representante_cargo || '';
+    $('ocupacao_percentual').value = s.ocupacao_percentual || '';
+    $('obra_inicio').value = s.obra_inicio || '';
+    $('obra_fim').value = s.obra_fim || '';
+    if (s.declaracao_cidade) $('declaracao_cidade').value = s.declaracao_cidade;
+    aceitaEm = s.declaracao_aceita_em ? new Date(s.declaracao_aceita_em) : null;
+    $('declaracao_aceita').checked = !!aceitaEm;
+    atualizarDeclaracao();
   }
   (async function iniciar() {
     try {
@@ -197,7 +273,7 @@
       $('nome_empresarial').value = u.nome_empresarial;
       $('email').value = u.email;
       const s = await api('/api/solicitacoes/minha');
-      if (s) preencher(s);
+      if (s) preencher(s); else atualizarDeclaracao();
     } catch (_) {
       mostrar('error', 'Falha de conexão. Recarregue a página.');
     }
@@ -225,6 +301,17 @@
     if (!cpfValido($('administrador_cpf').value)) { erro('administrador_cpf', 'Informe um CPF válido.'); ok = false; }
     if (!cnaeValido) { erro('cnae', 'Informe um CNAE válido, que conste na tabela.'); ok = false; }
     if (!DianotDocumentos.conferirObrigatorios()) ok = false;
+    if ($('representante_nome').value.trim().length < 3) { erro('representante_nome', 'Informe o nome do representante legal.'); ok = false; }
+    if ($('representante_cargo').value.trim().length < 2) { erro('representante_cargo', 'Informe o cargo.'); ok = false; }
+    const pct = percentual();
+    if (pct < 33 || pct > 80) { erro('ocupacao_percentual', 'Informe um percentual entre 33% e 80%.'); ok = false; }
+    if (!$('obra_inicio').value) { erro('obra_inicio', 'Informe o mês e o ano de início.'); ok = false; }
+    if (!$('obra_fim').value) { erro('obra_fim', 'Informe o mês e o ano de fim.'); ok = false; }
+    const meses = mesesObra($('obra_inicio').value, $('obra_fim').value);
+    if (meses !== null && meses < 1) { erro('obra_fim', 'O fim deve ser igual ou posterior ao início.'); ok = false; }
+    if (meses !== null && meses > 24) { erro('obra_fim', `A obra não pode passar de 24 meses (informado: ${meses}).`); ok = false; }
+    if ($('declaracao_cidade').value.trim().length < 2) { erro('declaracao_cidade', 'Informe a cidade.'); ok = false; }
+    if (!$('declaracao_aceita').checked) { erro('declaracao_aceita', 'Marque para assinar a declaração.'); ok = false; }
     if (!ok) {
       mostrar('error', 'Corrija os campos destacados e tente novamente.');
       CodegoForm.focarPrimeiroErro($('form-solicitacao'));
@@ -245,6 +332,13 @@
           administrador_nome: $('administrador_nome').value.trim(),
           administrador_cpf: digitos($('administrador_cpf').value),
           cnae: cnaeValido.codigo,
+          representante_nome: $('representante_nome').value.trim(),
+          representante_cargo: $('representante_cargo').value.trim(),
+          ocupacao_percentual: pct,
+          obra_inicio: $('obra_inicio').value,
+          obra_fim: $('obra_fim').value,
+          declaracao_cidade: $('declaracao_cidade').value.trim(),
+          declaracao_aceita: true,
         }),
       });
       preencher(s);
