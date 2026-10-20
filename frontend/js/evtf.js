@@ -1,4 +1,4 @@
-// EVTF — Formulário de Viabilidade Técnica e Financeira: formulário (com PDF
+// Inciso XI — Estudo de Viabilidade Técnica e Financeira (EVTF, Anexo V): formulário (com PDF
 // gerado no servidor) e envio de arquivo próprio. Segue o mesmo modelo das
 // telas do Cronograma e do MCE.
 (function () {
@@ -133,7 +133,7 @@
     if (estado.dados) partes.push('EVTF preenchido pelo formulário');
     if (estado.arquivos.length) partes.push(`${estado.arquivos.length} arquivo(s) enviado(s)`);
     const el = $('situacao');
-    el.textContent = partes.length ? `✔ Situação deste item: ${partes.join(' e ')}.` : 'Situação deste item: pendente — preencha o formulário ou envie um arquivo.';
+    el.textContent = partes.length ? `✔ Situação deste inciso: ${partes.join(' e ')}.` : 'Situação deste inciso: pendente — preencha o formulário ou envie um arquivo.';
     el.className = `field__hint field__hint--${partes.length ? 'ok' : 'warn'}`;
   }
 
