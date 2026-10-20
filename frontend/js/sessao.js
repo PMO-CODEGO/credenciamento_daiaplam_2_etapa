@@ -4,7 +4,8 @@
 // continua logada.
 (function () {
   const cabecalho = document.querySelector('.letterhead');
-  if (!cabecalho) return;
+  // Dentro do painel do formulário (js/config.js) o cabeçalho nem aparece.
+  if (!cabecalho || document.documentElement.classList.contains('embutida')) return;
 
   const caixa = document.createElement('div');
   caixa.className = 'letterhead__sessao';

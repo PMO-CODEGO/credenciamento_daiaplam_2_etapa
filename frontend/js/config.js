@@ -7,6 +7,30 @@
 //   preencher API_PRODUCAO com o endereço https do backend.
 // - Produção (Render, ou a VM com o Caddy — ver deploy/): site e API ficam no
 //   mesmo endereço, então a API é o próprio endereço do site.
+// Página aberta dentro do formulário principal (painel dos incisos XI, XII e
+// XIII, em home.html): sem cabeçalho nem botões de voltar, e avisa o
+// formulário quando algo é salvo, para ele atualizar a situação do inciso.
+(function () {
+  let embutida = false;
+  try { embutida = window.self !== window.top && window.top.location.origin === window.location.origin; } catch (_) {}
+  if (!embutida) return;
+  // Sessão expirada dentro do painel: a tela de login abre na janela inteira.
+  if (/\/(index\.html)?$/.test(window.location.pathname)) {
+    window.top.location.href = window.location.href;
+    return;
+  }
+  document.documentElement.classList.add('embutida');
+  const fetchOriginal = window.fetch.bind(window);
+  window.fetch = async (url, opcoes = {}) => {
+    const resposta = await fetchOriginal(url, opcoes);
+    const metodo = (opcoes.method || 'GET').toUpperCase();
+    if (resposta.ok && metodo !== 'GET' && String(url).includes('/api/')) {
+      window.parent.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
+    }
+    return resposta;
+  };
+})();
+
 (function () {
   const API_PRODUCAO = '';
 

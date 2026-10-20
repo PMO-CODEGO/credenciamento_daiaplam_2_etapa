@@ -336,14 +336,53 @@
     }
   })();
 
-  // ---------- Incisos com tela própria (XI, XII e XIII): situação no link ----------
-  document.querySelectorAll('[data-estado]').forEach(async (link) => {
-    const status = link.querySelector('.inciso-link__status');
+  // ---------- Incisos com formulário próprio (XI, XII e XIII) ----------
+  // Abrem num painel aqui mesmo: a página do inciso é carregada num iframe sem
+  // cabeçalho (modo "embutida", ver js/config.js), com a altura do conteúdo.
+  async function atualizarSituacao(botao) {
+    const status = botao.querySelector('.inciso-link__status');
     try {
-      const estado = await api(link.dataset.estado);
+      const estado = await api(botao.dataset.estado);
       status.textContent = estado.concluido ? 'Concluído' : 'Pendente';
-      status.classList.add(estado.concluido ? 'is-ok' : 'is-pendente');
-    } catch (_) { /* sem situação: o link continua funcionando */ }
+      status.classList.toggle('is-ok', estado.concluido);
+      status.classList.toggle('is-pendente', !estado.concluido);
+    } catch (_) { /* sem situação: o painel continua funcionando */ }
+  }
+
+  function ajustarAltura(iframe) {
+    const doc = iframe.contentDocument;
+    if (!doc || !doc.body) return;
+    const medir = () => { iframe.style.height = `${doc.documentElement.scrollHeight}px`; };
+    medir();
+    new ResizeObserver(medir).observe(doc.body);
+  }
+
+  const botoesInciso = [...document.querySelectorAll('.inciso-link__botao')];
+  botoesInciso.forEach((botao) => {
+    const painel = botao.nextElementSibling;
+    atualizarSituacao(botao);
+    botao.addEventListener('click', () => {
+      const abrir = botao.getAttribute('aria-expanded') !== 'true';
+      botao.setAttribute('aria-expanded', String(abrir));
+      painel.hidden = !abrir;
+      if (abrir && !painel.querySelector('iframe')) {
+        const iframe = document.createElement('iframe');
+        iframe.title = botao.querySelector('.doc-list__title').textContent;
+        iframe.src = botao.dataset.pagina;
+        iframe.addEventListener('load', () => ajustarAltura(iframe));
+        painel.appendChild(iframe);
+      }
+    });
+  });
+
+  // A página do painel avisa quando salvou algo: atualiza a situação do inciso.
+  window.addEventListener('message', (ev) => {
+    if (ev.origin !== window.location.origin || !ev.data || ev.data.tipo !== 'dianot:inciso-atualizado') return;
+    const botao = botoesInciso.find((b) => {
+      const iframe = b.nextElementSibling.querySelector('iframe');
+      return iframe && iframe.contentWindow === ev.source;
+    });
+    if (botao) atualizarSituacao(botao);
   });
 
   // ---------- Envio ----------
