@@ -165,6 +165,17 @@ const CodegoAuth = (function () {
 
   function iniciarLogin() {
     const form = $('form-login');
+    // Saída pelo botão "Sair" (js/sessao.js): a sessão só é apagada aqui, depois
+    // que a página anterior foi de fato deixada.
+    if (new URLSearchParams(window.location.search).has('saiu')) {
+      try { sessionStorage.removeItem(CHAVE); } catch (_) {}
+      history.replaceState(null, '', window.location.pathname);
+      const aviso = document.createElement('p');
+      aviso.className = 'feedback feedback--success';
+      aviso.setAttribute('role', 'status');
+      aviso.textContent = 'Você saiu da sua conta.';
+      form.prepend(aviso);
+    }
     mascararCnpj($('cnpj'));
     iniciarRecaptcha();
     form.addEventListener('submit', async (ev) => {

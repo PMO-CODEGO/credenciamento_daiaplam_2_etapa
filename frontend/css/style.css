@@ -1469,3 +1469,78 @@ input[readonly] {
   flex-basis: 100%;
   margin: 0;
 }
+
+/* Sessão no cabeçalho: empresa logada + Sair */
+.letterhead__text {
+  min-width: 0; /* o título quebra linha em vez de empurrar o "Sair" para fora */
+}
+
+.letterhead__sessao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.letterhead__empresa {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.letterhead__sair {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out), background-color 150ms ease;
+}
+
+.letterhead__sair:active {
+  transform: scale(0.97);
+}
+
+.letterhead__sair:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .letterhead__sair:hover {
+    background: var(--paper);
+  }
+}
+
+@media (max-width: 720px) {
+  .letterhead__empresa {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .letterhead {
+    gap: 12px;
+  }
+
+  .letterhead__mark {
+    height: 44px;
+  }
+
+  .letterhead__title {
+    font-size: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letterhead__sair:active {
+    transform: none;
+  }
+}
