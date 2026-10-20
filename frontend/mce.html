@@ -24,14 +24,19 @@
       <div class="card__intro">
         <h2 class="card__title">Inciso XIII — Memorial de Caracterização do Empreendimento (Anexo VII)</h2>
         <p class="card__desc">
-          Preencha o memorial para gerar o documento em PDF no modelo oficial do MCE
-          <strong>ou</strong> envie o seu próprio memorial em arquivo (PDF, JPG, PNG ou Excel).
+          Envie o seu memorial pronto em arquivo (PDF, JPG, PNG ou Excel) <strong>ou</strong> preencha
+          o memorial abaixo para gerar o documento em PDF no modelo oficial do MCE.
           Campos que não se aplicam podem ficar em branco e aparecerão como "Não informado".
           Ao final, responda também a ciência da rede de água e esgoto fornecida pela CODEGO.
         </p>
         <p class="field__hint" id="situacao" aria-live="polite">Carregando…</p>
       </div>
 
+      <h3 class="section-title">Envie o seu memorial pronto</h3>
+      <p class="section-desc" id="texto-upload"></p>
+      <div id="upload-mce" class="doc-uploads"></div>
+
+      <h3 class="section-title section-title--formulario">Ou preencha o formulário para gerar o PDF</h3>
       <form id="form-mce" novalidate>
 
         <h3 class="section-title">1. Identificação do Empreendimento</h3>
@@ -735,10 +740,6 @@
         </div>
 
       </form>
-
-      <h3 class="section-title">Ou envie o seu próprio memorial</h3>
-      <p class="section-desc section-desc--separada" id="texto-upload"></p>
-      <div id="upload-mce" class="doc-uploads"></div>
 
       <h3 class="section-title">Ciência da rede de água e esgoto</h3>
       <p class="section-desc">

@@ -22,13 +22,18 @@
       <div class="card__intro">
         <h2 class="card__title">Inciso XII — Cronograma Físico de Obras (Anexo VI)</h2>
         <p class="card__desc">
-          Preencha o formulário abaixo para gerar o cronograma em PDF, no modelo do Regulamento,
-          <strong>ou</strong> envie o seu próprio cronograma em arquivo (PDF, JPG, PNG ou Excel).
+          Envie o seu cronograma pronto em arquivo (PDF, JPG, PNG ou Excel) <strong>ou</strong> preencha
+          o formulário abaixo para gerar o cronograma em PDF, no modelo do Regulamento.
           Você pode usar as duas opções.
         </p>
         <p class="field__hint" id="situacao" aria-live="polite">Carregando…</p>
       </div>
 
+      <h3 class="section-title">Envie o seu cronograma pronto</h3>
+      <p class="section-desc" id="texto-upload"></p>
+      <div id="upload-cronograma" class="doc-uploads"></div>
+
+      <h3 class="section-title section-title--formulario">Ou preencha o formulário para gerar o PDF</h3>
       <form id="form-cronograma" novalidate>
         <h3 class="section-title">Dados da empresa</h3>
         <div class="field">
@@ -92,9 +97,6 @@
         </div>
       </form>
 
-      <h3 class="section-title">Ou envie o seu próprio cronograma</h3>
-      <p class="section-desc section-desc--separada" id="texto-upload"></p>
-      <div id="upload-cronograma" class="doc-uploads"></div>
     </main>
   </div>
   <script src="js/form.js"></script>

@@ -22,13 +22,18 @@
       <div class="card__intro">
         <h2 class="card__title">Inciso XI — Estudo de Viabilidade Técnica e Financeira — EVTF (Anexo V)</h2>
         <p class="card__desc">
-          Preencha o formulário abaixo para gerar o EVTF em PDF <strong>ou</strong> envie o seu próprio
-          EVTF em arquivo (PDF, JPG, PNG ou Excel). Você pode usar as duas opções. Os dados que você já
-          informou na solicitação vêm preenchidos.
+          Envie o seu EVTF pronto em arquivo (PDF, JPG, PNG ou Excel) <strong>ou</strong> preencha o
+          formulário abaixo para gerar o EVTF em PDF. Você pode usar as duas opções. No formulário, os dados
+          que você já informou na solicitação vêm preenchidos.
         </p>
         <p class="field__hint" id="situacao" aria-live="polite">Carregando…</p>
       </div>
 
+      <h3 class="section-title">Envie o seu EVTF pronto</h3>
+      <p class="section-desc" id="texto-upload"></p>
+      <div id="upload-evtf" class="doc-uploads"></div>
+
+      <h3 class="section-title section-title--formulario">Ou preencha o formulário para gerar o PDF</h3>
       <form id="form-evtf" novalidate>
         <h3 class="section-title">1. Dados Cadastrais</h3>
         <div class="field">
@@ -427,9 +432,6 @@
         </div>
       </form>
 
-      <h3 class="section-title">Ou envie o seu próprio EVTF</h3>
-      <p class="section-desc section-desc--separada" id="texto-upload"></p>
-      <div id="upload-evtf" class="doc-uploads"></div>
     </main>
   </div>
   <script src="js/form.js"></script>
