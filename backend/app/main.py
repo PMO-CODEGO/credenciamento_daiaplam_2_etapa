@@ -93,5 +93,18 @@ app.include_router(mce.router, prefix="/api", tags=["Memorial de caracterizaçã
 
 # Site servido pelo próprio backend (SERVIR_FRONTEND=true, ex.: no Render). Fica
 # por último para as rotas da API e o /health terem prioridade.
+class _SiteSemCache(StaticFiles):
+    """
+    O navegador sempre confere com o servidor antes de reusar um arquivo do site
+    (no-cache + ETag: se não mudou, a resposta é um 304 sem conteúdo). Sem isso,
+    depois de um deploy ele podia juntar o HTML novo com um JS antigo do cache.
+    """
+
+    async def get_response(self, path, scope):
+        resposta = await super().get_response(path, scope)
+        resposta.headers["Cache-Control"] = "no-cache"
+        return resposta
+
+
 if settings.servir_frontend and os.path.isdir(settings.frontend_dir):
-    app.mount("/", StaticFiles(directory=settings.frontend_dir, html=True), name="frontend")
+    app.mount("/", _SiteSemCache(directory=settings.frontend_dir, html=True), name="frontend")
