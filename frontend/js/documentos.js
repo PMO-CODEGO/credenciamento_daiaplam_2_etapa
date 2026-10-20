@@ -10,7 +10,7 @@ const DianotDocumentos = (function () {
   let token = null;
   try { token = sessionStorage.getItem(CHAVE); } catch (_) {}
 
-  let config = { tipos: [], max_arquivos_por_tipo: 5, max_mb: 10 };
+  let config = { tipos: [], max_arquivos_por_tipo: 5, max_mb: 20 };
 
   function sessaoExpirada() {
     try { sessionStorage.removeItem(CHAVE); } catch (_) {}

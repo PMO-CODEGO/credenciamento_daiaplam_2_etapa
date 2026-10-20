@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     # Documentos enviados (uploads): pasta no disco e tamanho máximo por arquivo.
     storage_dir: str = "/app/storage"
-    upload_max_mb: int = 10
+    upload_max_mb: int = 20
 
     class Config:
         env_file = ".env"

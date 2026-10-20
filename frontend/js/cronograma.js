@@ -300,7 +300,7 @@
 
   // ---------- Arquivo próprio (upload) ----------
   const tamanho = (b) => (b < 1048576 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1048576).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
-  let limites = { max_arquivos: 5, max_mb: 10 };
+  let limites = { max_arquivos: 5, max_mb: 20 };
 
   function desenharArquivos(estado) {
     limites = { max_arquivos: estado.max_arquivos, max_mb: estado.max_mb };

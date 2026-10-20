@@ -1374,6 +1374,12 @@ input[readonly] {
   color: var(--primary-dark);
 }
 
+/* Dados preenchidos (nome, CNPJ, cidade etc.) em caixa alta, para dar destaque.
+   Datas e a frase de assinatura eletrônica ficam como estão. */
+.declaracao__texto [data-decl]:not([data-decl^="data"]):not([data-decl^="assinado"]) {
+  text-transform: uppercase;
+}
+
 /* Lacuna ainda não preenchida: mostra o traço, como no papel */
 .declaracao__texto [data-decl].is-vazio {
   color: var(--ink-soft);
