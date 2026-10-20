@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
@@ -24,6 +25,10 @@ class SolicitacaoIn(BaseModel):
     obra_inicio: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")
     obra_fim: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")
     declaracao_cidade: str = Field(min_length=2, max_length=100)
+    declaracao_uf: Literal[
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR",
+        "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+    ]
     declaracao_aceita: bool
     # Anexo IX — Declaração de Pleno Conhecimento do Objeto
     conhecimento_objeto_aceito: bool
@@ -101,6 +106,7 @@ class SolicitacaoOut(BaseModel):
     obra_inicio: str | None = None
     obra_fim: str | None = None
     declaracao_cidade: str | None = None
+    declaracao_uf: str | None = None
     declaracao_aceita_em: datetime | None = None
     conhecimento_objeto_aceito_em: datetime | None = None
     sede_endereco: str | None = None

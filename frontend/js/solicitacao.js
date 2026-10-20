@@ -212,7 +212,7 @@
     'administrador_nome']);
   // Os que entram no texto do Anexo XIII.
   const CAMPOS_LIQUIDACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
-    'declaracao_cidade', 'administrador_nome', 'sede_endereco', 'endereco_correspondencia',
+    'declaracao_cidade', 'declaracao_uf', 'administrador_nome', 'sede_endereco', 'endereco_correspondencia',
     'liquidacao_prazo_meses']);
   const prazoLiquidacao = () => Number(digitos($('liquidacao_prazo_meses').value)) || 0;
   // Tabela de pontuação do Anexo XIII.
@@ -242,6 +242,7 @@
     lacuna('inicio', mesAno($('obra_inicio').value));
     lacuna('fim', mesAno($('obra_fim').value));
     lacuna('cidade', $('declaracao_cidade').value.trim());
+    lacuna('cidadeuf', $('declaracao_cidade').value.trim() && `${$('declaracao_cidade').value.trim()}/${$('declaracao_uf').value}`);
     lacuna('data', dataPorExtenso(aceitaEm || new Date()));
     lacuna('data9', dataPorExtenso(conhecimentoEm || new Date()));
     lacuna('sede', $('sede_endereco').value.trim());
@@ -285,6 +286,10 @@
   $('declaracao_aceita').addEventListener('change', atualizarDeclaracao);
   $('conhecimento_objeto_aceito').addEventListener('change', atualizarDeclaracao);
   $('liquidacao_aceita').addEventListener('change', atualizarDeclaracao);
+  $('declaracao_uf').addEventListener('change', () => {
+    $('liquidacao_aceita').checked = false;
+    atualizarDeclaracao();
+  });
   atualizarDeclaracao();
 
   // ---------- Carregar dados ----------
@@ -305,6 +310,7 @@
     $('obra_inicio').value = s.obra_inicio || '';
     $('obra_fim').value = s.obra_fim || '';
     if (s.declaracao_cidade) $('declaracao_cidade').value = s.declaracao_cidade;
+    if (s.declaracao_uf) $('declaracao_uf').value = s.declaracao_uf;
     aceitaEm = s.declaracao_aceita_em ? new Date(s.declaracao_aceita_em) : null;
     $('declaracao_aceita').checked = !!aceitaEm;
     conhecimentoEm = s.conhecimento_objeto_aceito_em ? new Date(s.conhecimento_objeto_aceito_em) : null;
@@ -394,6 +400,7 @@
           obra_inicio: $('obra_inicio').value,
           obra_fim: $('obra_fim').value,
           declaracao_cidade: $('declaracao_cidade').value.trim(),
+          declaracao_uf: $('declaracao_uf').value,
           declaracao_aceita: true,
           conhecimento_objeto_aceito: true,
           sede_endereco: $('sede_endereco').value.trim(),

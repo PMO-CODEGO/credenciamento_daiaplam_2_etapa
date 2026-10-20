@@ -1423,6 +1423,10 @@ input[readonly] {
   }
 }
 
+.field-row--cidade-uf {
+  grid-template-columns: 1fr 120px;
+}
+
 .declaracao__texto .declaracao__lista {
   text-align: left;
 }

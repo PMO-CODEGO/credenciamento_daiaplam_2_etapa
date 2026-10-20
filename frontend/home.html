@@ -147,10 +147,45 @@
               <p class="field__error" data-error-for="obra_fim"></p>
             </div>
           </div>
-          <div class="field">
-            <label for="declaracao_cidade">Cidade da assinatura</label>
-            <input type="text" id="declaracao_cidade" name="declaracao_cidade" maxlength="100" value="Goiânia" autocomplete="address-level2">
-            <p class="field__error" data-error-for="declaracao_cidade"></p>
+          <div class="field-row field-row--cidade-uf">
+            <div class="field">
+              <label for="declaracao_cidade">Cidade da assinatura</label>
+              <input type="text" id="declaracao_cidade" name="declaracao_cidade" maxlength="100" value="Goiânia" autocomplete="address-level2">
+              <p class="field__error" data-error-for="declaracao_cidade"></p>
+            </div>
+            <div class="field">
+              <label for="declaracao_uf">Estado</label>
+              <select id="declaracao_uf" name="declaracao_uf" autocomplete="address-level1">
+              <option value="AC">AC</option>
+              <option value="AL">AL</option>
+              <option value="AP">AP</option>
+              <option value="AM">AM</option>
+              <option value="BA">BA</option>
+              <option value="CE">CE</option>
+              <option value="DF">DF</option>
+              <option value="ES">ES</option>
+              <option value="GO" selected>GO</option>
+              <option value="MA">MA</option>
+              <option value="MT">MT</option>
+              <option value="MS">MS</option>
+              <option value="MG">MG</option>
+              <option value="PA">PA</option>
+              <option value="PB">PB</option>
+              <option value="PR">PR</option>
+              <option value="PE">PE</option>
+              <option value="PI">PI</option>
+              <option value="RJ">RJ</option>
+              <option value="RN">RN</option>
+              <option value="RS">RS</option>
+              <option value="RO">RO</option>
+              <option value="RR">RR</option>
+              <option value="SC">SC</option>
+              <option value="SP">SP</option>
+              <option value="SE">SE</option>
+              <option value="TO">TO</option>
+              </select>
+              <p class="field__error" data-error-for="declaracao_uf"></p>
+            </div>
           </div>
 
           <article class="declaracao__texto" aria-label="Declaração">
@@ -213,7 +248,7 @@
             <p>Conforme os critérios estabelecidos, a pontuação atribuída a esse item será calculada da seguinte forma:</p>
             <p class="declaracao__lista">- De 01 a 06 meses: 100 pontos;<br>- De 07 a 12 meses: 75 pontos;<br>- De 13 a 18 meses: 50 pontos;<br>- De 19 a 24 meses: 25 pontos;<br>- De 25 a 36 meses: 0 pontos.</p>
             <p>A empresa assume o compromisso de cumprir integralmente o prazo declarado, sob as penalidades cabíveis em caso de descumprimento.</p>
-            <p class="declaracao__local">Local e data: <span data-decl="cidade"></span>, <span data-decl="data13"></span>.</p>
+            <p class="declaracao__local">Local e data: <span data-decl="cidadeuf"></span>, <span data-decl="data13"></span>.</p>
             <p class="declaracao__assinatura"><strong data-decl="responsavel"></strong><br><span data-decl="cargo"></span><br><span class="declaracao__assinado" data-decl="assinado13"></span></p>
             <p class="declaracao__declarante"><span data-decl="razao"></span><br>CNPJ: <span data-decl="cnpj"></span></p>
           </article>

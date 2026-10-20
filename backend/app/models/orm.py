@@ -60,6 +60,7 @@ class Solicitacao(Base):
     obra_inicio = Column(String(7))  # "AAAA-MM"
     obra_fim = Column(String(7))  # "AAAA-MM"
     declaracao_cidade = Column(String(100))
+    declaracao_uf = Column(String(2))  # estado da assinatura (ex.: "GO")
     declaracao_aceita_em = Column(DateTime)  # data da assinatura (aceite) mais recente
     # Anexo IX — Declaração de Pleno Conhecimento do Objeto (aceite no formulário)
     conhecimento_objeto_aceito_em = Column(DateTime)

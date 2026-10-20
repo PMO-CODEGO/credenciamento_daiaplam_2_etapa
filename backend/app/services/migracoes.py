@@ -24,6 +24,7 @@ COLUNAS = {
         ("obra_inicio", "VARCHAR(7) NULL"),
         ("obra_fim", "VARCHAR(7) NULL"),
         ("declaracao_cidade", "VARCHAR(100) NULL"),
+        ("declaracao_uf", "VARCHAR(2) NULL"),
         ("declaracao_aceita_em", "DATETIME NULL"),
         ("conhecimento_objeto_aceito_em", "DATETIME NULL"),
         ("sede_endereco", "VARCHAR(500) NULL"),
