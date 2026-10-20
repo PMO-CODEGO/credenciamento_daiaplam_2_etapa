@@ -1325,10 +1325,9 @@ input[readonly] {
 /* Declaração de compromisso (aceite no formulário)                    */
 /* ------------------------------------------------------------------ */
 
-.declaracao {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
+/* O título (.section-title) já traz a linha que separa do bloco anterior */
+.declaracao .section-title {
+  margin-bottom: 16px;
 }
 
 .field__sufixo {
