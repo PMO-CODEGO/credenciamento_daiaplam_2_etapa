@@ -1544,3 +1544,18 @@ input[readonly] {
     transform: none;
   }
 }
+
+/* Cidade / UF / CEP numa linha (EVTF) */
+.field-row--tres {
+  grid-template-columns: 1fr 100px 150px;
+}
+
+@media (max-width: 560px) {
+  .field-row--tres {
+    grid-template-columns: 1fr 100px;
+  }
+
+  .field-row--tres .field:last-child {
+    grid-column: 1 / -1;
+  }
+}

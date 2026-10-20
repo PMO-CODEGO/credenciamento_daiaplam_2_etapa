@@ -110,3 +110,14 @@ class Mce(Base):
     ciencia_rede = Column(String(10))  # "aceito" ou "recuso"
     ciencia_em = Column(DateTime)
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class Evtf(Base):
+    """EVTF (Formulário de Viabilidade Técnica e Financeira) preenchido no formulário — um por empresa."""
+
+    __tablename__ = "evtf"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
+    dados = Column(JSON, nullable=False)  # campos do formulário (ver schemas/evtf.py)
+    data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())

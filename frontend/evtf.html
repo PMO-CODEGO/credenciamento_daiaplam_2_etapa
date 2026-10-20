@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVTF — Credenciamento DIANOT</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+  <script src="js/sessao.js" defer></script>
+</head>
+<body>
+  <div class="page">
+    <header class="letterhead">
+      <a class="letterhead__home" href="home.html" title="Voltar ao formulário"><img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO"></a>
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
+      </div>
+    </header>
+
+    <main class="card">
+      <div class="card__intro">
+        <h2 class="card__title">EVTF — Formulário de Viabilidade Técnica e Financeira</h2>
+        <p class="card__desc">
+          Preencha o formulário abaixo para gerar o EVTF em PDF <strong>ou</strong> envie o seu próprio
+          EVTF em arquivo (PDF, JPG, PNG ou Excel). Você pode usar as duas opções. Os dados que você já
+          informou na solicitação vêm preenchidos.
+        </p>
+        <p class="field__hint" id="situacao" aria-live="polite">Carregando…</p>
+      </div>
+
+      <form id="form-evtf" novalidate>
+        <h3 class="section-title">1. Dados Cadastrais</h3>
+        <div class="field">
+          <label for="razao_social">Razão Social</label>
+          <input type="text" id="razao_social" maxlength="255" autocomplete="organization">
+          <p class="field__error" data-error-for="razao_social"></p>
+        </div>
+        <div class="field">
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" readonly>
+          <p class="field__hint">É o CNPJ do seu login.</p>
+          <p class="field__error" data-error-for="cnpj"></p>
+        </div>
+        <div class="field">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" maxlength="500" placeholder="Rua, número, bairro" autocomplete="street-address">
+          <p class="field__error" data-error-for="endereco"></p>
+        </div>
+        <div class="field-row field-row--tres">
+          <div class="field">
+            <label for="cidade">Cidade</label>
+            <input type="text" id="cidade" maxlength="100" autocomplete="address-level2">
+            <p class="field__error" data-error-for="cidade"></p>
+          </div>
+          <div class="field">
+            <label for="uf">UF</label>
+            <select id="uf" autocomplete="address-level1">
+              <option value="AC">AC</option>
+              <option value="AL">AL</option>
+              <option value="AP">AP</option>
+              <option value="AM">AM</option>
+              <option value="BA">BA</option>
+              <option value="CE">CE</option>
+              <option value="DF">DF</option>
+              <option value="ES">ES</option>
+              <option value="GO">GO</option>
+              <option value="MA">MA</option>
+              <option value="MT">MT</option>
+              <option value="MS">MS</option>
+              <option value="MG">MG</option>
+              <option value="PA">PA</option>
+              <option value="PB">PB</option>
+              <option value="PR">PR</option>
+              <option value="PE">PE</option>
+              <option value="PI">PI</option>
+              <option value="RJ">RJ</option>
+              <option value="RN">RN</option>
+              <option value="RS">RS</option>
+              <option value="RO">RO</option>
+              <option value="RR">RR</option>
+              <option value="SC">SC</option>
+              <option value="SP">SP</option>
+              <option value="SE">SE</option>
+              <option value="TO">TO</option>
+            </select>
+            <p class="field__error" data-error-for="uf"></p>
+          </div>
+          <div class="field">
+            <label for="cep">CEP</label>
+            <input type="text" id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code">
+            <p class="field__error" data-error-for="cep"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="telefone">DDD/Telefone</label>
+            <input type="tel" id="telefone" inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel">
+            <p class="field__error" data-error-for="telefone"></p>
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" maxlength="255" autocomplete="email">
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+        </div>
+        <p class="section-desc">Dados bancários (opcionais)</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="conta_corrente">Conta corrente</label>
+            <input type="text" id="conta_corrente" maxlength="40" autocomplete="off">
+            <p class="field__error" data-error-for="conta_corrente"></p>
+          </div>
+          <div class="field">
+            <label for="banco">Banco</label>
+            <input type="text" id="banco" maxlength="100" autocomplete="off">
+            <p class="field__error" data-error-for="banco"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="agencia">Agência</label>
+            <input type="text" id="agencia" maxlength="20" autocomplete="off">
+            <p class="field__error" data-error-for="agencia"></p>
+          </div>
+          <div class="field">
+            <label for="praca_pagamento">Praça de pagamento</label>
+            <input type="text" id="praca_pagamento" maxlength="100" autocomplete="off">
+            <p class="field__error" data-error-for="praca_pagamento"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">Responsável pela empresa</h3>
+        <div class="field">
+          <label for="responsavel_nome">Nome completo</label>
+          <input type="text" id="responsavel_nome" maxlength="255" autocomplete="name">
+          <p class="field__error" data-error-for="responsavel_nome"></p>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_ci_orgao">CI / Órgão expedidor</label>
+            <input type="text" id="responsavel_ci_orgao" maxlength="60" placeholder="Ex.: 1234567 SSP-GO" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_ci_orgao"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_cpf">CPF</label>
+            <input type="text" id="responsavel_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_cpf"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="responsavel_endereco">Endereço</label>
+          <input type="text" id="responsavel_endereco" maxlength="500" autocomplete="off">
+          <p class="field__error" data-error-for="responsavel_endereco"></p>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_cidade_uf">Cidade/UF</label>
+            <input type="text" id="responsavel_cidade_uf" maxlength="100" placeholder="Ex.: Anápolis/GO" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_cidade_uf"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_cep">CEP</label>
+            <input type="text" id="responsavel_cep" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_cep"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_cargo">Cargo/Função</label>
+            <input type="text" id="responsavel_cargo" maxlength="100" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_cargo"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_contato">Contato (telefone)</label>
+            <input type="tel" id="responsavel_contato" inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_contato"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="responsavel_email">E-mail do responsável</label>
+          <input type="email" id="responsavel_email" maxlength="255" autocomplete="off">
+          <p class="field__error" data-error-for="responsavel_email"></p>
+        </div>
+
+        <h3 class="section-title">1.1 Ramo de atividade</h3>
+        <div class="field-row">
+          <div class="field">
+            <label for="ramo_atividade_cnae">Código (CNAE)</label>
+            <input type="text" id="ramo_atividade_cnae" maxlength="20" autocomplete="off">
+            <p class="field__error" data-error-for="ramo_atividade_cnae"></p>
+          </div>
+          <div class="field">
+            <label for="ramo_atividade_especificacao">Especificação</label>
+            <input type="text" id="ramo_atividade_especificacao" maxlength="500" autocomplete="off">
+            <p class="field__error" data-error-for="ramo_atividade_especificacao"></p>
+          </div>
+        </div>
+
+        <h3 class="section-title">2. Dados Econômicos e Financeiros</h3>
+        <p class="section-desc">Opcionais — preencha o que já tiver disponível. Valores em reais, como 150.000,00.</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="capital_social_data">2.2 Capital Social — Data</label>
+            <input type="date" id="capital_social_data">
+            <p class="field__error" data-error-for="capital_social_data"></p>
+          </div>
+          <div class="field">
+            <label for="capital_social_ato">Ato societário</label>
+            <input type="text" id="capital_social_ato" maxlength="200" autocomplete="off">
+            <p class="field__error" data-error-for="capital_social_ato"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="capital_recursos_proprios">Recursos próprios (R$)</label>
+            <input type="text" id="capital_recursos_proprios" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="capital_recursos_proprios"></p>
+          </div>
+          <div class="field">
+            <label for="capital_recursos_incentivos">Recursos de incentivos (R$)</label>
+            <input type="text" id="capital_recursos_incentivos" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="capital_recursos_incentivos"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="capital_recursos_outros">Outros recursos (R$)</label>
+            <input type="text" id="capital_recursos_outros" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="capital_recursos_outros"></p>
+          </div>
+          <div class="field">
+            <label for="capital_recursos_total">Total (R$)</label>
+            <input type="text" id="capital_recursos_total" inputmode="decimal" autocomplete="off">
+            <p class="field__hint">Calculado pela soma dos recursos; altere se precisar.</p>
+            <p class="field__error" data-error-for="capital_recursos_total"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="composicao_nacional_pct">2.3 Composição do capital — Nacional (%)</label>
+            <input type="text" id="composicao_nacional_pct" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="composicao_nacional_pct"></p>
+          </div>
+          <div class="field">
+            <label for="composicao_estrangeiro_pct">Estrangeiro (%)</label>
+            <input type="text" id="composicao_estrangeiro_pct" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="composicao_estrangeiro_pct"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="principais_acionistas">2.4 Principais acionistas/cotistas</label>
+          <textarea id="principais_acionistas" rows="3" maxlength="2000" placeholder="Nome, CPF/CNPJ e % do capital de cada um"></textarea>
+          <p class="field__error" data-error-for="principais_acionistas"></p>
+        </div>
+
+        <h3 class="section-title">4. Concepção do Projeto</h3>
+        <div class="field">
+          <label for="projeto_objetivo">4.1 Objetivo do projeto</label>
+          <textarea id="projeto_objetivo" rows="4" maxlength="4000"></textarea>
+          <p class="field__error" data-error-for="projeto_objetivo"></p>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="distrito_industrial">4.2 Distrito Industrial</label>
+            <input type="text" id="distrito_industrial" maxlength="100" autocomplete="off">
+            <p class="field__error" data-error-for="distrito_industrial"></p>
+          </div>
+          <div class="field">
+            <label for="area_terreno_m2">Área do terreno (m²)</label>
+            <input type="text" id="area_terreno_m2" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="area_terreno_m2"></p>
+          </div>
+        </div>
+        <p class="section-desc">4.3 Prazos (opcionais)</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="prazo_implantacao_inicio">Implantação — início</label>
+            <input type="month" id="prazo_implantacao_inicio">
+            <p class="field__error" data-error-for="prazo_implantacao_inicio"></p>
+          </div>
+          <div class="field">
+            <label for="prazo_implantacao_termino">Implantação — término</label>
+            <input type="month" id="prazo_implantacao_termino">
+            <p class="field__error" data-error-for="prazo_implantacao_termino"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="prazo_expansao_inicio">Expansão — início</label>
+            <input type="month" id="prazo_expansao_inicio">
+            <p class="field__error" data-error-for="prazo_expansao_inicio"></p>
+          </div>
+          <div class="field">
+            <label for="prazo_expansao_termino">Expansão — término</label>
+            <input type="month" id="prazo_expansao_termino">
+            <p class="field__error" data-error-for="prazo_expansao_termino"></p>
+          </div>
+        </div>
+        <p class="section-desc">4.4 Aspectos de Engenharia (opcionais)</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="eng_area_construida_implantacao">Área construída (m²) — Implantação</label>
+            <input type="text" id="eng_area_construida_implantacao" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="eng_area_construida_implantacao"></p>
+          </div>
+          <div class="field">
+            <label for="eng_area_construida_expansao">Área construída (m²) — Expansão</label>
+            <input type="text" id="eng_area_construida_expansao" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="eng_area_construida_expansao"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="eng_area_estocagem_implantacao">Estocagem ao ar livre (m²) — Implantação</label>
+            <input type="text" id="eng_area_estocagem_implantacao" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="eng_area_estocagem_implantacao"></p>
+          </div>
+          <div class="field">
+            <label for="eng_area_estocagem_expansao">Estocagem ao ar livre (m²) — Expansão</label>
+            <input type="text" id="eng_area_estocagem_expansao" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="eng_area_estocagem_expansao"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="eng_estacionamento_implantacao">Estacionamento/pátio (m²) — Implantação</label>
+            <input type="text" id="eng_estacionamento_implantacao" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="eng_estacionamento_implantacao"></p>
+          </div>
+          <div class="field">
+            <label for="eng_estacionamento_expansao">Estacionamento/pátio (m²) — Expansão</label>
+            <input type="text" id="eng_estacionamento_expansao" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="eng_estacionamento_expansao"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fluxo_producao_descricao">4.5 Fluxo de Produção — Descrição</label>
+          <textarea id="fluxo_producao_descricao" rows="4" maxlength="4000"></textarea>
+          <p class="field__error" data-error-for="fluxo_producao_descricao"></p>
+        </div>
+        <p class="section-desc">4.9 Aspectos Ambientais e Saneamento (opcionais)</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="saneamento_consumo_agua">Consumo de água (m³/dia)</label>
+            <input type="text" id="saneamento_consumo_agua" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="saneamento_consumo_agua"></p>
+          </div>
+          <div class="field">
+            <label for="saneamento_geracao_esgoto">Geração de esgoto (m³/dia)</label>
+            <input type="text" id="saneamento_geracao_esgoto" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="saneamento_geracao_esgoto"></p>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="saneamento_volume_rejeitos">Volume dos rejeitos (m³/dia)</label>
+            <input type="text" id="saneamento_volume_rejeitos" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="saneamento_volume_rejeitos"></p>
+          </div>
+          <div class="field">
+            <label for="saneamento_estado_fisico_rejeitos">Estado físico dos rejeitos</label>
+            <input type="text" id="saneamento_estado_fisico_rejeitos" maxlength="100" autocomplete="off">
+            <p class="field__error" data-error-for="saneamento_estado_fisico_rejeitos"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="saneamento_tratamento_proprio">Tratamento próprio previsto</label>
+          <input type="text" id="saneamento_tratamento_proprio" maxlength="300" autocomplete="off">
+          <p class="field__error" data-error-for="saneamento_tratamento_proprio"></p>
+        </div>
+        <div class="field">
+          <label for="saneamento_equipamento_controle">Equipamento de controle de poluição</label>
+          <input type="text" id="saneamento_equipamento_controle" maxlength="300" autocomplete="off">
+          <p class="field__error" data-error-for="saneamento_equipamento_controle"></p>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="saneamento_consumo_energia">Consumo de energia elétrica (kWh/dia)</label>
+            <input type="text" id="saneamento_consumo_energia" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="saneamento_consumo_energia"></p>
+          </div>
+          <div class="field">
+            <label for="saneamento_potencia_instalada">Potência instalada (HP)</label>
+            <input type="text" id="saneamento_potencia_instalada" inputmode="decimal" autocomplete="off">
+            <p class="field__error" data-error-for="saneamento_potencia_instalada"></p>
+          </div>
+        </div>
+        <p class="section-desc">4.10 Aspectos Sociais</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="empregos_diretos">Empregos diretos</label>
+            <input type="text" id="empregos_diretos" inputmode="numeric" maxlength="6" autocomplete="off">
+            <p class="field__error" data-error-for="empregos_diretos"></p>
+          </div>
+          <div class="field">
+            <label for="empregos_indiretos">Empregos indiretos</label>
+            <input type="text" id="empregos_indiretos" inputmode="numeric" maxlength="6" autocomplete="off">
+            <p class="field__error" data-error-for="empregos_indiretos"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="mao_obra_local_pct">Mão de obra local (%)</label>
+          <input type="text" id="mao_obra_local_pct" inputmode="decimal" autocomplete="off">
+          <p class="field__error" data-error-for="mao_obra_local_pct"></p>
+        </div>
+
+        <h3 class="section-title">Responsável técnico</h3>
+        <div class="field-row">
+          <div class="field">
+            <label for="responsavel_tecnico_nome">Nome completo</label>
+            <input type="text" id="responsavel_tecnico_nome" maxlength="255" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_tecnico_nome"></p>
+          </div>
+          <div class="field">
+            <label for="responsavel_tecnico_registro">Nº de registro no conselho regional</label>
+            <input type="text" id="responsavel_tecnico_registro" maxlength="60" autocomplete="off">
+            <p class="field__error" data-error-for="responsavel_tecnico_registro"></p>
+          </div>
+        </div>
+
+        <div class="feedback" id="feedback" aria-live="polite" hidden></div>
+
+        <div class="card__footer">
+          <a class="btn-secondary" href="home.html">← Voltar ao formulário</a>
+          <button type="submit" class="btn-primary" id="btn-salvar">Salvar e gerar PDF</button>
+        </div>
+      </form>
+
+      <h3 class="section-title">Ou envie o seu próprio EVTF</h3>
+      <p class="section-desc section-desc--separada" id="texto-upload"></p>
+      <div id="upload-evtf" class="doc-uploads"></div>
+    </main>
+  </div>
+  <script src="js/form.js"></script>
+  <script src="js/evtf.js"></script>
+</body>
+</html>

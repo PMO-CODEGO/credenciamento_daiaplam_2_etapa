@@ -1,0 +1,250 @@
+{#- Modelo vindo do Sistema Cadastral (anexo_vi_evtf.html), adaptado ao credenciamento. -#}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 1.6cm 1.8cm 2cm;
+      @bottom-right {
+        content: "{{ rodape }}";
+        font-family: "Helvetica", "Arial", sans-serif;
+        font-size: 8pt;
+        font-weight: 400;
+        color: #555;
+      }
+    }
+    body {
+      font-family: "Helvetica", "Arial", sans-serif;
+      font-size: 9pt;
+      color: #1a1a1a;
+    }
+
+    .timbre {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1.5pt solid #1f6d46;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .timbre img {
+      height: 34px;
+      width: auto;
+    }
+    .timbre__texto {
+      font-size: 7.5pt;
+      font-weight: bold;
+      color: #1f6d46;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .anexo-tag {
+      font-size: 8.5pt;
+      letter-spacing: 0.05em;
+      color: #1f6d46;
+      margin: 0 0 2px;
+    }
+    h1 {
+      font-size: 12pt;
+      text-transform: uppercase;
+      color: #123f28;
+      margin: 0 0 10px;
+    }
+
+    table.dados {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    table.dados caption {
+      font-weight: bold;
+      font-size: 8.5pt;
+      background: #123f28;
+      color: #fff;
+      padding: 4px 8px;
+      text-align: left;
+      caption-side: top;
+    }
+    table.dados tr {
+      page-break-inside: avoid;
+    }
+    table.dados td {
+      white-space: pre-line;
+      border: 1pt solid #ccc;
+      padding: 3px 8px;
+      vertical-align: top;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    table.dados td.rotulo {
+      width: 38%;
+      font-weight: bold;
+      background: #f7f7f5;
+    }
+
+    .nota-secao {
+      font-size: 8pt;
+      font-style: italic;
+      color: #666;
+      margin: -6px 0 10px;
+    }
+
+    .termo {
+      font-size: 8pt;
+      text-align: justify;
+      line-height: 1.4;
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      background: #f7f7f5;
+      border-left: 3pt solid #1f6d46;
+    }
+    .termo strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .assinaturas {
+      margin-top: 20px;
+      width: 100%;
+      display: table;
+      table-layout: fixed;
+    }
+    .assinaturas .coluna {
+      display: table-cell;
+      width: 50%;
+      text-align: center;
+    }
+    .assinaturas .linha {
+      border-top: 1pt solid #333;
+      margin: 0 12px 4px;
+    }
+    .assinaturas p {
+      margin: 2px 0;
+      font-size: 8.5pt;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="timbre">
+    <img src="{{ logo_data_uri }}" alt="CODEGO">
+    <div class="timbre__texto">
+      Companhia de Desenvolvimento<br>
+      Econômico de Goiás
+    </div>
+  </div>
+
+  <p class="anexo-tag">EVTF</p>
+  <h1>Formulário de Viabilidade Técnica e Financeira</h1>
+
+  <table class="dados">
+    <caption>1. Dados Cadastrais</caption>
+    <tr><td class="rotulo">Razão Social</td><td>{{ razao_social }}</td></tr>
+    <tr><td class="rotulo">CNPJ/MF</td><td>{{ cnpj }}</td></tr>
+    <tr><td class="rotulo">Endereço</td><td>{{ endereco }}</td></tr>
+    <tr><td class="rotulo">Cidade / UF</td><td>{{ cidade }}/{{ uf }}</td></tr>
+    <tr><td class="rotulo">CEP</td><td>{{ cep }}</td></tr>
+    <tr><td class="rotulo">DDD/Telefone</td><td>{{ telefone }}</td></tr>
+    <tr><td class="rotulo">Email</td><td>{{ email }}</td></tr>
+    {% if conta_corrente or banco or agencia or praca_pagamento %}
+    <tr><td class="rotulo">Conta corrente / Banco</td><td>{{ conta_corrente or "—" }} — {{ banco or "—" }}</td></tr>
+    <tr><td class="rotulo">Agência / Praça de pagamento</td><td>{{ agencia or "—" }} — {{ praca_pagamento or "—" }}</td></tr>
+    {% endif %}
+    <tr><td class="rotulo">Responsável</td><td>{{ responsavel_nome }}</td></tr>
+    <tr><td class="rotulo">CI/Órgão expedidor / CPF</td><td>{{ responsavel_ci_orgao }} — {{ responsavel_cpf }}</td></tr>
+    <tr><td class="rotulo">Endereço do responsável</td><td>{{ responsavel_endereco }}</td></tr>
+    <tr><td class="rotulo">Cidade/UF / CEP</td><td>{{ responsavel_cidade_uf }} — {{ responsavel_cep }}</td></tr>
+    <tr><td class="rotulo">Cargo/Função</td><td>{{ responsavel_cargo }}</td></tr>
+    <tr><td class="rotulo">Contato / Email</td><td>{{ responsavel_contato }} — {{ responsavel_email }}</td></tr>
+    <tr><td class="rotulo">1.1 Ramo de atividade — Código (CNAE)</td><td>{{ ramo_atividade_cnae }}</td></tr>
+    <tr><td class="rotulo">Especificação</td><td>{{ ramo_atividade_especificacao }}</td></tr>
+  </table>
+
+  {% if capital_social_data or capital_social_ato or capital_recursos_proprios or capital_recursos_incentivos or capital_recursos_outros or capital_recursos_total or composicao_nacional_pct or composicao_estrangeiro_pct or principais_acionistas %}
+  <table class="dados">
+    <caption>2. Dados Econômicos e Financeiros</caption>
+    <tr><td class="rotulo">2.2 Capital Social — Data / Ato</td><td>{{ capital_social_data or "—" }} — {{ capital_social_ato or "—" }}</td></tr>
+    <tr><td class="rotulo">Recursos próprios (R$)</td><td>{{ capital_recursos_proprios or "—" }}</td></tr>
+    <tr><td class="rotulo">Recursos de incentivos (R$)</td><td>{{ capital_recursos_incentivos or "—" }}</td></tr>
+    <tr><td class="rotulo">Outros recursos (R$)</td><td>{{ capital_recursos_outros or "—" }}</td></tr>
+    <tr><td class="rotulo">Total (R$)</td><td>{{ capital_recursos_total or "—" }}</td></tr>
+    <tr><td class="rotulo">2.3 Composição do capital — Nacional / Estrangeiro (%)</td><td>{{ composicao_nacional_pct or "—" }}% — {{ composicao_estrangeiro_pct or "—" }}%</td></tr>
+    <tr><td class="rotulo">2.4 Principais acionistas/cotistas</td><td>{{ principais_acionistas or "—" }}</td></tr>
+  </table>
+  {% endif %}
+
+  <table class="dados">
+    <caption>4. Concepção do Projeto</caption>
+    <tr><td class="rotulo">4.1 Objetivo</td><td>{{ projeto_objetivo }}</td></tr>
+    <tr><td class="rotulo">4.2 Distrito Industrial</td><td>{{ distrito_industrial }}</td></tr>
+    <tr><td class="rotulo">Área do terreno (m²)</td><td>{{ area_terreno_m2 }}</td></tr>
+    {% if prazo_implantacao_inicio or prazo_implantacao_termino or prazo_expansao_inicio or prazo_expansao_termino %}
+    <tr><td class="rotulo">4.3 Prazos — Implantação (início/término)</td><td>{{ prazo_implantacao_inicio or "—" }} a {{ prazo_implantacao_termino or "—" }}</td></tr>
+    <tr><td class="rotulo">Prazos — Expansão (início/término)</td><td>{{ prazo_expansao_inicio or "—" }} a {{ prazo_expansao_termino or "—" }}</td></tr>
+    {% endif %}
+    {% if eng_area_construida_implantacao or eng_area_construida_expansao or eng_area_estocagem_implantacao or eng_area_estocagem_expansao or eng_estacionamento_implantacao or eng_estacionamento_expansao %}
+    <tr><td class="rotulo">4.4 Área construída (m²) — Implantação/Expansão</td><td>{{ eng_area_construida_implantacao or "—" }} / {{ eng_area_construida_expansao or "—" }}</td></tr>
+    <tr><td class="rotulo">Área de estocagem ao ar livre (m²) — Impl./Exp.</td><td>{{ eng_area_estocagem_implantacao or "—" }} / {{ eng_area_estocagem_expansao or "—" }}</td></tr>
+    <tr><td class="rotulo">Estacionamento/Pátio de manobra (m²) — Impl./Exp.</td><td>{{ eng_estacionamento_implantacao or "—" }} / {{ eng_estacionamento_expansao or "—" }}</td></tr>
+    {% endif %}
+    <tr><td class="rotulo">4.5 Fluxo de Produção — Descrição</td><td>{{ fluxo_producao_descricao }}</td></tr>
+    {% if saneamento_consumo_agua or saneamento_geracao_esgoto or saneamento_volume_rejeitos or saneamento_estado_fisico_rejeitos or saneamento_tratamento_proprio or saneamento_equipamento_controle or saneamento_consumo_energia or saneamento_potencia_instalada %}
+    <tr><td class="rotulo">4.9 Consumo de água (m³/dia)</td><td>{{ saneamento_consumo_agua or "—" }}</td></tr>
+    <tr><td class="rotulo">Geração de esgoto (m³/dia)</td><td>{{ saneamento_geracao_esgoto or "—" }}</td></tr>
+    <tr><td class="rotulo">Volume dos rejeitos (m³/dia)</td><td>{{ saneamento_volume_rejeitos or "—" }}</td></tr>
+    <tr><td class="rotulo">Estado físico dos rejeitos</td><td>{{ saneamento_estado_fisico_rejeitos or "—" }}</td></tr>
+    <tr><td class="rotulo">Tratamento próprio previsto</td><td>{{ saneamento_tratamento_proprio or "—" }}</td></tr>
+    <tr><td class="rotulo">Equipamento de controle de poluição</td><td>{{ saneamento_equipamento_controle or "—" }}</td></tr>
+    <tr><td class="rotulo">Consumo de energia elétrica (Kwh/dia)</td><td>{{ saneamento_consumo_energia or "—" }}</td></tr>
+    <tr><td class="rotulo">Potência instalada (HP)</td><td>{{ saneamento_potencia_instalada or "—" }}</td></tr>
+    {% endif %}
+    <tr><td class="rotulo">4.10 Empregos gerados — Diretos / Indiretos</td><td>{{ empregos_diretos }} / {{ empregos_indiretos }}</td></tr>
+    <tr><td class="rotulo">Mão de obra local (%)</td><td>{{ mao_obra_local_pct or "—" }}</td></tr>
+  </table>
+  <p class="nota-secao">
+    As seções 3 (DRE), 4.6 (Produção anual), 4.7 (Mercado), 4.8 (Matérias-primas), 5
+    (Investimentos/Financiamentos) e 6 (Custos Anuais) deste formulário estão em
+    complementação e deverão ser anexadas separadamente até a disponibilização
+    completa no sistema.
+  </p>
+
+  <div class="termo">
+    <strong>TERMO DE COMPROMISSO</strong>
+    Declaramos ter conhecimento e estar de pleno acordo com as condições estabelecidas
+    nas Normas Gerais que disciplinam a implantação de indústrias e atividades de apoio
+    nos distritos e áreas industriais de Goiás, bem como assumimos integral
+    responsabilidade pelas informações aqui prestadas, estando cientes de que a não
+    confirmação das mesmas eximirá a CODEGO de qualquer compromisso e/ou obrigação para
+    com a requerente.
+  </div>
+
+  <div class="termo">
+    <strong>TERMO DE RESPONSABILIDADE SOBRE AS INFORMAÇÕES AQUI PRESTADAS</strong>
+    Assumo inteira responsabilidade legal pelas informações aqui prestadas, bem como
+    declaro certeza de autenticidade das cópias dos documentos comprobatórios das
+    informações deste formulário, conforme cita o artigo 299 do Código Penal.
+  </div>
+
+  <p style="text-align: right; margin: 6px 0 0;">{{ cidade_data }}</p>
+
+  <div class="assinaturas">
+    <div class="coluna">
+      <div class="linha"></div>
+      <p>Representante legal</p>
+      <p>{{ responsavel_nome }}</p>
+      <p>{{ razao_social }} (com carimbo CNPJ)</p>
+    </div>
+    <div class="coluna">
+      <div class="linha"></div>
+      <p>Responsável técnico / registro profissional</p>
+      <p>{{ responsavel_tecnico_nome }}</p>
+      <p>{{ responsavel_tecnico_registro }}</p>
+    </div>
+  </div>
+
+</body>
+</html>
