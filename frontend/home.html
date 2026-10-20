@@ -190,6 +190,43 @@
           </div>
         </div>
 
+        <div class="declaracao" id="liquidacao">
+          <h3 class="section-title">Anexo XIII - Declaração Liquidação Alienação de Áreas</h3>
+          <div class="field">
+            <label for="sede_endereco">Endereço completo da sede</label>
+            <input type="text" id="sede_endereco" name="sede_endereco" maxlength="500" autocomplete="street-address">
+            <p class="field__hint">Preenchido com o endereço para correspondência; altere se a sede for em outro endereço.</p>
+            <p class="field__error" data-error-for="sede_endereco"></p>
+          </div>
+          <div class="field">
+            <label for="liquidacao_prazo_meses">Prazo para liquidação (pagamento) da área, em meses</label>
+            <div class="field__sufixo">
+              <input type="text" id="liquidacao_prazo_meses" name="liquidacao_prazo_meses" inputmode="numeric" maxlength="2" autocomplete="off" aria-describedby="liquidacao-pontos">
+              <span aria-hidden="true">meses</span>
+            </div>
+            <p class="field__hint" id="liquidacao-pontos" aria-live="polite">De 1 a 36 meses.</p>
+            <p class="field__error" data-error-for="liquidacao_prazo_meses"></p>
+          </div>
+
+          <article class="declaracao__texto" aria-label="Declaração Liquidação Alienação de Áreas">
+            <p><strong data-decl="razao"></strong>, inscrita no CNPJ sob o nº <strong data-decl="cnpj"></strong>, com sede na <strong data-decl="sede"></strong>, por meio deste documento, DECLARA que o prazo para liquidação da alienação da área em questão será de <strong data-decl="prazo"></strong> meses, não ultrapassando o prazo máximo de 36 (trinta e seis) meses para pagamento, conforme previsto no edital.</p>
+            <p>Conforme os critérios estabelecidos, a pontuação atribuída a esse item será calculada da seguinte forma:</p>
+            <p class="declaracao__lista">- De 01 a 06 meses: 100 pontos;<br>- De 07 a 12 meses: 75 pontos;<br>- De 13 a 18 meses: 50 pontos;<br>- De 19 a 24 meses: 25 pontos;<br>- De 25 a 36 meses: 0 pontos.</p>
+            <p>A empresa assume o compromisso de cumprir integralmente o prazo declarado, sob as penalidades cabíveis em caso de descumprimento.</p>
+            <p class="declaracao__local">Local e data: <span data-decl="cidade"></span>, <span data-decl="data13"></span>.</p>
+            <p class="declaracao__assinatura"><strong data-decl="responsavel"></strong><br><span data-decl="cargo"></span><br><span class="declaracao__assinado" data-decl="assinado13"></span></p>
+            <p class="declaracao__declarante"><span data-decl="razao"></span><br>CNPJ: <span data-decl="cnpj"></span></p>
+          </article>
+
+          <div class="field">
+            <label class="checkbox-item" for="liquidacao_aceita">
+              <input type="checkbox" id="liquidacao_aceita" name="liquidacao_aceita">
+              <span>Li a declaração acima, confirmo que as informações são verdadeiras e a assino eletronicamente, sob as penas da Lei.</span>
+            </label>
+            <p class="field__error" data-error-for="liquidacao_aceita"></p>
+          </div>
+        </div>
+
         <div class="feedback" id="feedback" aria-live="polite" hidden></div>
 
         <div class="card__footer">

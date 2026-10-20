@@ -63,6 +63,10 @@ class Solicitacao(Base):
     declaracao_aceita_em = Column(DateTime)  # data da assinatura (aceite) mais recente
     # Anexo IX — Declaração de Pleno Conhecimento do Objeto (aceite no formulário)
     conhecimento_objeto_aceito_em = Column(DateTime)
+    # Anexo XIII — Declaração Liquidação Alienação de Áreas (aceite no formulário)
+    sede_endereco = Column(String(500))
+    liquidacao_prazo_meses = Column(Integer)  # 1 a 36
+    liquidacao_aceita_em = Column(DateTime)
 
     data_criacao = Column(DateTime, server_default=func.now())
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())

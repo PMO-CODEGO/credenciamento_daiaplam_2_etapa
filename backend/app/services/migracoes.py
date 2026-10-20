@@ -26,6 +26,9 @@ COLUNAS = {
         ("declaracao_cidade", "VARCHAR(100) NULL"),
         ("declaracao_aceita_em", "DATETIME NULL"),
         ("conhecimento_objeto_aceito_em", "DATETIME NULL"),
+        ("sede_endereco", "VARCHAR(500) NULL"),
+        ("liquidacao_prazo_meses", "INT NULL"),
+        ("liquidacao_aceita_em", "DATETIME NULL"),
     ],
 }
 

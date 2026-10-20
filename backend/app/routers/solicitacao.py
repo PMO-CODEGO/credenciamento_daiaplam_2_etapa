@@ -85,6 +85,9 @@ def salvar_solicitacao(
     # Cada salvamento reassina a declaração com os dados atuais.
     sol.declaracao_aceita_em = datetime.now()
     sol.conhecimento_objeto_aceito_em = sol.declaracao_aceita_em
+    sol.sede_endereco = payload.sede_endereco
+    sol.liquidacao_prazo_meses = payload.liquidacao_prazo_meses
+    sol.liquidacao_aceita_em = sol.declaracao_aceita_em
     db.commit()
     db.refresh(sol)
     return sol

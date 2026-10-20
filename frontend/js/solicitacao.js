@@ -201,6 +201,8 @@
 
   let aceitaEm = null; // data da última assinatura salva
   let conhecimentoEm = null; // idem, Anexo IX
+  let liquidacaoEm = null; // idem, Anexo XIII
+  let sedeEditada = false;
   let representanteEditado = false;
   // Campos que mudam o texto da declaração: alterar algum desfaz o aceite.
   const CAMPOS_DECLARACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
@@ -208,6 +210,19 @@
   // Os que entram no texto do Anexo IX.
   const CAMPOS_CONHECIMENTO = new Set(['nome_empresarial', 'representante_nome', 'declaracao_cidade',
     'administrador_nome']);
+  // Os que entram no texto do Anexo XIII.
+  const CAMPOS_LIQUIDACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
+    'declaracao_cidade', 'administrador_nome', 'sede_endereco', 'endereco_correspondencia',
+    'liquidacao_prazo_meses']);
+  const prazoLiquidacao = () => Number(digitos($('liquidacao_prazo_meses').value)) || 0;
+  // Tabela de pontuação do Anexo XIII.
+  function pontosLiquidacao(meses) {
+    if (meses <= 6) return 100;
+    if (meses <= 12) return 75;
+    if (meses <= 18) return 50;
+    if (meses <= 24) return 25;
+    return 0;
+  }
   const assinadoEm = (d) =>
     `Assinado eletronicamente em ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 
@@ -229,6 +244,16 @@
     lacuna('cidade', $('declaracao_cidade').value.trim());
     lacuna('data', dataPorExtenso(aceitaEm || new Date()));
     lacuna('data9', dataPorExtenso(conhecimentoEm || new Date()));
+    lacuna('sede', $('sede_endereco').value.trim());
+    const prazo = prazoLiquidacao();
+    const prazoOk = prazo >= 1 && prazo <= 36;
+    lacuna('prazo', prazoOk ? String(prazo).padStart(2, '0') : '');
+    $('liquidacao-pontos').textContent = prazoOk
+      ? `Pontuação correspondente: ${pontosLiquidacao(prazo)} pontos.`
+      : 'De 1 a 36 meses.';
+    lacuna('data13', dataPorExtenso(liquidacaoEm || new Date()));
+    document.querySelector('[data-decl="assinado13"]').textContent =
+      liquidacaoEm && $('liquidacao_aceita').checked ? assinadoEm(liquidacaoEm) : '';
     document.querySelector('[data-decl="assinado9"]').textContent =
       conhecimentoEm && $('conhecimento_objeto_aceito').checked ? assinadoEm(conhecimentoEm) : '';
     const hora = aceitaEm && aceitaEm.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -239,6 +264,12 @@
 
   $('ocupacao_percentual').addEventListener('input', (e) => (e.target.value = digitos(e.target.value).slice(0, 2)));
   $('representante_nome').addEventListener('input', () => { representanteEditado = true; });
+  $('liquidacao_prazo_meses').addEventListener('input', (e) => (e.target.value = digitos(e.target.value).slice(0, 2)));
+  $('sede_endereco').addEventListener('input', () => { sedeEditada = true; });
+  // Enquanto não for alterada, a sede acompanha o endereço para correspondência.
+  $('endereco_correspondencia').addEventListener('input', () => {
+    if (!sedeEditada) $('sede_endereco').value = $('endereco_correspondencia').value;
+  });
   // Enquanto não for alterado, o representante acompanha o administrador.
   $('administrador_nome').addEventListener('input', () => {
     if (!representanteEditado) $('representante_nome').value = $('administrador_nome').value;
@@ -248,10 +279,12 @@
       $('declaracao_aceita').checked = false; // o texto mudou: precisa aceitar de novo
     }
     if (CAMPOS_CONHECIMENTO.has(ev.target.id)) $('conhecimento_objeto_aceito').checked = false;
+    if (CAMPOS_LIQUIDACAO.has(ev.target.id)) $('liquidacao_aceita').checked = false;
     atualizarDeclaracao();
   });
   $('declaracao_aceita').addEventListener('change', atualizarDeclaracao);
   $('conhecimento_objeto_aceito').addEventListener('change', atualizarDeclaracao);
+  $('liquidacao_aceita').addEventListener('change', atualizarDeclaracao);
   atualizarDeclaracao();
 
   // ---------- Carregar dados ----------
@@ -276,6 +309,11 @@
     $('declaracao_aceita').checked = !!aceitaEm;
     conhecimentoEm = s.conhecimento_objeto_aceito_em ? new Date(s.conhecimento_objeto_aceito_em) : null;
     $('conhecimento_objeto_aceito').checked = !!conhecimentoEm;
+    $('sede_endereco').value = s.sede_endereco || s.endereco_correspondencia;
+    sedeEditada = !!s.sede_endereco && s.sede_endereco !== s.endereco_correspondencia;
+    $('liquidacao_prazo_meses').value = s.liquidacao_prazo_meses || '';
+    liquidacaoEm = s.liquidacao_aceita_em ? new Date(s.liquidacao_aceita_em) : null;
+    $('liquidacao_aceita').checked = !!liquidacaoEm;
     atualizarDeclaracao();
   }
   (async function iniciar() {
@@ -326,6 +364,10 @@
     if ($('declaracao_cidade').value.trim().length < 2) { erro('declaracao_cidade', 'Informe a cidade.'); ok = false; }
     if (!$('declaracao_aceita').checked) { erro('declaracao_aceita', 'Marque para assinar a declaração.'); ok = false; }
     if (!$('conhecimento_objeto_aceito').checked) { erro('conhecimento_objeto_aceito', 'Marque para assinar a declaração.'); ok = false; }
+    if ($('sede_endereco').value.trim().length < 5) { erro('sede_endereco', 'Informe o endereço completo da sede.'); ok = false; }
+    const prazo = prazoLiquidacao();
+    if (prazo < 1 || prazo > 36) { erro('liquidacao_prazo_meses', 'Informe um prazo de 1 a 36 meses.'); ok = false; }
+    if (!$('liquidacao_aceita').checked) { erro('liquidacao_aceita', 'Marque para assinar a declaração.'); ok = false; }
     if (!ok) {
       mostrar('error', 'Corrija os campos destacados e tente novamente.');
       CodegoForm.focarPrimeiroErro($('form-solicitacao'));
@@ -354,6 +396,9 @@
           declaracao_cidade: $('declaracao_cidade').value.trim(),
           declaracao_aceita: true,
           conhecimento_objeto_aceito: true,
+          sede_endereco: $('sede_endereco').value.trim(),
+          liquidacao_prazo_meses: prazo,
+          liquidacao_aceita: true,
         }),
       });
       preencher(s);

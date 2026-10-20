@@ -1423,6 +1423,10 @@ input[readonly] {
   }
 }
 
+.declaracao__texto .declaracao__lista {
+  text-align: left;
+}
+
 .declaracao__cronograma {
   font-family: var(--font-sans);
   font-size: 13px;
