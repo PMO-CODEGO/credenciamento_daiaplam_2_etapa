@@ -1,7 +1,7 @@
 import logging
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -39,16 +39,50 @@ app = FastAPI(
     openapi_url=None if settings.app_env == "production" else "/openapi.json",
 )
 
+_origens = [origem.strip() for origem in settings.cors_origins.split(",") if origem.strip()]
+if settings.app_env == "production" and "*" in _origens:
+    # Produção sem lista de endereços: só o próprio site (mesmo endereço) fala com a API.
+    # Se o site ficar em outro endereço, defina CORS_ORIGINS com ele.
+    _origens = []
 app.add_middleware(
     CORSMiddleware,
-    # CORS_ORIGINS no .env: "*" (padrão) ou os endereços do site separados por
-    # vírgula. Com o site e a API no mesmo endereço (deploy/ com Caddy), o CORS
-    # nem é usado; só importa se o site ficar num endereço diferente da API.
-    allow_origins=[origem.strip() for origem in settings.cors_origins.split(",") if origem.strip()],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    # CORS_ORIGINS no .env: os endereços do site separados por vírgula ("*" só em desenvolvimento).
+    # Com o site e a API no mesmo endereço, o CORS nem é usado. A sessão vai no cabeçalho
+    # Authorization (não em cookie), então não precisa de allow_credentials.
+    allow_origins=_origens,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
+
+# Política de conteúdo: só scripts do próprio site (e do reCAPTCHA do Google), nada de objetos
+# externos e ninguém pode embutir o site em outro (o iframe dos painéis é do mesmo site).
+_CSP = "; ".join([
+    "default-src 'self'",
+    "script-src 'self' https://www.google.com https://www.gstatic.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: blob:",
+    "connect-src 'self' https://viacep.com.br",
+    "frame-src 'self' blob: https://www.google.com",
+    "object-src 'self' blob:",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'self'",
+])
+
+
+@app.middleware("http")
+async def cabecalhos_de_seguranca(request: Request, call_next):
+    resposta = await call_next(request)
+    resposta.headers.setdefault("Content-Security-Policy", _CSP)
+    resposta.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resposta.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    resposta.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    resposta.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    if settings.app_env == "production":
+        resposta.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+    return resposta
 
 
 # HEAD também: monitores como o UptimeRobot verificam com HEAD por padrão.

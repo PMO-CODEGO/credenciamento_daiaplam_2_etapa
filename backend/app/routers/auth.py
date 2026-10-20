@@ -19,9 +19,9 @@ from app.services.seguranca import (
 router = APIRouter()
 bearer = HTTPBearer(auto_error=False)
 
-# 5 logins errados por IP+CNPJ em 15 min; 10 cadastros por IP por hora.
-_falhas_login = LimiteTentativas(maximo=5, janela_s=15 * 60)
-_cadastros = LimiteTentativas(maximo=10, janela_s=60 * 60)
+# 5 logins errados por IP+CNPJ em 15 min e 10 cadastros por IP por hora (contados no banco).
+_falhas_login = LimiteTentativas("login", maximo=5, janela_s=15 * 60)
+_cadastros = LimiteTentativas("cadastro", maximo=10, janela_s=60 * 60)
 
 ERRO_LOGIN = "CNPJ ou senha incorretos."
 
@@ -48,9 +48,9 @@ def usuario_atual(
 def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depends(get_db)):
     """Cria o usuário: o login é o CNPJ; a senha é gerada aleatoriamente e mostrada uma só vez."""
     chave = _ip(request)
-    if _cadastros.bloqueado(chave):
+    if _cadastros.bloqueado(db, chave):
         raise HTTPException(status_code=429, detail="Muitas tentativas. Tente novamente mais tarde.")
-    _cadastros.registrar(chave)
+    _cadastros.registrar(db, chave)
 
     ok, erro = verificar_recaptcha(payload.g_recaptcha_response)
     if not ok:
@@ -83,7 +83,7 @@ def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depend
 @router.post("/login", response_model=TokenOut)
 def login(payload: LoginIn, request: Request, db: Session = Depends(get_db)):
     chave = f"{_ip(request)}|{payload.cnpj}"
-    if _falhas_login.bloqueado(chave):
+    if _falhas_login.bloqueado(db, chave):
         raise HTTPException(status_code=429, detail="Muitas tentativas. Aguarde 15 minutos e tente novamente.")
 
     ok, erro = verificar_recaptcha(payload.g_recaptcha_response)
@@ -93,10 +93,10 @@ def login(payload: LoginIn, request: Request, db: Session = Depends(get_db)):
     usuario = db.query(Usuario).filter(Usuario.cnpj == payload.cnpj).first()
     senha_ok = verificar_senha(payload.senha, usuario.senha_hash if usuario else None)
     if not usuario or not usuario.ativo or not senha_ok:
-        _falhas_login.registrar(chave)
+        _falhas_login.registrar(db, chave)
         raise HTTPException(status_code=401, detail=ERRO_LOGIN)
 
-    _falhas_login.zerar(chave)
+    _falhas_login.zerar(db, chave)
     return TokenOut(access_token=criar_token(usuario.id, usuario.cnpj), usuario=_para_out(usuario))
 
 

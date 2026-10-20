@@ -1,14 +1,15 @@
 """Senhas (bcrypt), tokens de sessão (JWT) e limite de tentativas de login."""
 import secrets
 import string
-import time
-from collections import defaultdict, deque
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
 import jwt
+from sqlalchemy import func
+from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.models.orm import Tentativa
 
 ALGORITMO = "HS256"
 
@@ -47,28 +48,35 @@ def decodificar_token(token: str) -> dict | None:
 
 
 class LimiteTentativas:
-    """Limite simples em memória (por processo): no máximo `maximo` tentativas
-    por chave dentro de `janela_s` segundos."""
+    """Limite de tentativas guardado no banco: no máximo `maximo` por chave dentro de
+    `janela_s` segundos. Como fica na tabela `tentativas`, não zera quando o servidor reinicia
+    (o Render grátis reinicia com frequência) e vale para vários processos."""
 
-    def __init__(self, maximo: int, janela_s: int):
-        self.maximo, self.janela_s = maximo, janela_s
-        self._eventos: dict[str, deque] = defaultdict(deque)
+    def __init__(self, escopo: str, maximo: int, janela_s: int):
+        self.escopo, self.maximo, self.janela_s = escopo, maximo, janela_s
 
-    def _limpar(self, chave: str) -> deque:
-        fila = self._eventos[chave]
-        limite = time.monotonic() - self.janela_s
-        while fila and fila[0] < limite:
-            fila.popleft()
-        return fila
+    def _chave(self, chave: str) -> str:
+        return f"{self.escopo}|{chave}"[:120]
 
-    def bloqueado(self, chave: str) -> bool:
-        return len(self._limpar(chave)) >= self.maximo
+    def bloqueado(self, db: Session, chave: str) -> bool:
+        desde = datetime.now() - timedelta(seconds=self.janela_s)
+        total = (
+            db.query(func.count(Tentativa.id))
+            .filter(Tentativa.chave == self._chave(chave), Tentativa.criado_em >= desde)
+            .scalar()
+        )
+        return total >= self.maximo
 
-    def registrar(self, chave: str) -> None:
-        self._limpar(chave).append(time.monotonic())
+    def registrar(self, db: Session, chave: str) -> None:
+        agora = datetime.now()
+        db.add(Tentativa(chave=self._chave(chave), criado_em=agora))
+        # Faxina: apaga o que já saiu de qualquer janela (24 h), para a tabela não crescer.
+        db.query(Tentativa).filter(Tentativa.criado_em < agora - timedelta(hours=24)).delete()
+        db.commit()
 
-    def zerar(self, chave: str) -> None:
-        self._eventos.pop(chave, None)
+    def zerar(self, db: Session, chave: str) -> None:
+        db.query(Tentativa).filter(Tentativa.chave == self._chave(chave)).delete()
+        db.commit()
 
 
 # Sem caracteres que se confundem na leitura (0/O, 1/l/I).

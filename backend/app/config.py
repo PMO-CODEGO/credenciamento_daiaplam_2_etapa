@@ -1,3 +1,4 @@
+from pydantic import model_validator
 from pydantic_settings import BaseSettings
 
 
@@ -34,6 +35,19 @@ class Settings(BaseSettings):
     # Documentos enviados (uploads): pasta no disco e tamanho máximo por arquivo.
     storage_dir: str = "/app/storage"
     upload_max_mb: int = 20
+
+    @model_validator(mode="after")
+    def _exigir_chave_em_producao(self):
+        # Em produção, a chave que assina as sessões não pode ser o valor de exemplo nem curta:
+        # quem a conhecesse poderia forjar sessões de qualquer empresa.
+        if self.app_env == "production" and (
+            self.app_secret_key in ("", "change_me_secret") or len(self.app_secret_key) < 32
+        ):
+            raise ValueError(
+                "APP_SECRET_KEY precisa ser definido com um valor próprio de pelo menos 32 caracteres "
+                "quando APP_ENV=production."
+            )
+        return self
 
     class Config:
         env_file = ".env"

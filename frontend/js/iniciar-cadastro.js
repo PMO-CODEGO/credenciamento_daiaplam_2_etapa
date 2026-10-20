@@ -1,0 +1,1 @@
+CodegoAuth.iniciarCadastro();

@@ -133,3 +133,13 @@ class Envio(Base):
     protocolo = Column(String(30), nullable=False, unique=True)
     enviado_em = Column(DateTime, nullable=False)
     resumo = Column(JSON, nullable=False)  # ver services/envio.py (montar_resumo)
+
+
+class Tentativa(Base):
+    """Tentativas de login/cadastro, para o limite continuar valendo depois de reiniciar o servidor."""
+
+    __tablename__ = "tentativas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    chave = Column(String(120), nullable=False, index=True)  # ex.: "login|IP|CNPJ"
+    criado_em = Column(DateTime, nullable=False, index=True)

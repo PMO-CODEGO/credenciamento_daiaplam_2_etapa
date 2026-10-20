@@ -35,6 +35,8 @@ services:
       - key: MYSQL_SSL_CA
         sync: false
       - key: RECAPTCHA_ENABLED
-        value: "false"
+        value: "true"
+      - key: RECAPTCHA_SITE_KEY
+        sync: false
       - key: RECAPTCHA_SECRET_KEY
         sync: false
