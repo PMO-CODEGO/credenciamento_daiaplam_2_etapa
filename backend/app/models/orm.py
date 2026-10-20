@@ -121,3 +121,15 @@ class Evtf(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
     dados = Column(JSON, nullable=False)  # campos do formulário (ver schemas/evtf.py)
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class Envio(Base):
+    """Envio final do credenciamento: protocolo + retrato do que estava anexado/preenchido na hora."""
+
+    __tablename__ = "envios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, index=True)
+    protocolo = Column(String(30), nullable=False, unique=True)
+    enviado_em = Column(DateTime, nullable=False)
+    resumo = Column(JSON, nullable=False)  # ver services/envio.py (montar_resumo)

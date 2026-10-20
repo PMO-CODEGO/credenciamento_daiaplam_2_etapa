@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm 1.8cm 2cm;
+      @bottom-center { content: "Página " counter(page) " de " counter(pages); font-size: 8pt; color: #666; }
+    }
+    body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 9.5pt; color: #1a1a1a; }
+    .timbre { display: flex; align-items: center; gap: 12px; border-bottom: 1.5pt solid #1f6d46; padding-bottom: 8px; margin-bottom: 14px; }
+    .timbre img { height: 38px; width: auto; }
+    .timbre__texto { font-size: 8pt; font-weight: bold; color: #1f6d46; line-height: 1.3; text-transform: uppercase; }
+    h1 { font-size: 14pt; text-transform: uppercase; color: #123f28; margin: 0 0 2px; }
+    .sub { font-size: 9pt; color: #555; margin: 0 0 12px; }
+
+    .protocolo { border: 1.5pt solid #1f6d46; background: #eef5ef; padding: 10px 14px; margin: 0 0 6px; }
+    .protocolo__rotulo { font-size: 8pt; text-transform: uppercase; color: #555; letter-spacing: .06em; }
+    .protocolo__numero { font-size: 20pt; font-weight: bold; color: #123f28; letter-spacing: .04em; }
+    .protocolo__data { font-size: 9pt; color: #333; margin-top: 2px; }
+
+    h2 { font-size: 10.5pt; color: #123f28; background: #eef0e6; padding: 5px 9px; margin: 16px 0 0; border-left: 3pt solid #1f6d46; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    td, th { border: 1pt solid #ccc; padding: 5px 8px; vertical-align: top; overflow-wrap: break-word; word-break: break-word; }
+    td.rotulo { width: 28%; font-weight: bold; background: #f7f7f5; }
+    th { background: #f1f3ec; text-align: left; font-size: 8.5pt; }
+
+    .inciso { page-break-inside: avoid; margin-top: 0; }
+    .inciso + .inciso td { border-top: none; }
+    .inciso__titulo { font-weight: bold; }
+    .status { font-weight: bold; }
+    .status--ok { color: #1f6d46; }
+    .status--vazio { color: #8a6d00; }
+    ul.arquivos { margin: 4px 0 0; padding: 0; list-style: none; }
+    ul.arquivos li { margin: 0 0 3px; font-size: 8.8pt; }
+    .hash { font-family: "Liberation Mono", monospace; font-size: 7.5pt; color: #666; }
+
+    .aviso { margin-top: 16px; font-size: 8.8pt; color: #333; border-top: 1pt solid #ccc; padding-top: 8px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="timbre">
+    <img src="{{ logo }}" alt="CODEGO">
+    <div class="timbre__texto">Companhia de Desenvolvimento Econômico de Goiás<br>Credenciamento DIANOT — 2ª etapa</div>
+  </div>
+
+  <h1>Comprovante de envio</h1>
+  <p class="sub">Confirmação dos documentos anexados e das informações prestadas no credenciamento.</p>
+
+  <div class="protocolo">
+    <div class="protocolo__rotulo">Número de protocolo</div>
+    <div class="protocolo__numero">{{ protocolo }}</div>
+    <div class="protocolo__data">Envio registrado em {{ enviado_em }}</div>
+  </div>
+
+  <h2>Dados da empresa</h2>
+  <table>
+    <tr><td class="rotulo">Razão social</td><td>{{ empresa.razao_social }}</td></tr>
+    <tr><td class="rotulo">CNPJ</td><td>{{ empresa.cnpj }}</td></tr>
+    <tr><td class="rotulo">Distrito</td><td>{{ empresa.distrito }}</td></tr>
+    <tr><td class="rotulo">Área solicitada</td><td>{{ empresa.area_m2 }} m²</td></tr>
+    <tr><td class="rotulo">CNAE</td><td>{{ empresa.cnae }}</td></tr>
+    <tr><td class="rotulo">Endereço para correspondência</td><td>{{ empresa.endereco }}</td></tr>
+    <tr><td class="rotulo">E-mail / Telefone</td><td>{{ empresa.email }} / {{ empresa.telefone }}</td></tr>
+    <tr><td class="rotulo">Administrador da sociedade</td><td>{{ empresa.administrador }}</td></tr>
+    <tr><td class="rotulo">Representante legal</td><td>{{ empresa.representante }}{% if empresa.cargo %} — {{ empresa.cargo }}{% endif %}</td></tr>
+  </table>
+
+  <h2>Documentos e formulários ({{ total_arquivos }} arquivo{{ "" if total_arquivos == 1 else "s" }} anexado{{ "" if total_arquivos == 1 else "s" }})</h2>
+  <table>
+    {% for i in incisos %}
+    <tr class="inciso">
+      <td style="width: 46%;"><span class="inciso__titulo">{{ i.rotulo }}</span></td>
+      <td>
+        {% if i.situacao == "nao_enviado" %}
+          <span class="status status--vazio">Não enviado{% if not i.obrigatorio %} (opcional){% endif %}</span>
+        {% elif i.situacao == "formulario" %}
+          <span class="status status--ok">Preenchido no formulário</span>{% if i.formulario_em %} em {{ formatar_data(i.formulario_em) }}{% endif %}
+        {% elif i.situacao == "ambos" %}
+          <span class="status status--ok">Formulário preenchido e arquivo anexado</span>{% if i.formulario_em %} (formulário em {{ formatar_data(i.formulario_em) }}){% endif %}
+        {% else %}
+          <span class="status status--ok">Arquivo anexado</span>
+        {% endif %}
+        {% if i.arquivos %}
+        <ul class="arquivos">
+          {% for a in i.arquivos %}
+          <li>
+            {{ a.nome }} — {{ tamanho(a.tamanho) }}{% if a.enviado_em %}, enviado em {{ formatar_data(a.enviado_em) }}{% endif %}
+            {% if a.sha256 %}<br><span class="hash">SHA-256: {{ a.sha256[:32] }}…</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Declarações e ciência</h2>
+  <table>
+    {% for d in declaracoes %}
+    <tr class="inciso">
+      <td style="width: 46%;"><span class="inciso__titulo">{{ d.rotulo }}</span></td>
+      <td><span class="status status--ok">Assinada eletronicamente</span> em {{ d.assinada_em }}{% if d.detalhe %}<br>{{ d.detalhe }}{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <p class="aviso">
+    Este comprovante atesta o recebimento, pela CODEGO, dos arquivos e das informações listados acima, na data e hora indicadas.
+    O número de protocolo identifica este envio e deve ser informado em qualquer contato sobre o credenciamento.
+    O código SHA-256 permite conferir que cada arquivo analisado é o mesmo que foi enviado. A análise dos documentos
+    ocorrerá conforme o Regulamento de Alienações de Áreas e o Edital.
+  </p>
+</body>
+</html>

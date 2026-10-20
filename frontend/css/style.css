@@ -1707,3 +1707,18 @@ input[readonly] {
   padding-top: 0;
   border-top: none;
 }
+
+.envio-final {
+  margin-top: 8px;
+}
+
+.envio-final__pendencias {
+  margin: 4px 0 14px;
+  padding-left: 20px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.envio-final__pendencias li {
+  margin-bottom: 4px;
+}
