@@ -84,6 +84,7 @@ def salvar_solicitacao(
     sol.declaracao_cidade = payload.declaracao_cidade
     # Cada salvamento reassina a declaração com os dados atuais.
     sol.declaracao_aceita_em = datetime.now()
+    sol.conhecimento_objeto_aceito_em = sol.declaracao_aceita_em
     db.commit()
     db.refresh(sol)
     return sol

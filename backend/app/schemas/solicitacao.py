@@ -25,6 +25,8 @@ class SolicitacaoIn(BaseModel):
     obra_fim: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")
     declaracao_cidade: str = Field(min_length=2, max_length=100)
     declaracao_aceita: bool
+    # Anexo IX — Declaração de Pleno Conhecimento do Objeto
+    conhecimento_objeto_aceito: bool
 
     @field_validator("nome_empresarial", "endereco_correspondencia", "administrador_nome",
                      "representante_nome", "representante_cargo", "declaracao_cidade")
@@ -56,7 +58,7 @@ class SolicitacaoIn(BaseModel):
             raise ValueError("Telefone inválido (informe DDD + número).")
         return d
 
-    @field_validator("declaracao_aceita")
+    @field_validator("declaracao_aceita", "conhecimento_objeto_aceito")
     @classmethod
     def _aceite(cls, v):
         if not v:
@@ -96,6 +98,7 @@ class SolicitacaoOut(BaseModel):
     obra_fim: str | None = None
     declaracao_cidade: str | None = None
     declaracao_aceita_em: datetime | None = None
+    conhecimento_objeto_aceito_em: datetime | None = None
     data_atualizacao: datetime | None = None
 
 

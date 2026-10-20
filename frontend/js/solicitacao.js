@@ -200,10 +200,16 @@
   const percentual = () => Number(digitos($('ocupacao_percentual').value)) || 0;
 
   let aceitaEm = null; // data da última assinatura salva
+  let conhecimentoEm = null; // idem, Anexo IX
   let representanteEditado = false;
   // Campos que mudam o texto da declaração: alterar algum desfaz o aceite.
   const CAMPOS_DECLARACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
     'ocupacao_percentual', 'obra_inicio', 'obra_fim', 'declaracao_cidade', 'administrador_nome']);
+  // Os que entram no texto do Anexo IX.
+  const CAMPOS_CONHECIMENTO = new Set(['nome_empresarial', 'representante_nome', 'declaracao_cidade',
+    'administrador_nome']);
+  const assinadoEm = (d) =>
+    `Assinado eletronicamente em ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 
   function lacuna(chave, texto) {
     document.querySelectorAll(`[data-decl="${chave}"]`).forEach((el) => {
@@ -222,6 +228,9 @@
     lacuna('fim', mesAno($('obra_fim').value));
     lacuna('cidade', $('declaracao_cidade').value.trim());
     lacuna('data', dataPorExtenso(aceitaEm || new Date()));
+    lacuna('data9', dataPorExtenso(conhecimentoEm || new Date()));
+    document.querySelector('[data-decl="assinado9"]').textContent =
+      conhecimentoEm && $('conhecimento_objeto_aceito').checked ? assinadoEm(conhecimentoEm) : '';
     const hora = aceitaEm && aceitaEm.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     document.querySelector('[data-decl="assinado"]').textContent = aceitaEm && $('declaracao_aceita').checked
       ? `Assinado eletronicamente em ${aceitaEm.toLocaleDateString('pt-BR')} às ${hora}`
@@ -238,9 +247,11 @@
     if (CAMPOS_DECLARACAO.has(ev.target.id) && $('declaracao_aceita').checked) {
       $('declaracao_aceita').checked = false; // o texto mudou: precisa aceitar de novo
     }
+    if (CAMPOS_CONHECIMENTO.has(ev.target.id)) $('conhecimento_objeto_aceito').checked = false;
     atualizarDeclaracao();
   });
   $('declaracao_aceita').addEventListener('change', atualizarDeclaracao);
+  $('conhecimento_objeto_aceito').addEventListener('change', atualizarDeclaracao);
   atualizarDeclaracao();
 
   // ---------- Carregar dados ----------
@@ -263,6 +274,8 @@
     if (s.declaracao_cidade) $('declaracao_cidade').value = s.declaracao_cidade;
     aceitaEm = s.declaracao_aceita_em ? new Date(s.declaracao_aceita_em) : null;
     $('declaracao_aceita').checked = !!aceitaEm;
+    conhecimentoEm = s.conhecimento_objeto_aceito_em ? new Date(s.conhecimento_objeto_aceito_em) : null;
+    $('conhecimento_objeto_aceito').checked = !!conhecimentoEm;
     atualizarDeclaracao();
   }
   (async function iniciar() {
@@ -312,6 +325,7 @@
     if (meses !== null && meses > 24) { erro('obra_fim', `A obra não pode passar de 24 meses (informado: ${meses}).`); ok = false; }
     if ($('declaracao_cidade').value.trim().length < 2) { erro('declaracao_cidade', 'Informe a cidade.'); ok = false; }
     if (!$('declaracao_aceita').checked) { erro('declaracao_aceita', 'Marque para assinar a declaração.'); ok = false; }
+    if (!$('conhecimento_objeto_aceito').checked) { erro('conhecimento_objeto_aceito', 'Marque para assinar a declaração.'); ok = false; }
     if (!ok) {
       mostrar('error', 'Corrija os campos destacados e tente novamente.');
       CodegoForm.focarPrimeiroErro($('form-solicitacao'));
@@ -339,6 +353,7 @@
           obra_fim: $('obra_fim').value,
           declaracao_cidade: $('declaracao_cidade').value.trim(),
           declaracao_aceita: true,
+          conhecimento_objeto_aceito: true,
         }),
       });
       preencher(s);

@@ -61,6 +61,8 @@ class Solicitacao(Base):
     obra_fim = Column(String(7))  # "AAAA-MM"
     declaracao_cidade = Column(String(100))
     declaracao_aceita_em = Column(DateTime)  # data da assinatura (aceite) mais recente
+    # Anexo IX — Declaração de Pleno Conhecimento do Objeto (aceite no formulário)
+    conhecimento_objeto_aceito_em = Column(DateTime)
 
     data_criacao = Column(DateTime, server_default=func.now())
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())
