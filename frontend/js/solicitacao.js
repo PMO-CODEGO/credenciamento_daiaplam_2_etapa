@@ -336,6 +336,16 @@
     }
   })();
 
+  // ---------- Incisos com tela própria (XI, XII e XIII): situação no link ----------
+  document.querySelectorAll('[data-estado]').forEach(async (link) => {
+    const status = link.querySelector('.inciso-link__status');
+    try {
+      const estado = await api(link.dataset.estado);
+      status.textContent = estado.concluido ? 'Concluído' : 'Pendente';
+      status.classList.add(estado.concluido ? 'is-ok' : 'is-pendente');
+    } catch (_) { /* sem situação: o link continua funcionando */ }
+  });
+
   // ---------- Envio ----------
   const erro = CodegoForm.erro;
   function mostrar(tipo, msg) {
