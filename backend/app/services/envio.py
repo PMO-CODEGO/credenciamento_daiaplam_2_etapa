@@ -68,7 +68,7 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
     else:
         for campo, nome in (
             ("declaracao_aceita_em", "Anexo VI (taxa de ocupação)"),
-            ("conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento do objeto)"),
+            ("conhecimento_objeto_aceito_em", "Inciso XIV (pleno conhecimento do objeto, Anexo IX)"),
             ("liquidacao_aceita_em", "Anexo XIII (liquidação)"),
         ):
             if getattr(sol, campo) is None:
@@ -145,7 +145,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
         {"rotulo": "Declaração de compromisso com a Taxa de Ocupação de Área (Anexo VI)",
          "detalhe": f"Ocupação de {sol.ocupacao_percentual}% da área; obra de {sol.obra_inicio} a {sol.obra_fim}.",
          "assinada_em": _iso(sol.declaracao_aceita_em)},
-        {"rotulo": "Declaração de Pleno Conhecimento do Objeto (Anexo IX)", "detalhe": "",
+        {"rotulo": "Inciso XIV — Declaração de Pleno Conhecimento do Objeto (Anexo IX)", "detalhe": "",
          "assinada_em": _iso(sol.conhecimento_objeto_aceito_em)},
         {"rotulo": "Declaração Liquidação Alienação de Áreas (Anexo XIII)",
          "detalhe": f"Prazo de liquidação declarado: {sol.liquidacao_prazo_meses} meses.",
