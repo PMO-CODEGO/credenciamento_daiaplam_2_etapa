@@ -69,7 +69,7 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
         for campo, nome in (
             ("declaracao_aceita_em", "Anexo VI (taxa de ocupação)"),
             ("conhecimento_objeto_aceito_em", "Inciso XIV (pleno conhecimento do objeto, Anexo IX)"),
-            ("liquidacao_aceita_em", "Anexo XIII (liquidação)"),
+            ("liquidacao_aceita_em", "Inciso XV (liquidação, Anexo XIII)"),
         ):
             if getattr(sol, campo) is None:
                 falta.append(f"Assine a declaração do {nome}.")
@@ -147,7 +147,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
          "assinada_em": _iso(sol.declaracao_aceita_em)},
         {"rotulo": "Inciso XIV — Declaração de Pleno Conhecimento do Objeto (Anexo IX)", "detalhe": "",
          "assinada_em": _iso(sol.conhecimento_objeto_aceito_em)},
-        {"rotulo": "Declaração Liquidação Alienação de Áreas (Anexo XIII)",
+        {"rotulo": "Inciso XV — Declaração Liquidação Alienação de Áreas (Anexo XIII)",
          "detalhe": f"Prazo de liquidação declarado: {sol.liquidacao_prazo_meses} meses.",
          "assinada_em": _iso(sol.liquidacao_aceita_em)},
         {"rotulo": "Ciência da rede de água e esgoto fornecida pela CODEGO (Inciso XIII)",
