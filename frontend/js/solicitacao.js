@@ -360,8 +360,27 @@
     new ResizeObserver(medir).observe(doc.body);
   }
 
+  // Botão "Fechar" no fim de cada painel: fecha e volta para o card, para a
+  // pessoa não ficar perdida no meio da página depois de um painel comprido.
+  function adicionarFechar(botao) {
+    const painel = botao.nextElementSibling;
+    const fechar = document.createElement('button');
+    fechar.type = 'button';
+    fechar.className = 'inciso-painel__fechar';
+    fechar.textContent = 'Fechar ▴';
+    fechar.setAttribute('aria-label', `Fechar: ${botao.querySelector('.doc-list__title').textContent}`);
+    fechar.addEventListener('click', () => {
+      botao.setAttribute('aria-expanded', 'false');
+      painel.hidden = true;
+      botao.scrollIntoView({ block: 'nearest' });
+      botao.focus({ preventScroll: true });
+    });
+    painel.appendChild(fechar);
+  }
+
   // Painel com conteúdo fixo (ex.: imagem do Anexo II): só abre e fecha.
   document.querySelectorAll('[data-painel-estatico]').forEach((botao) => {
+    adicionarFechar(botao);
     botao.addEventListener('click', () => {
       const abrir = botao.getAttribute('aria-expanded') !== 'true';
       botao.setAttribute('aria-expanded', String(abrir));
@@ -375,6 +394,7 @@
   botoesInciso.forEach((botao) => {
     const painel = botao.nextElementSibling;
     atualizarSituacao(botao);
+    adicionarFechar(botao);
     botao.addEventListener('click', () => {
       const abrir = botao.getAttribute('aria-expanded') !== 'true';
       botao.setAttribute('aria-expanded', String(abrir));
@@ -384,7 +404,7 @@
         iframe.title = botao.querySelector('.doc-list__title').textContent;
         iframe.src = botao.dataset.pagina;
         iframe.addEventListener('load', () => ajustarAltura(iframe));
-        painel.appendChild(iframe);
+        painel.insertBefore(iframe, painel.querySelector('.inciso-painel__fechar'));
       }
     });
   });

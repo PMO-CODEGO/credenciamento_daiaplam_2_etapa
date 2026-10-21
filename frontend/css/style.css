@@ -1807,3 +1807,40 @@ input[readonly] {
   color: var(--primary-dark);
   font-weight: 600;
 }
+
+/* "Fechar" no fim de cada painel (Anexo II e incisos XI, XII e XIII) */
+.inciso-painel__fechar {
+  display: block;
+  margin: 20px 0 0 auto;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), background-color 150ms ease;
+}
+
+.inciso-painel__fechar:active {
+  transform: scale(0.97);
+}
+
+.inciso-painel__fechar:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .inciso-painel__fechar:hover {
+    background: var(--paper);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inciso-painel__fechar:active {
+    transform: none;
+  }
+}
