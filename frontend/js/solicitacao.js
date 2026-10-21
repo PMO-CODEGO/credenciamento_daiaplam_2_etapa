@@ -360,7 +360,18 @@
     new ResizeObserver(medir).observe(doc.body);
   }
 
-  const botoesInciso = [...document.querySelectorAll('.inciso-link__botao')];
+  // Painel com conteúdo fixo (ex.: imagem do Anexo II): só abre e fecha.
+  document.querySelectorAll('[data-painel-estatico]').forEach((botao) => {
+    botao.addEventListener('click', () => {
+      const abrir = botao.getAttribute('aria-expanded') !== 'true';
+      botao.setAttribute('aria-expanded', String(abrir));
+      botao.nextElementSibling.hidden = !abrir;
+    });
+  });
+  const linkAnexo2 = (window.DIANOT_LINKS || {}).anexo2;
+  if (linkAnexo2 && $('anexo2-pdf')) $('anexo2-pdf').href = linkAnexo2;
+
+  const botoesInciso = [...document.querySelectorAll('.inciso-link__botao[data-pagina]')];
   botoesInciso.forEach((botao) => {
     const painel = botao.nextElementSibling;
     atualizarSituacao(botao);

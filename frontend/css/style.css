@@ -1775,3 +1775,35 @@ input[readonly] {
   color: var(--ink-soft);
   text-align: center;
 }
+
+/* Anexo II: painel com a imagem da listagem oficial */
+.inciso-link--lista {
+  margin: 0;
+}
+
+.inciso-link .inciso-link__botao--ver::after {
+  content: "Ver ▾";
+}
+
+.inciso-link .inciso-link__botao--ver[aria-expanded="true"]::after {
+  content: "Fechar ▴";
+}
+
+.anexo-imagem {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.anexo-imagem__fonte {
+  margin: 10px 0 0;
+  font-size: 13px;
+}
+
+.anexo-imagem__fonte a {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
