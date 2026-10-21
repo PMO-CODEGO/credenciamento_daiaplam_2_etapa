@@ -11,6 +11,7 @@ from weasyprint import HTML
 
 from app.models.orm import Cronograma, Documento, Envio, Evtf, Mce, Solicitacao, Usuario
 from app.services import documentos as docs
+from app.services import rascunho as rascunhos
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
 _env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=True)
@@ -63,8 +64,14 @@ def _carregar(db: Session, usuario: Usuario):
 def pendencias(db: Session, usuario: Usuario) -> list[str]:
     sol, arquivos, evtf, crono, mce = _carregar(db, usuario)
     falta = []
-    if sol is None:
-        falta.append("Preencha e salve o formulário principal (Inciso I e declarações dos Anexos VI, IX e XIII).")
+    rasc = rascunhos.rascunho(db, usuario)
+    if rasc is not None:
+        # Formulário salvo automaticamente, mas ainda incompleto: diz o que falta.
+        faltando = rascunhos.conferir(db, usuario, rasc.dados)[2] or ["revisar os dados"]
+        falta.append("Formulário principal (Inciso I e declarações dos incisos XII, XIV e XV): falta "
+                     + ", ".join(faltando) + ".")
+    elif sol is None:
+        falta.append("Preencha o formulário principal (Inciso I e declarações dos incisos XII, XIV e XV).")
     else:
         for campo, nome in (
             ("declaracao_aceita_em", "Anexo VI (taxa de ocupação)"),

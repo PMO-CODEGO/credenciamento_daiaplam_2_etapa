@@ -7,7 +7,7 @@
 
   let token = null;
   try { token = sessionStorage.getItem(CHAVE); } catch (_) {}
-  // Alterações digitadas e ainda não salvas (o formulário é longo: não perder).
+  // Alterações digitadas e ainda não salvas (o salvamento automático cuida delas).
   let alterado = false;
   function sair() {
     alterado = false;
@@ -15,19 +15,20 @@
     window.location.href = 'index.html';
   }
   if (!token) { sair(); return; }
-  $('btn-sair').addEventListener('click', () => {
-    if (alterado && !window.confirm('Há alterações não salvas. Sair mesmo assim?')) return;
+  $('btn-sair').addEventListener('click', async () => {
+    if (alterado) await salvarAgora(); // salva o que acabou de ser digitado antes de sair
     sair();
   });
   window.addEventListener('beforeunload', (ev) => {
-    if (alterado) { ev.preventDefault(); ev.returnValue = ''; }
+    if (!alterado) return;
+    salvarAgora({ aoSair: true });
+    ev.preventDefault(); ev.returnValue = '';
   });
   CodegoForm.limparAoEditar($('form-solicitacao'));
   $('form-solicitacao').addEventListener('input', (ev) => {
     if (ev.target.type === 'file') return; // documentos são salvos na hora do envio
     alterado = true;
-    // Um "salvo com sucesso" antigo não vale mais depois de nova edição.
-    if ($('feedback').classList.contains('feedback--success')) $('feedback').hidden = true;
+    agendarSalvamento();
   });
 
   async function api(caminho, opcoes = {}) {
@@ -55,16 +56,6 @@
   });
 
   // ---------- Máscaras e validações ----------
-  function cpfValido(v) {
-    const d = digitos(v);
-    if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false;
-    for (const n of [9, 10]) {
-      let soma = 0;
-      for (let i = 0; i < n; i++) soma += Number(d[i]) * (n + 1 - i);
-      if (((soma * 10) % 11) % 10 !== Number(d[n])) return false;
-    }
-    return true;
-  }
   const mascaraCpf = (v) => digitos(v).slice(0, 11)
     .replace(/^(\d{3})(\d)/, '$1.$2').replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
     .replace(/\.(\d{3})(\d)/, '.$1-$2');
@@ -190,13 +181,6 @@
   }
   const mesAno = (v) => (/^\d{4}-\d{2}$/.test(v || '') ? `${v.slice(5)}/${v.slice(0, 4)}` : '');
   const dataPorExtenso = (d) => `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
-  // Meses da obra contando o de início e o de fim (null se faltar alguma data).
-  function mesesObra(inicio, fim) {
-    if (!inicio || !fim) return null;
-    const [ai, mi] = inicio.split('-').map(Number);
-    const [af, mf] = fim.split('-').map(Number);
-    return (af - ai) * 12 + (mf - mi) + 1;
-  }
   const percentual = () => Number(digitos($('ocupacao_percentual').value)) || 0;
 
   let aceitaEm = null; // data da última assinatura salva
@@ -322,6 +306,29 @@
     $('liquidacao_aceita').checked = !!liquidacaoEm;
     atualizarDeclaracao();
   }
+
+  // Rascunho (formulário incompleto salvo automaticamente): por cima do salvo.
+  function aplicarRascunho(d) {
+    const tem = (k) => d[k] !== undefined && d[k] !== null;
+    if (tem('area_m2')) {
+      const r = lerArea(String(d.area_m2).replace('.', ','));
+      $('area_m2').value = r.valor ? formatarArea(r.valor) : String(d.area_m2);
+    }
+    ['nome_empresarial', 'endereco_correspondencia', 'email', 'administrador_nome', 'representante_nome',
+      'representante_cargo', 'obra_inicio', 'obra_fim', 'declaracao_cidade', 'declaracao_uf', 'sede_endereco']
+      .forEach((k) => { if (tem(k)) $(k).value = d[k]; });
+    if (tem('telefone')) $('telefone').value = mascaraTel(d.telefone);
+    if (tem('administrador_cpf')) $('administrador_cpf').value = mascaraCpf(d.administrador_cpf);
+    if (tem('ocupacao_percentual')) $('ocupacao_percentual').value = String(d.ocupacao_percentual);
+    if (tem('liquidacao_prazo_meses')) $('liquidacao_prazo_meses').value = String(d.liquidacao_prazo_meses);
+    ['declaracao_aceita', 'conhecimento_objeto_aceito', 'liquidacao_aceita']
+      .forEach((k) => { if (tem(k)) $(k).checked = !!d[k]; });
+    if (tem('cnae')) { $('cnae').value = mascaraCnae(String(d.cnae)); conferirCnae(); }
+    representanteEditado = $('representante_nome').value !== $('administrador_nome').value;
+    sedeEditada = $('sede_endereco').value !== $('endereco_correspondencia').value;
+    atualizarDeclaracao();
+  }
+
   (async function iniciar() {
     try {
       const u = await api('/api/auth/me');
@@ -331,6 +338,8 @@
       $('email').value = u.email;
       const s = await api('/api/solicitacoes/minha');
       if (s) preencher(s); else atualizarDeclaracao();
+      const r = await api('/api/solicitacoes/minha/rascunho');
+      if (r) aplicarRascunho(r.dados);
     } catch (_) {
       mostrar('error', 'Falha de conexão. Recarregue a página.');
     }
@@ -385,85 +394,103 @@
     if (botao) atualizarSituacao(botao);
   });
 
-  // ---------- Envio ----------
-  const erro = CodegoForm.erro;
+  // ---------- Salvamento automático ----------
+  // Cada alteração é salva sozinha, pouco depois de a pessoa parar de digitar.
+  // Completo e válido, vira a solicitação oficial; incompleto, fica como
+  // rascunho (nada se perde) e o que falta aparece em "Finalizar credenciamento".
   function mostrar(tipo, msg) {
     const fb = $('feedback'); fb.className = `feedback feedback--${tipo}`; fb.textContent = msg; fb.hidden = false;
   }
-  $('form-solicitacao').addEventListener('submit', async (ev) => {
-    ev.preventDefault();
-    CodegoForm.limparErros($('form-solicitacao'));
-    $('feedback').hidden = true;
 
-    await pendente; // espera a conferência do CNAE em andamento
-    let ok = true;
+  function corpoDoFormulario() {
     const area = lerArea($('area_m2').value);
-    if (!area.valor) { erro('area_m2', area.erro); ok = false; }
-    if ($('nome_empresarial').value.trim().length < 3) { erro('nome_empresarial', 'Informe o nome empresarial.'); ok = false; }
-    if ($('endereco_correspondencia').value.trim().length < 5) { erro('endereco_correspondencia', 'Informe o endereço para correspondência.'); ok = false; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim())) { erro('email', 'Informe um e-mail válido.'); ok = false; }
-    if (![10, 11].includes(digitos($('telefone').value).length)) { erro('telefone', 'Informe o telefone com DDD.'); ok = false; }
-    if ($('administrador_nome').value.trim().length < 3) { erro('administrador_nome', 'Informe o nome do administrador.'); ok = false; }
-    if (!cpfValido($('administrador_cpf').value)) { erro('administrador_cpf', 'Informe um CPF válido.'); ok = false; }
-    if (!cnaeValido) { erro('cnae', 'Informe um CNAE válido, que conste na tabela.'); ok = false; }
-    if (!DianotDocumentos.conferirObrigatorios()) ok = false;
-    if ($('representante_nome').value.trim().length < 3) { erro('representante_nome', 'Informe o nome do representante legal.'); ok = false; }
-    if ($('representante_cargo').value.trim().length < 2) { erro('representante_cargo', 'Informe o cargo.'); ok = false; }
-    const pct = percentual();
-    if (pct < 33 || pct > 80) { erro('ocupacao_percentual', 'Informe um percentual entre 33% e 80%.'); ok = false; }
-    if (!$('obra_inicio').value) { erro('obra_inicio', 'Informe o mês e o ano de início.'); ok = false; }
-    if (!$('obra_fim').value) { erro('obra_fim', 'Informe o mês e o ano de fim.'); ok = false; }
-    const meses = mesesObra($('obra_inicio').value, $('obra_fim').value);
-    if (meses !== null && meses < 1) { erro('obra_fim', 'O fim deve ser igual ou posterior ao início.'); ok = false; }
-    if (meses !== null && meses > 24) { erro('obra_fim', `A obra não pode passar de 24 meses (informado: ${meses}).`); ok = false; }
-    if ($('declaracao_cidade').value.trim().length < 2) { erro('declaracao_cidade', 'Informe a cidade.'); ok = false; }
-    if (!$('declaracao_aceita').checked) { erro('declaracao_aceita', 'Marque para assinar a declaração.'); ok = false; }
-    if (!$('conhecimento_objeto_aceito').checked) { erro('conhecimento_objeto_aceito', 'Marque para assinar a declaração.'); ok = false; }
-    if ($('sede_endereco').value.trim().length < 5) { erro('sede_endereco', 'Informe o endereço completo da sede.'); ok = false; }
-    const prazo = prazoLiquidacao();
-    if (prazo < 1 || prazo > 36) { erro('liquidacao_prazo_meses', 'Informe um prazo de 1 a 36 meses.'); ok = false; }
-    if (!$('liquidacao_aceita').checked) { erro('liquidacao_aceita', 'Marque para assinar a declaração.'); ok = false; }
-    if (!ok) {
-      mostrar('error', 'Corrija os campos destacados e tente novamente.');
-      CodegoForm.focarPrimeiroErro($('form-solicitacao'));
+    return {
+      area_m2: area.valor || $('area_m2').value.trim(),
+      nome_empresarial: $('nome_empresarial').value.trim(),
+      cnpj: digitos($('cnpj').value),
+      endereco_correspondencia: $('endereco_correspondencia').value.trim(),
+      email: $('email').value.trim(),
+      telefone: digitos($('telefone').value),
+      administrador_nome: $('administrador_nome').value.trim(),
+      administrador_cpf: digitos($('administrador_cpf').value),
+      cnae: digitos($('cnae').value),
+      representante_nome: $('representante_nome').value.trim(),
+      representante_cargo: $('representante_cargo').value.trim(),
+      ocupacao_percentual: percentual() || null,
+      obra_inicio: $('obra_inicio').value,
+      obra_fim: $('obra_fim').value,
+      declaracao_cidade: $('declaracao_cidade').value.trim(),
+      declaracao_uf: $('declaracao_uf').value,
+      declaracao_aceita: $('declaracao_aceita').checked,
+      conhecimento_objeto_aceito: $('conhecimento_objeto_aceito').checked,
+      sede_endereco: $('sede_endereco').value.trim(),
+      liquidacao_prazo_meses: prazoLiquidacao() || null,
+      liquidacao_aceita: $('liquidacao_aceita').checked,
+    };
+  }
+
+  function indicador(tipo, texto) {
+    const el = $('autosalvar');
+    el.className = `autosalvar autosalvar--${tipo}`;
+    el.textContent = texto;
+    el.hidden = false;
+  }
+  const hora = (iso) => new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  let timerSalvar = null;
+  let salvando = null; // salvamento em andamento
+  let deNovo = false; // houve alteração durante o salvamento
+
+  function agendarSalvamento() {
+    clearTimeout(timerSalvar);
+    timerSalvar = setTimeout(() => salvarAgora(), 1200);
+  }
+
+  async function salvarAgora({ aoSair = false } = {}) {
+    clearTimeout(timerSalvar);
+    if (aoSair) {
+      // Página fechando: envia sem esperar a resposta.
+      fetch(`${API}/api/solicitacoes/minha/automatico`, {
+        method: 'PUT', keepalive: true,
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(corpoDoFormulario()),
+      }).catch(() => {});
       return;
     }
-
-    CodegoForm.ocupado($('btn-salvar'), 'Salvando…');
-    try {
-      const s = await api('/api/solicitacoes/minha', {
-        method: 'PUT',
-        body: JSON.stringify({
-          area_m2: area.valor,
-          nome_empresarial: $('nome_empresarial').value.trim(),
-          cnpj: digitos($('cnpj').value),
-          endereco_correspondencia: $('endereco_correspondencia').value.trim(),
-          email: $('email').value.trim(),
-          telefone: digitos($('telefone').value),
-          administrador_nome: $('administrador_nome').value.trim(),
-          administrador_cpf: digitos($('administrador_cpf').value),
-          cnae: cnaeValido.codigo,
-          representante_nome: $('representante_nome').value.trim(),
-          representante_cargo: $('representante_cargo').value.trim(),
-          ocupacao_percentual: pct,
-          obra_inicio: $('obra_inicio').value,
-          obra_fim: $('obra_fim').value,
-          declaracao_cidade: $('declaracao_cidade').value.trim(),
-          declaracao_uf: $('declaracao_uf').value,
-          declaracao_aceita: true,
-          conhecimento_objeto_aceito: true,
-          sede_endereco: $('sede_endereco').value.trim(),
-          liquidacao_prazo_meses: prazo,
-          liquidacao_aceita: true,
-        }),
-      });
-      preencher(s);
+    if (salvando) { deNovo = true; return salvando; }
+    salvando = (async () => {
       alterado = false;
-      mostrar('success', 'Solicitação salva com sucesso. Você pode voltar e alterar os dados quando precisar.');
-    } catch (e) {
-      mostrar('error', e instanceof TypeError ? 'Falha de conexão. Tente novamente.' : e.message);
-    } finally {
-      CodegoForm.livre($('btn-salvar'));
-    }
+      indicador('salvando', 'Salvando…');
+      try {
+        const r = await api('/api/solicitacoes/minha/automatico', { method: 'PUT', body: JSON.stringify(corpoDoFormulario()) });
+        if (r.situacao === 'salvo') {
+          const s = r.solicitacao;
+          aceitaEm = s.declaracao_aceita_em ? new Date(s.declaracao_aceita_em) : null;
+          conhecimentoEm = s.conhecimento_objeto_aceito_em ? new Date(s.conhecimento_objeto_aceito_em) : null;
+          liquidacaoEm = s.liquidacao_aceita_em ? new Date(s.liquidacao_aceita_em) : null;
+          atualizarDeclaracao();
+          indicador('ok', `✔ Salvo automaticamente às ${hora(r.salvo_em)}`);
+        } else {
+          indicador('rascunho', `✔ Rascunho salvo às ${hora(r.salvo_em)} — ainda falta preencher ${r.faltando.length} item(ns); veja em "Finalizar credenciamento".`);
+        }
+        $('feedback').hidden = true;
+        // "Finalizar credenciamento" confere as pendências de novo.
+        window.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
+      } catch (_) {
+        alterado = true;
+        indicador('erro', 'Não foi possível salvar agora. Tentando de novo…');
+        setTimeout(() => { if (alterado) salvarAgora(); }, 5000);
+      } finally {
+        salvando = null;
+        if (deNovo) { deNovo = false; salvarAgora(); }
+      }
+    })();
+    return salvando;
+  }
+
+  // Enter num campo não recarrega a página: só salva na hora.
+  $('form-solicitacao').addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    if (alterado) salvarAgora();
   });
 })();

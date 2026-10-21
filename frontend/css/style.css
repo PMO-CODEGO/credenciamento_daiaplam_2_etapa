@@ -1722,3 +1722,49 @@ input[readonly] {
 .envio-final__pendencias li {
   margin-bottom: 4px;
 }
+
+/* Indicador do salvamento automático do formulário principal */
+.autosalvar {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10;
+  max-width: min(360px, calc(100vw - 32px));
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 4px 16px rgba(22, 36, 28, 0.12);
+  font-size: 12px;
+  color: var(--ink-soft);
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+@starting-style {
+  .autosalvar {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.autosalvar--ok {
+  color: var(--primary-dark);
+}
+
+.autosalvar--rascunho {
+  color: var(--gold-dark);
+}
+
+.autosalvar--erro {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @starting-style {
+    .autosalvar {
+      transform: none;
+    }
+  }
+}

@@ -119,3 +119,15 @@ class CnaeOut(BaseModel):
     codigo: str
     codigo_formatado: str
     descricao: str
+
+
+class RascunhoOut(BaseModel):
+    dados: dict
+    atualizado_em: datetime | None = None
+
+
+class AutoSalvarOut(BaseModel):
+    situacao: str  # "salvo" (virou a solicitação oficial) ou "rascunho" (ainda falta algo)
+    faltando: list[str]
+    salvo_em: datetime
+    solicitacao: SolicitacaoOut | None = None

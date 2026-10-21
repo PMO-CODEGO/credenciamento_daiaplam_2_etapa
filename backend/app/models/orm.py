@@ -143,3 +143,15 @@ class Tentativa(Base):
     id = Column(Integer, primary_key=True, index=True)
     chave = Column(String(120), nullable=False, index=True)  # ex.: "login|IP|CNPJ"
     criado_em = Column(DateTime, nullable=False, index=True)
+
+
+class Rascunho(Base):
+    """Formulário principal ainda incompleto, salvo automaticamente (um por empresa).
+    Some quando o formulário fica completo e vira a solicitação oficial."""
+
+    __tablename__ = "rascunhos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
+    dados = Column(JSON, nullable=False)  # mesmos campos do PUT /api/solicitacoes/minha
+    data_atualizacao = Column(DateTime, server_default=func.now())
