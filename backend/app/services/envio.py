@@ -10,8 +10,6 @@ from sqlalchemy.orm import Session
 from weasyprint import HTML
 
 from app.models.orm import Cronograma, Documento, Envio, Evtf, Mce, Solicitacao, Usuario
-from app.schemas.cronograma import dados_da_declaracao
-from app.schemas.cronograma import desatualizado as cronograma_desatualizado
 from app.services import documentos as docs
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
@@ -83,13 +81,8 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
             falta.append(docs.TIPOS_POR_CHAVE[chave][0].split(" — ")[0] + ": envie o documento.")
     if not (evtf or por_tipo.get("evtf")):
         falta.append("Inciso XI (EVTF): preencha o formulário ou envie o arquivo.")
-    crono_vale = crono is not None and not cronograma_desatualizado(crono.dados, dados_da_declaracao(sol))
-    if not (crono_vale or por_tipo.get("inciso12")):
-        if crono is not None:
-            falta.append("Inciso XII (Cronograma Físico de Obras): o período da obra mudou na declaração; "
-                         "ajuste os percentuais do cronograma e salve de novo.")
-        else:
-            falta.append("Inciso XII (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
+    if not (crono or por_tipo.get("inciso12")):
+        falta.append("Inciso XII (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
     if not ((mce and mce.dados) or por_tipo.get("inciso13")):
         falta.append("Inciso XIII (MCE): preencha o formulário ou envie o arquivo.")
     if not mce or mce.ciencia_rede != "aceito":

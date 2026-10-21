@@ -36,15 +36,14 @@
       <h3 class="section-title section-title--formulario">Ou preencha o formulário para gerar o PDF</h3>
       <form id="form-cronograma" novalidate>
         <h3 class="section-title">Dados da empresa</h3>
-        <p class="section-desc" id="origem-dados">Estes dados vêm do formulário principal (Inciso I e declaração do Inciso XII) e são sempre iguais a ele. Para alterar, mude lá e salve.</p>
         <div class="field">
           <label for="nome_empresa">Nome da empresa</label>
-          <input type="text" id="nome_empresa" maxlength="255" autocomplete="organization" readonly>
+          <input type="text" id="nome_empresa" maxlength="255" autocomplete="organization">
           <p class="field__error" data-error-for="nome_empresa"></p>
         </div>
         <div class="field">
           <label for="endereco">Endereço</label>
-          <input type="text" id="endereco" maxlength="500" autocomplete="street-address" readonly>
+          <input type="text" id="endereco" maxlength="500" placeholder="Rua, número, bairro, cidade-UF" autocomplete="street-address">
           <p class="field__error" data-error-for="endereco"></p>
         </div>
 
@@ -52,13 +51,13 @@
         <div class="field-row">
           <div class="field">
             <label for="area_empresa">Área da Empresa (m²)</label>
-            <input type="text" id="area_empresa" autocomplete="off" readonly>
+            <input type="text" id="area_empresa" inputmode="decimal" placeholder="Ex.: 10.000" autocomplete="off">
             <p class="field__hint" id="dica-area-empresa"></p>
             <p class="field__error" data-error-for="area_empresa"></p>
           </div>
           <div class="field">
             <label for="area_construida">Área a ser Construída (m²)</label>
-            <input type="text" id="area_construida" autocomplete="off" readonly>
+            <input type="text" id="area_construida" inputmode="decimal" placeholder="Ex.: 2.500" autocomplete="off">
             <p class="field__hint" id="dica-area-construida"></p>
             <p class="field__error" data-error-for="area_construida"></p>
           </div>
@@ -66,13 +65,13 @@
         <div class="field-row">
           <div class="field">
             <label for="inicio_obras">Previsão início das Obras</label>
-            <input type="month" id="inicio_obras" readonly>
+            <input type="month" id="inicio_obras">
             <p class="field__error" data-error-for="inicio_obras"></p>
           </div>
           <div class="field">
             <label for="termino_obras">Previsão Término das Obras</label>
-            <input type="month" id="termino_obras" aria-describedby="dica-periodo" readonly>
-            <p class="field__hint" id="dica-periodo">O período informado na declaração do Inciso XII.</p>
+            <input type="month" id="termino_obras" aria-describedby="dica-periodo">
+            <p class="field__hint" id="dica-periodo">No máximo 24 meses, contando o mês de início e o de término. Deve combinar com o cronograma informado na declaração.</p>
             <p class="field__error" data-error-for="termino_obras"></p>
           </div>
         </div>

@@ -31,7 +31,17 @@
   }
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-  // ---------- Períodos ----------
+  // ---------- Números e períodos ----------
+  function numeroBr(v) {
+    const t = (v || '').trim().replace(/\s*m\s*[²2]\s*$/i, '');
+    if (!/^(\d{1,3}(\.\d{3})*(,\d+)?|\d+(,\d+)?)$/.test(t)) return NaN;
+    return Number(t.replace(/\./g, '').replace(',', '.'));
+  }
+  function formatarNumeroBr(v) {
+    const [inteiro, ...dec] = v.replace(/[^\d,]/g, '').split(',');
+    const milhares = inteiro.replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return dec.length ? `${milhares},${dec.join('').slice(0, 2)}` : milhares;
+  }
   const inicioEl = $('inicio_obras');
   const terminoEl = $('termino_obras');
   const cronogramaEl = $('cronograma');
@@ -153,19 +163,25 @@
     if (novos.length) novos[novos.length - 1].focus();
   });
 
+  $('area_empresa').addEventListener('input', (e) => (e.target.value = formatarNumeroBr(e.target.value)));
+  $('area_construida').addEventListener('input', (e) => {
+    const novo = formatarNumeroBr(e.target.value);
+    const limite = numeroBr($('area_empresa').value);
+    // não passa da área da empresa (quando ela já está preenchida)
+    e.target.value = novo && !Number.isNaN(limite) && numeroBr(novo) > limite ? $('area_construida').dataset.anterior || '' : novo;
+    $('area_construida').dataset.anterior = e.target.value;
+  });
+
   // ---------- Estado vindo do servidor ----------
-  // Empresa, endereço, áreas e período vêm sempre da declaração do Inciso XII
-  // (campos somente leitura); a empresa só preenche os serviços e percentuais.
-  function aplicarDeclaracao(d) {
-    $('nome_empresa').value = d.nome_empresa || '';
-    $('endereco').value = d.endereco || '';
-    $('area_empresa').value = d.area_empresa || '';
-    $('area_construida').value = d.area_construida || '';
-    inicioEl.value = d.inicio_obras || '';
-    terminoEl.value = d.termino_obras || '';
-  }
-  function preencherServicos(dados) {
-    if (dados && dados.servicos && dados.servicos.length) {
+  function preencher(dados) {
+    $('nome_empresa').value = dados.nome_empresa || '';
+    $('endereco').value = dados.endereco || '';
+    $('area_empresa').value = dados.area_empresa || '';
+    $('area_construida').value = dados.area_construida || '';
+    $('area_construida').dataset.anterior = $('area_construida').value;
+    inicioEl.value = dados.inicio_obras || '';
+    terminoEl.value = dados.termino_obras || '';
+    if (dados.servicos && dados.servicos.length) {
       servicos = dados.servicos.map((s) => ({ descricao: s.descricao, percentuais: s.percentuais.map(String) }));
     }
   }
@@ -179,18 +195,13 @@
     el.className = `field__hint field__hint--${partes.length ? 'ok' : 'warn'}`;
   }
 
-  const SEM_DECLARACAO = 'Preencha e salve primeiro a declaração do Inciso XII no formulário principal '
-    + '(percentual de ocupação e início e fim da obra): o cronograma usa esses dados.';
-
-  // Liga ou desliga o preenchimento conforme a declaração já existe ou não.
-  function conferirDeclaracao(estado) {
-    $('btn-salvar').disabled = !estado.declaracao_ok;
-    if (!estado.declaracao_ok) {
-      $('adicionar-servico-wrapper').hidden = true;
-      cronogramaEl.innerHTML = `<p class="cronograma__vazio">${esc(SEM_DECLARACAO)}</p>`;
+  function dicasDaDeclaracao() {
+    if (sugestao.ocupacao_percentual) {
+      $('dica-area-construida').textContent = `Pela sua declaração, a ocupação é de ${sugestao.ocupacao_percentual}% da área (sugestão preenchida; ajuste se precisar).`;
     }
-    $('dica-area-construida').textContent = estado.declaracao_ok
-      ? 'Área solicitada × percentual de ocupação da declaração.' : '';
+    if (sugestao.inicio_obras && (inicioEl.value !== sugestao.inicio_obras || terminoEl.value !== sugestao.termino_obras)) {
+      $('dica-periodo').textContent += ' Atenção: o período informado é diferente do que consta na declaração.';
+    }
   }
 
   async function carregar() {
@@ -200,38 +211,16 @@
       MAX_MESES = estado.max_meses;
       sugestao = estado.sugestao || {};
       servicos = estado.servicos_sugeridos.map((d) => ({ descricao: d, percentuais: [] }));
-      preencherServicos(estado.dados);
-      aplicarDeclaracao(sugestao);
+      preencher(estado.dados || sugestao);
       atualizarPeriodo();
-      conferirDeclaracao(estado);
+      dicasDaDeclaracao();
       situacao(estado);
       desenharArquivos(estado);
-      if (estado.desatualizado) {
-        mostrar('error', 'O período da obra mudou na declaração do Inciso XII. Ajuste os percentuais mensais abaixo e salve de novo.');
-      } else if (estado.dados) {
-        mostrarPdf('Cronograma salvo. Você pode alterá-lo e salvar de novo.');
-      }
+      if (estado.dados) mostrarPdf('Cronograma salvo. Você pode alterá-lo e salvar de novo.');
     } catch (e) {
       mostrar('error', e.message || 'Falha de conexão. Recarregue a página.');
     }
   }
-
-  // Formulário principal salvo (painel em home.html): traz os dados novos da
-  // declaração sem perder os percentuais que estão sendo digitados.
-  window.addEventListener('message', async (ev) => {
-    if (ev.origin !== window.location.origin || !ev.data || ev.data.tipo !== 'dianot:declaracao-atualizada') return;
-    try {
-      const estado = await (await api('/api/cronograma/minha')).json();
-      sugestao = estado.sugestao || {};
-      aplicarDeclaracao(sugestao);
-      atualizarPeriodo();
-      conferirDeclaracao(estado);
-      situacao(estado);
-      if (estado.desatualizado) {
-        mostrar('error', 'O período da obra mudou na declaração do Inciso XII. Ajuste os percentuais mensais abaixo e salve de novo.');
-      }
-    } catch (_) { /* fica com os dados anteriores */ }
-  });
 
   // ---------- Mensagens, PDF ----------
   function mostrar(tipo, html) {
@@ -259,10 +248,18 @@
     const E = CodegoForm.erro;
     CodegoForm.limparErros(form);
     let ok = true;
-    // Empresa, áreas e período vêm da declaração (somente leitura aqui).
-    if (!inicioEl.value || !terminoEl.value) { E('servicos', SEM_DECLARACAO); ok = false; }
-    else if (problemaInicio()) { E('inicio_obras', `${problemaInicio()} Ajuste o início da obra na declaração do Inciso XII.`); ok = false; }
-    else if (problemaPeriodo()) { E('termino_obras', `${problemaPeriodo()} Ajuste o período na declaração do Inciso XII.`); ok = false; }
+    const exige = (id, msg) => { if (!$(id).value.trim()) { E(id, msg); ok = false; } };
+    exige('nome_empresa', 'Informe o nome da empresa.');
+    exige('endereco', 'Informe o endereço.');
+    const ae = numeroBr($('area_empresa').value);
+    const ac = numeroBr($('area_construida').value);
+    if (Number.isNaN(ae) || ae <= 0) { E('area_empresa', 'Informe a área da empresa (ex.: 10.000 ou 2.500,50).'); ok = false; }
+    if (Number.isNaN(ac) || ac <= 0) { E('area_construida', 'Informe a área a ser construída (ex.: 2.500).'); ok = false; }
+    else if (!Number.isNaN(ae) && ac > ae) { E('area_construida', 'A área a ser construída não pode ser maior que a área da empresa.'); ok = false; }
+    if (!inicioEl.value) { E('inicio_obras', 'Informe a previsão de início das obras.'); ok = false; }
+    else if (problemaInicio()) { E('inicio_obras', problemaInicio()); ok = false; }
+    if (!terminoEl.value) { E('termino_obras', 'Informe a previsão de término das obras.'); ok = false; }
+    else if (problemaPeriodo()) { E('termino_obras', problemaPeriodo()); ok = false; }
     if (meses() > 0) {
       const fora = servicos.find((s) => Math.abs(soma(s) - 100) > 0.01);
       if (!servicos.length) { E('servicos', 'Adicione ao menos um serviço ao cronograma.'); ok = false; }

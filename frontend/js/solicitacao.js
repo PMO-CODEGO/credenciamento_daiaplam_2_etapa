@@ -204,7 +204,6 @@
   let liquidacaoEm = null; // idem, Anexo XIII
   let sedeEditada = false;
   let representanteEditado = false;
-  let representanteCadastro = ''; // Representante Legal informado no cadastro
   // Campos que mudam o texto da declaração: alterar algum desfaz o aceite.
   const CAMPOS_DECLARACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
     'ocupacao_percentual', 'obra_inicio', 'obra_fim', 'declaracao_cidade', 'administrador_nome']);
@@ -304,9 +303,8 @@
     $('administrador_cpf').value = mascaraCpf(s.administrador_cpf);
     $('cnae').value = mascaraCnae(s.cnae_codigo);
     conferirCnae();
-    // Representante: o da declaração salva; senão o do cadastro; senão o administrador.
-    $('representante_nome').value = s.representante_nome || representanteCadastro || s.administrador_nome;
-    representanteEditado = $('representante_nome').value !== s.administrador_nome;
+    $('representante_nome').value = s.representante_nome || s.administrador_nome;
+    representanteEditado = !!s.representante_nome && s.representante_nome !== s.administrador_nome;
     $('representante_cargo').value = s.representante_cargo || '';
     $('ocupacao_percentual').value = s.ocupacao_percentual || '';
     $('obra_inicio').value = s.obra_inicio || '';
@@ -331,17 +329,8 @@
       $('cnpj').value = u.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
       $('nome_empresarial').value = u.nome_empresarial;
       $('email').value = u.email;
-      representanteCadastro = u.representante_nome || '';
       const s = await api('/api/solicitacoes/minha');
-      if (s) preencher(s);
-      else {
-        // Primeiro preenchimento: o representante legal já foi informado no cadastro.
-        if (representanteCadastro) {
-          $('representante_nome').value = representanteCadastro;
-          representanteEditado = true;
-        }
-        atualizarDeclaracao();
-      }
+      if (s) preencher(s); else atualizarDeclaracao();
     } catch (_) {
       mostrar('error', 'Falha de conexão. Recarregue a página.');
     }
@@ -471,15 +460,6 @@
       preencher(s);
       alterado = false;
       mostrar('success', 'Solicitação salva com sucesso. Você pode voltar e alterar os dados quando precisar.');
-      // Painéis abertos (ex.: Cronograma do Inciso XII) usam dados da declaração:
-      // avisa para atualizarem, e a situação dos incisos é conferida de novo.
-      botoesInciso.forEach((botao) => {
-        const iframe = botao.nextElementSibling.querySelector('iframe');
-        if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage({ tipo: 'dianot:declaracao-atualizada' }, window.location.origin);
-        }
-        atualizarSituacao(botao);
-      });
     } catch (e) {
       mostrar('error', e instanceof TypeError ? 'Falha de conexão. Tente novamente.' : e.message);
     } finally {

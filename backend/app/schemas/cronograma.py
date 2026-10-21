@@ -132,37 +132,3 @@ class CronogramaIn(BaseModel):
                     f"Os percentuais do serviço '{s.descricao}' devem somar 100% (atualmente somam {sum(s.percentuais):g}%)."
                 )
         return self
-
-
-# Campos do cronograma que vêm sempre do formulário principal (Inciso I e
-# declaração do Inciso XII): a empresa não os digita de novo e eles não podem
-# ficar diferentes da declaração.
-CAMPOS_DA_DECLARACAO = ("nome_empresa", "endereco", "area_empresa", "area_construida", "inicio_obras", "termino_obras")
-
-
-def dados_da_declaracao(sol) -> dict | None:
-    """Valores dos campos acima a partir da solicitação salva; None se a
-    declaração ainda não tem o percentual de ocupação e o período da obra."""
-    if sol is None or not (sol.ocupacao_percentual and sol.obra_inicio and sol.obra_fim):
-        return None
-    area = float(sol.area_m2)
-    return {
-        "nome_empresa": sol.nome_empresarial,
-        "endereco": sol.sede_endereco or sol.endereco_correspondencia,
-        "area_empresa": formatar_numero_br(area),
-        "area_construida": formatar_numero_br(round(area * sol.ocupacao_percentual / 100, 2)),
-        "inicio_obras": sol.obra_inicio,
-        "termino_obras": sol.obra_fim,
-    }
-
-
-def desatualizado(dados_salvos: dict | None, declaracao: dict | None) -> bool:
-    """O cronograma salvo deixou de valer: a declaração saiu ou o número de meses
-    da obra mudou (os percentuais mensais precisam ser refeitos)."""
-    if not dados_salvos:
-        return False
-    if declaracao is None:
-        return True
-    servicos = dados_salvos.get("servicos") or []
-    meses = total_meses(declaracao["inicio_obras"], declaracao["termino_obras"])
-    return not servicos or len(servicos[0].get("percentuais", [])) != meses
