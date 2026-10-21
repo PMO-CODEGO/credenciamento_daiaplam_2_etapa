@@ -31,7 +31,10 @@ def _ip(request: Request) -> str:
 
 
 def _para_out(u: Usuario) -> UsuarioOut:
-    return UsuarioOut(id=u.id, cnpj=u.cnpj, nome_empresarial=u.nome_empresarial, email=u.email)
+    return UsuarioOut(
+        id=u.id, cnpj=u.cnpj, nome_empresarial=u.nome_empresarial, email=u.email,
+        representante_nome=u.representante_nome,
+    )
 
 
 def usuario_atual(

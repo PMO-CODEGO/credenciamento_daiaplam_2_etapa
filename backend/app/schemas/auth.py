@@ -62,6 +62,7 @@ class UsuarioOut(BaseModel):
     cnpj: str
     nome_empresarial: str
     email: str
+    representante_nome: str | None = None  # Representante Legal informado no cadastro
 
 
 class TokenOut(BaseModel):
