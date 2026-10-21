@@ -15,15 +15,9 @@
     window.location.href = 'index.html';
   }
   if (!token) { sair(); return; }
-  $('btn-sair').addEventListener('click', async () => {
-    if (alterado) await salvarAgora(); // salva o que acabou de ser digitado antes de sair
-    sair();
-  });
-  window.addEventListener('beforeunload', (ev) => {
-    if (!alterado) return;
-    salvarAgora({ aoSair: true });
-    ev.preventDefault(); ev.returnValue = '';
-  });
+  // Saindo da página (ex.: "Sair" do cabeçalho) com alteração ainda não salva:
+  // envia na hora, sem perguntar nada.
+  window.addEventListener('pagehide', () => { if (alterado) salvarAgora({ aoSair: true }); });
   CodegoForm.limparAoEditar($('form-solicitacao'));
   $('form-solicitacao').addEventListener('input', (ev) => {
     if (ev.target.type === 'file') return; // documentos são salvos na hora do envio

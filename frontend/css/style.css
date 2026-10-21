@@ -1768,3 +1768,10 @@ input[readonly] {
     }
   }
 }
+
+.nota-autosalvar {
+  margin: 28px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-align: center;
+}
