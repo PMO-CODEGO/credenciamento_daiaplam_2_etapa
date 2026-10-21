@@ -26,6 +26,11 @@ docker compose up --build
 ```
 - Site: http://localhost:8080 · API: http://localhost:8000/health · Docs: http://localhost:8000/docs (só fora de produção)
 
+## Publicação na VM da CODEGO
+Na mesma VM do Sistema Cadastral (`192.168.0.245`), com banco e containers próprios, porta 8081 na rede
+interna e https pelo Caddy do Cadastral quando o subdomínio existir. Passo a passo em
+[deploy/README.md](deploy/README.md) (`deploy/subir.ps1` sobe/atualiza, `deploy/backup.ps1` faz o backup).
+
 ## Autenticação
 - `POST /api/auth/cadastro` (CNPJ validado, e-mail, senha) · `POST /api/auth/login` · `GET /api/auth/me`
 - Login = CNPJ; senha com bcrypt; sessão por JWT (`APP_SECRET_KEY`, `TOKEN_EXPIRA_MINUTOS`).

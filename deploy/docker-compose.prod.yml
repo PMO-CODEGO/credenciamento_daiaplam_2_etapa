@@ -1,0 +1,57 @@
+# Produção na VM Windows da CODEGO (a mesma do Sistema Cadastral) — guia em deploy/README.md.
+# Não rodar direto: use .\deploy\subir.ps1, que passa o .env da raiz do projeto.
+#
+# Diferenças para o docker-compose.yml de desenvolvimento:
+# - Não tem Caddy próprio: as portas 80/443 da VM já são do Caddy do Sistema
+#   Cadastral. O backend serve o site (SERVIR_FRONTEND) e a API na porta
+#   PORTA_HTTP (padrão 8081); com domínio, o Caddy do Cadastral encaminha para ela.
+# - O banco não fica exposto para fora da máquina.
+# - Backend sem --reload e com o código (e o site) dentro da imagem
+#   (atualizar = git pull + subir.ps1).
+
+name: credenciamento_prod
+
+services:
+  db:
+    image: mysql:8.4
+    restart: always
+    env_file:
+      - ../.env
+    volumes:
+      - db_data:/var/lib/mysql
+      - ../database/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p\"$$MYSQL_ROOT_PASSWORD\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    restart: always
+    env_file:
+      - ../.env
+    environment:
+      MYSQL_HOST: db
+      SERVIR_FRONTEND: "true"
+    command:
+      - uvicorn
+      - app.main:app
+      - --host=0.0.0.0
+      - --port=8000
+      # IP real de quem acessa (limite de tentativas de login) quando vem pelo Caddy.
+      - --proxy-headers
+      - --forwarded-allow-ips=*
+    ports:
+      - "${PORTA_HTTP:-8081}:8000"
+    volumes:
+      - arquivos:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  arquivos:
