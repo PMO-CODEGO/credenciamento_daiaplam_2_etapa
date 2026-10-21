@@ -1,33 +1,26 @@
 # Publicação do Credenciamento DIANOT na VM da CODEGO
 
-Guia para colocar o sistema no ar na **mesma máquina virtual do Sistema Cadastral**
-(Windows, IP interno `192.168.0.245`), primeiro na rede interna e depois com
-domínio próprio e https.
+Guia para colocar o sistema no ar na máquina virtual Windows da CODEGO
+(`CODEGO000001`, IP interno `192.168.0.245`): primeiro na rede interna e
+depois, com o TI, para fora (domínio e https).
 
-## Como fica
+## Como está a VM
 
 ```
-Internet ──https──▶ 177.107.60.124 (IP público da CODEGO)
-                          │  roteador/firewall encaminha 80 e 443 (já feito para o Cadastral)
-                          ▼
-                    VM 192.168.0.245
-                    └─ Caddy do Sistema Cadastral (portas 80/443, https automático)
-                         ├─ sistemacadastral.codego.com.br → Sistema Cadastral
-                         └─ <subdomínio do credenciamento>  → porta 8081 ─┐
-                                                                         ▼
-                    Credenciamento (deploy/docker-compose.prod.yml)
-                         ├─ backend (FastAPI): site + /api, porta 8081
-                         └─ db (MySQL próprio, separado do Cadastral)
+VM 192.168.0.245
+├─ asent-jur (C:\Users\joao.siviero\asent-jur\projeto)
+│    └─ nginx_codego nas portas 80/443 — certificado interno assentjur.codego.local
+└─ Credenciamento (C:\credenciamento_dianot_2_etapa, deploy/docker-compose.prod.yml)
+     ├─ backend (FastAPI): site + /api na porta 8081
+     └─ db (MySQL próprio, separado do asent-jur)
 ```
 
-- Os dois sistemas ficam na mesma VM, mas **separados**: cada um tem seu banco,
-  seus arquivos e seus containers. Atualizar ou reiniciar um não mexe no outro.
-- As portas 80/443 da VM são do Caddy do Sistema Cadastral (só um programa pode
-  usá-las). Por isso o credenciamento **não tem Caddy próprio**: o backend
-  serve o site e a API na porta **8081**, e o Caddy do Cadastral encaminha o
-  subdomínio do credenciamento para ela (passo 6).
-- Enquanto o subdomínio não existe, o sistema funciona na rede interna em
-  `http://192.168.0.245:8081`.
+- Os sistemas ficam na mesma VM, mas **separados**: cada um tem seu banco, seus
+  arquivos e seus containers. Atualizar ou reiniciar um não mexe no outro.
+- As portas 80/443 são do nginx do asent-jur. Por isso o credenciamento não
+  tem proxy próprio: o backend serve o site e a API na porta **8081**
+  (`PORTA_HTTP` no `.env`).
+- Na rede interna o sistema fica em **`http://192.168.0.245:8081`**.
 - O banco não fica acessível de fora da VM.
 
 Arquivos desta pasta:
@@ -37,84 +30,38 @@ Arquivos desta pasta:
 | `docker-compose.prod.yml` | Serviços de produção: banco e backend |
 | `subir.ps1` | Sobe ou atualiza o sistema |
 | `backup.ps1` | Backup do banco e dos documentos enviados |
-| `credenciamento.caddy` | Site do credenciamento para o Caddy do Cadastral (passo 6) |
+| `nginx-credenciamento.conf` | Bloco para o nginx do asent-jur, quando houver domínio público (passo 7) |
+
+> **Rode os scripts dentro da sessão logada da VM** (Área de Trabalho Remota).
+> Por SSH o Docker Desktop não consegue usar o gerenciador de credenciais do
+> Windows e o `subir.ps1` falha ao baixar as imagens ("A sessão de logon
+> especificada não existe"). Comandos de leitura (`docker ps`, logs) funcionam
+> por SSH normalmente.
 
 ---
 
-## 1. Pedir ao TI
+## 1. O que já está pronto na VM
 
-Texto pronto para enviar:
+Feito em 21/10/2026:
 
-> Para publicar o Credenciamento DIANOT na VM **192.168.0.245** (a mesma do
-> Sistema Cadastral), precisamos:
->
-> 1. Liberar a porta **8081 (TCP)** no firewall do Windows da VM, **só para a
->    rede interna** — é por ela que o sistema é testado antes do domínio.
-> 2. Criar um subdomínio para o sistema (ex.: **`credenciamento.codego.com.br`**),
->    registro DNS do tipo A apontando para **177.107.60.124**.
->
-> As portas 80 e 443 já estão encaminhadas para a VM por causa do Sistema
-> Cadastral; não precisa abrir nada novo para fora.
+- Repositório clonado em `C:\credenciamento_dianot_2_etapa`.
+- Acesso de leitura ao GitHub por uma chave só deste repositório
+  (`~\.ssh\credenciamento_deploy`, apelido `github-credenciamento` no
+  `~\.ssh\config`; cadastrada como *deploy key* somente leitura). O
+  `git pull` usa essa chave sozinho.
+- `.env` de produção com senhas geradas na própria VM (`APP_ENV=production`,
+  reCAPTCHA desligado para o teste interno).
 
-O item 2 pode vir depois: o passo 5 (teste na rede interna) não depende dele.
+Para instalar do zero em outra máquina, ver o passo 9.
 
 ---
 
-## 2. Preparar a VM
+## 2. Subir o sistema
 
-A VM já tem Git, WSL 2 e Docker Desktop instalados para o Sistema Cadastral
-(ver `deploy/README.md` daquele projeto). Conferir no PowerShell:
+No PowerShell da VM (Área de Trabalho Remota):
 
 ```powershell
-git --version; docker --version; docker compose version
-```
-
-Os avisos de lá valem aqui: o Docker Desktop só roda com um usuário logado
-(ao sair da Área de Trabalho Remota, **desconecte** em vez de fazer logoff).
-
----
-
-## 3. Instalar o sistema
-
-No PowerShell da VM:
-
-```powershell
-cd C:\
-git clone https://github.com/PMO-CODEGO/credenciamento_dianot_2_etapa.git
 cd C:\credenciamento_dianot_2_etapa
-copy .env.example .env
-notepad .env
-```
-
-Preencha o `.env` com os valores de **produção**:
-
-| Variável | Valor |
-|---|---|
-| `APP_ENV` | `production` |
-| `APP_SECRET_KEY` | senha **nova e forte**, com pelo menos 32 caracteres (o sistema não sobe sem isso em produção) |
-| `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD` | senhas **novas e fortes** (não reutilizar as do Cadastral nem as de desenvolvimento) |
-| `MYSQL_HOST` | `db` |
-| `MYSQL_SSL` | `false` (o banco é o da própria VM) |
-| `CORS_ORIGINS` | `*` (em produção, isso quer dizer "só o próprio site") |
-| `RECAPTCHA_ENABLED`, `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY` | `false` e vazio no teste interno; ver passo 7 |
-| `PORTA_HTTP` | não precisa: o padrão é `8081`. Só mude se essa porta já estiver em uso na VM |
-
-`SERVIR_FRONTEND` e `MYSQL_HOST` já são definidos pelo `docker-compose.prod.yml`.
-
-Para gerar uma senha forte (rodar uma vez para cada senha):
-
-```powershell
--join ((48..57) + (65..90) + (97..122) | Get-Random -Count 40 | ForEach-Object { [char]$_ })
-```
-
-> O `.env` tem senhas: nunca enviar para o GitHub (ele já está no
-> `.gitignore`) nem por e-mail/WhatsApp.
-
----
-
-## 4. Subir o sistema
-
-```powershell
 .\deploy\subir.ps1
 ```
 
@@ -127,10 +74,12 @@ No final aparecem os serviços `db` e `backend` como `Up`.
 
 ---
 
-## 5. Testar na rede interna (sem domínio)
+## 3. Testar na rede interna
 
-1. Na própria VM, abrir <http://localhost:8081>.
-2. De outro computador da CODEGO, abrir <http://192.168.0.245:8081>.
+1. Na própria VM: <http://localhost:8081>.
+2. De outro computador da CODEGO: <http://192.168.0.245:8081>. Se não abrir, o
+   firewall do Windows da VM está bloqueando a porta: pedir ao TI para liberar
+   a **8081 (TCP) só para a rede interna**.
 3. <http://192.168.0.245:8081/health/banco> deve responder `{"status":"ok","banco":"ok"}`.
 
 Teste o ciclo completo: cadastro (anote a senha gerada), login, formulário,
@@ -143,63 +92,9 @@ comprovante em PDF.
 
 ---
 
-## 6. Ativar o domínio e o https (depois do TI)
+## 4. Atualizar o sistema
 
-O https é feito pelo Caddy do **Sistema Cadastral**, que já está na VM.
-
-1. Confirmar que o DNS já responde com o IP público:
-   ```powershell
-   Resolve-DnsName credenciamento.codego.com.br
-   ```
-2. O Caddyfile do Cadastral precisa importar os sites extras da pasta
-   `deploy\sites\` (mudança feita uma vez no repositório do Sistema Cadastral:
-   uma linha `import /etc/caddy/sites/*.caddy` no Caddyfile e a pasta montada
-   no serviço `caddy` do `docker-compose.prod.yml` dele).
-3. Copiar o site do credenciamento para lá e ajustar o domínio:
-   ```powershell
-   New-Item -ItemType Directory -Force C:\sistema_cadastral_codego\deploy\sites | Out-Null
-   copy C:\credenciamento_dianot_2_etapa\deploy\credenciamento.caddy C:\sistema_cadastral_codego\deploy\sites\
-   notepad C:\sistema_cadastral_codego\deploy\sites\credenciamento.caddy
-   ```
-   Troque `credenciamento.codego.com.br` pelo subdomínio criado (se for outro).
-4. Aplicar no Cadastral (recria só o Caddy dele; o Cadastral continua no ar):
-   ```powershell
-   cd C:\sistema_cadastral_codego
-   .\deploy\subir.ps1
-   ```
-5. Abrir o subdomínio com https — de preferência de fora da rede da CODEGO
-   (ex.: celular no 4G).
-
-O Caddy obtém o certificado sozinho no primeiro acesso. Se não funcionar, veja
-os logs do Caddy **do Cadastral** (passo 10 do guia dele): os erros mais comuns
-são o DNS ainda não propagado ou o domínio digitado errado no
-`credenciamento.caddy`.
-
----
-
-## 7. reCAPTCHA
-
-Em <https://www.google.com/recaptcha/admin>, com uma conta da CODEGO:
-
-1. Criar (ou usar) uma chave **reCAPTCHA v2 "Não sou um robô"** e adicionar o
-   subdomínio do credenciamento à lista de domínios.
-2. No `.env`:
-   ```
-   RECAPTCHA_ENABLED=true
-   RECAPTCHA_SITE_KEY=<chave do site>
-   RECAPTCHA_SECRET_KEY=<chave secreta>
-   ```
-3. Rodar `.\deploy\subir.ps1`.
-
-Com o reCAPTCHA ligado e as chaves vazias ou erradas, **ninguém consegue fazer
-login nem se cadastrar**. No teste por IP (passo 5), deixe desligado: a chave
-não reconhece o endereço `192.168.0.245`.
-
----
-
-## 8. Atualizar o sistema
-
-Quando houver mudanças no GitHub:
+Quando houver mudanças no GitHub (na VM, Área de Trabalho Remota):
 
 ```powershell
 cd C:\credenciamento_dianot_2_etapa
@@ -215,7 +110,7 @@ git pull
 
 ---
 
-## 9. Backup
+## 5. Backup
 
 ```powershell
 .\deploy\backup.ps1
@@ -228,8 +123,7 @@ Cria `C:\backups\credenciamento-dianot\<data>\` com:
 Backups com mais de 30 dias são apagados (`-ManterDias` muda isso;
 `-Destino` muda a pasta).
 
-**Agendar todo dia às 2h30** (PowerShell como administrador; meia hora depois
-do backup do Cadastral, para não rodarem juntos):
+**Agendar todo dia às 2h30** (PowerShell como administrador):
 
 ```powershell
 $acao = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File C:\credenciamento_dianot_2_etapa\deploy\backup.ps1'
@@ -256,7 +150,7 @@ docker @compose exec -T backend tar xzf /tmp/arquivos.tgz -C /app
 
 ---
 
-## 10. Comandos úteis
+## 6. Comandos úteis
 
 Na pasta `C:\credenciamento_dianot_2_etapa`:
 
@@ -273,13 +167,99 @@ docker @compose down                           # parar tudo (os dados continuam 
 
 ---
 
-## 11. Checklist de publicação
+## 7. Abrir para fora da CODEGO (domínio e https)
 
-- [ ] TI: porta 8081 liberada na rede interna; subdomínio criado
-- [ ] `.env` de produção com senhas novas e `APP_ENV=production`
-- [ ] Teste completo na rede interna (`http://192.168.0.245:8081`)
+As empresas acessam de fora da rede da CODEGO, então o sistema precisa de um
+endereço público com https. Hoje a VM **não está publicada para a internet**: o
+nginx do asent-jur usa um certificado interno (`assentjur.codego.local`).
+
+Texto pronto para o TI:
+
+> Para publicar o Credenciamento DIANOT, que está na VM **192.168.0.245**
+> (porta interna 8081), precisamos:
+>
+> 1. Um subdomínio (ex.: **`credenciamento.codego.com.br`**) com registro DNS
+>    apontando para o IP público da CODEGO.
+> 2. Encaminhar as portas **80 e 443 (TCP)** desse IP público para a VM
+>    **192.168.0.245** e liberá-las no firewall.
+> 3. Um **certificado https válido** para o subdomínio (da CODEGO, um coringa
+>    `*.codego.com.br`, ou Let's Encrypt — que exige a porta 80 aberta).
+
+Com isso pronto, o credenciamento entra no nginx que já ocupa as portas 80/443
+(o do asent-jur), como um site a mais, sem mexer no asent-jur:
+
+1. Copiar o certificado e a chave para
+   `C:\Users\joao.siviero\asent-jur\projeto\nginx\certs\` como
+   `credenciamento.crt` e `credenciamento.key`.
+2. Colar o conteúdo de `deploy/nginx-credenciamento.conf` dentro do bloco
+   `http { ... }` do `C:\Users\joao.siviero\asent-jur\projeto\nginx\nginx.conf`
+   (antes do `server` de `listen 443` do asent-jur) e ajustar o domínio.
+3. Conferir e recarregar o nginx (não derruba o asent-jur):
+   ```powershell
+   docker exec nginx_codego nginx -t
+   docker exec nginx_codego nginx -s reload
+   ```
+4. Abrir o subdomínio com https — de preferência de fora da rede (ex.: celular no 4G).
+5. Ligar o reCAPTCHA (passo 8).
+
+> O `nginx.conf` é do projeto asent-jur: combine a mudança com quem cuida dele,
+> e registre-a no repositório do asent-jur para não se perder numa atualização.
+
+---
+
+## 8. reCAPTCHA
+
+Em <https://www.google.com/recaptcha/admin>, com uma conta da CODEGO:
+
+1. Criar (ou usar) uma chave **reCAPTCHA v2 "Não sou um robô"** e adicionar o
+   subdomínio do credenciamento à lista de domínios.
+2. No `.env` da VM:
+   ```
+   RECAPTCHA_ENABLED=true
+   RECAPTCHA_SITE_KEY=<chave do site>
+   RECAPTCHA_SECRET_KEY=<chave secreta>
+   ```
+3. Rodar `.\deploy\subir.ps1`.
+
+Com o reCAPTCHA ligado e as chaves vazias ou erradas, **ninguém consegue fazer
+login nem se cadastrar**. No acesso por IP (passo 3), deixe desligado: a chave
+não reconhece o endereço `192.168.0.245`.
+
+---
+
+## 9. Instalar do zero (outra máquina)
+
+1. Git, WSL 2 e Docker Desktop instalados (Docker Desktop iniciando com o
+   login do Windows; ele só roda com um usuário logado).
+2. Acesso de leitura ao repositório (privado): uma *deploy key* como a do passo 1.
+3. ```powershell
+   cd C:\
+   git clone git@github-credenciamento:PMO-CODEGO/credenciamento_dianot_2_etapa.git
+   cd C:\credenciamento_dianot_2_etapa
+   copy .env.example .env
+   notepad .env
+   ```
+4. No `.env`: `APP_ENV=production`; `APP_SECRET_KEY` (32+ caracteres),
+   `MYSQL_PASSWORD` e `MYSQL_ROOT_PASSWORD` com senhas **novas e fortes**;
+   `MYSQL_HOST=db`; `MYSQL_SSL=false`; `CORS_ORIGINS=*`. Para gerar uma senha:
+   ```powershell
+   -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 40 | ForEach-Object { [char]$_ })
+   ```
+5. `.\deploy\subir.ps1` e testar (passo 3).
+
+> O `.env` tem senhas: nunca enviar para o GitHub (ele já está no
+> `.gitignore`) nem por e-mail/WhatsApp.
+
+---
+
+## 10. Checklist de publicação
+
+- [x] Código, chave de leitura do GitHub e `.env` de produção na VM
+- [x] Sistema no ar e teste completo na rede interna (`http://192.168.0.245:8081`) — 21/10/2026
+- [x] Porta 8081 acessível de outros computadores da rede interna
 - [ ] Tabela de CNAEs do Anexo X carregada
-- [ ] Site do credenciamento no Caddy do Cadastral; https funcionando de fora da rede
+- [ ] TI: subdomínio, portas 80/443 encaminhadas e certificado válido
+- [ ] Bloco do credenciamento no nginx; https funcionando de fora da rede
 - [ ] reCAPTCHA com o subdomínio adicionado e `RECAPTCHA_ENABLED=true`
 - [ ] Backup agendado e copiado para fora da VM
 - [ ] Restauração de um backup testada pelo menos uma vez
