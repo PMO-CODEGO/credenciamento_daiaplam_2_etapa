@@ -1039,14 +1039,12 @@ input[readonly] {
 }
 
 /* Mensagens surgem com um leve deslize em vez de "pular" na tela */
-.feedback,
-#aviso-link {
+.feedback {
   transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
 }
 
 @starting-style {
-  .feedback,
-  #aviso-link {
+  .feedback {
     opacity: 0;
     transform: translateY(-4px);
   }
@@ -1102,8 +1100,7 @@ input[readonly] {
   }
 
   @starting-style {
-    .feedback,
-    #aviso-link {
+    .feedback {
       transform: none;
     }
   }

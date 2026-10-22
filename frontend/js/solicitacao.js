@@ -40,15 +40,6 @@
     return dados;
   }
 
-  // ---------- Links dos anexos ----------
-  document.querySelectorAll('[data-link]').forEach((a) => {
-    a.addEventListener('click', (ev) => {
-      const url = (window.DIANOT_LINKS || {})[a.dataset.link];
-      if (!url) { ev.preventDefault(); $('aviso-link').hidden = false; return; }
-      a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-    });
-  });
-
   // ---------- Máscaras e validações ----------
   const mascaraCpf = (v) => digitos(v).slice(0, 11)
     .replace(/^(\d{3})(\d)/, '$1.$2').replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
