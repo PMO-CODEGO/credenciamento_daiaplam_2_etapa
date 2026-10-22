@@ -1,4 +1,4 @@
-// Inciso XII — Cronograma Físico de Obras: formulário (serviços x meses), PDF e
+// Anexo VI — Cronograma Físico de Obras: formulário (serviços x meses), PDF e
 // envio de arquivo próprio. O estado do cronograma fica em memória; a tabela só
 // é redesenhada quando a estrutura muda, para não perder o foco ao digitar.
 (function () {
@@ -191,9 +191,22 @@
     if (estado.dados) partes.push('cronograma preenchido pelo formulário');
     if (estado.arquivos.length) partes.push(`${estado.arquivos.length} arquivo(s) enviado(s)`);
     const el = $('situacao');
-    el.textContent = partes.length ? `✔ Situação deste inciso: ${partes.join(' e ')}.` : 'Situação deste inciso: pendente — preencha o formulário ou envie um arquivo.';
+    el.textContent = partes.length ? `✔ Situação deste anexo: ${partes.join(' e ')}.` : 'Situação deste anexo: pendente — preencha o formulário ou envie um arquivo.';
     el.className = `field__hint field__hint--${partes.length ? 'ok' : 'warn'}`;
   }
+
+  // ---------- Escolha entre a Opção 1 (arquivo pronto) e a Opção 2 (formulário) ----------
+  // Na primeira vez só aparecem os dois botões; quem já usou uma das opções
+  // volta direto para ela. Dá para trocar a qualquer momento.
+  const botoesOpcao = document.querySelectorAll('.escolha-opcao__botao');
+  function escolherOpcao(id) {
+    botoesOpcao.forEach((b) => {
+      const ativa = b.dataset.opcao === id;
+      b.setAttribute('aria-pressed', String(ativa));
+      $(b.dataset.opcao).hidden = !ativa;
+    });
+  }
+  botoesOpcao.forEach((b) => b.addEventListener('click', () => escolherOpcao(b.dataset.opcao)));
 
   function dicasDaDeclaracao() {
     if (sugestao.ocupacao_percentual) {
@@ -216,6 +229,8 @@
       dicasDaDeclaracao();
       situacao(estado);
       desenharArquivos(estado);
+      if (estado.dados) escolherOpcao('opcao-2');
+      else if (estado.arquivos.length) escolherOpcao('opcao-1');
       if (estado.dados) mostrarPdf('Cronograma salvo. Você pode alterá-lo e salvar de novo.');
     } catch (e) {
       mostrar('error', e.message || 'Falha de conexão. Recarregue a página.');

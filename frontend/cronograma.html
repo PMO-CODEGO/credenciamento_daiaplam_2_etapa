@@ -20,82 +20,99 @@
 
     <main class="card">
       <div class="card__intro">
-        <h2 class="card__title">Inciso XII — Cronograma Físico de Obras (Anexo VI)</h2>
+        <h2 class="card__title">Anexo VI — Cronograma Físico de Obras</h2>
         <p class="card__desc">
-          Envie o seu cronograma pronto em arquivo (PDF, JPG, PNG ou Excel) <strong>ou</strong> preencha
-          o formulário abaixo para gerar o cronograma em PDF, no modelo do Regulamento.
-          Você pode usar as duas opções.
+          Há <strong>duas opções</strong> para entregar o cronograma: enviar o seu arquivo pronto
+          <strong>ou</strong> preencher o formulário para gerar o PDF. Basta uma delas, mas você pode usar as duas.
         </p>
         <p class="field__hint" id="situacao" aria-live="polite">Carregando…</p>
       </div>
 
-      <h3 class="section-title">Envie o seu cronograma pronto</h3>
-      <p class="section-desc" id="texto-upload"></p>
-      <div id="upload-cronograma" class="doc-uploads"></div>
+      <div class="escolha-opcao" role="group" aria-label="Como entregar o cronograma">
+        <button type="button" class="escolha-opcao__botao" data-opcao="opcao-1" aria-pressed="false" aria-controls="opcao-1">
+          <span class="opcao-titulo__tag">Opção 1</span>
+          <span class="escolha-opcao__nome">Enviar o cronograma pronto</span>
+          <span class="escolha-opcao__desc">Para quem já tem o cronograma feito: é só enviar o arquivo (PDF, imagem ou planilha Excel).</span>
+        </button>
+        <button type="button" class="escolha-opcao__botao" data-opcao="opcao-2" aria-pressed="false" aria-controls="opcao-2">
+          <span class="opcao-titulo__tag">Opção 2</span>
+          <span class="escolha-opcao__nome">Preencher o formulário e gerar o PDF</span>
+          <span class="escolha-opcao__desc">Você preenche os dados aqui mesmo e o sistema monta o PDF do cronograma, no modelo do Regulamento. O que já foi informado na solicitação vem preenchido.</span>
+        </button>
+      </div>
 
-      <h3 class="section-title section-title--formulario">Ou preencha o formulário para gerar o PDF</h3>
-      <form id="form-cronograma" novalidate>
-        <h3 class="section-title">Dados da empresa</h3>
-        <div class="field">
-          <label for="nome_empresa">Nome da empresa</label>
-          <input type="text" id="nome_empresa" maxlength="255" autocomplete="organization">
-          <p class="field__error" data-error-for="nome_empresa"></p>
-        </div>
-        <div class="field">
-          <label for="endereco">Endereço</label>
-          <input type="text" id="endereco" maxlength="500" placeholder="Rua, número, bairro, cidade-UF" autocomplete="street-address">
-          <p class="field__error" data-error-for="endereco"></p>
-        </div>
+      <section id="opcao-1" class="opcao-conteudo" hidden>
+        <h3 class="section-title opcao-titulo"><span class="opcao-titulo__tag">Opção 1</span> Enviar o cronograma pronto</h3>
+        <p class="section-desc" id="texto-upload"></p>
+        <div id="upload-cronograma" class="doc-uploads"></div>
+      </section>
 
-        <h3 class="section-title">Dados da obra</h3>
-        <div class="field-row">
+      <section id="opcao-2" class="opcao-conteudo" hidden>
+        <h3 class="section-title section-title--formulario opcao-titulo"><span class="opcao-titulo__tag">Opção 2</span> Preencher o formulário e gerar o PDF</h3>
+        <p class="section-desc">O PDF sai no modelo do Regulamento.</p>
+        <form id="form-cronograma" novalidate>
+          <h3 class="section-title">Dados da empresa</h3>
           <div class="field">
-            <label for="area_empresa">Área da Empresa (m²)</label>
-            <input type="text" id="area_empresa" inputmode="decimal" placeholder="Ex.: 10.000" autocomplete="off">
-            <p class="field__hint" id="dica-area-empresa"></p>
-            <p class="field__error" data-error-for="area_empresa"></p>
+            <label for="nome_empresa">Nome da empresa</label>
+            <input type="text" id="nome_empresa" maxlength="255" autocomplete="organization">
+            <p class="field__error" data-error-for="nome_empresa"></p>
           </div>
           <div class="field">
-            <label for="area_construida">Área a ser Construída (m²)</label>
-            <input type="text" id="area_construida" inputmode="decimal" placeholder="Ex.: 2.500" autocomplete="off">
-            <p class="field__hint" id="dica-area-construida"></p>
-            <p class="field__error" data-error-for="area_construida"></p>
+            <label for="endereco">Endereço</label>
+            <input type="text" id="endereco" maxlength="500" placeholder="Rua, número, bairro, cidade-UF" autocomplete="street-address">
+            <p class="field__error" data-error-for="endereco"></p>
           </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label for="inicio_obras">Previsão início das Obras</label>
-            <input type="month" id="inicio_obras">
-            <p class="field__error" data-error-for="inicio_obras"></p>
+
+          <h3 class="section-title">Dados da obra</h3>
+          <div class="field-row">
+            <div class="field">
+              <label for="area_empresa">Área da Empresa (m²)</label>
+              <input type="text" id="area_empresa" inputmode="decimal" placeholder="Ex.: 10.000" autocomplete="off">
+              <p class="field__hint" id="dica-area-empresa"></p>
+              <p class="field__error" data-error-for="area_empresa"></p>
+            </div>
+            <div class="field">
+              <label for="area_construida">Área a ser Construída (m²)</label>
+              <input type="text" id="area_construida" inputmode="decimal" placeholder="Ex.: 2.500" autocomplete="off">
+              <p class="field__hint" id="dica-area-construida"></p>
+              <p class="field__error" data-error-for="area_construida"></p>
+            </div>
           </div>
-          <div class="field">
-            <label for="termino_obras">Previsão Término das Obras</label>
-            <input type="month" id="termino_obras" aria-describedby="dica-periodo">
-            <p class="field__hint" id="dica-periodo">No máximo 24 meses, contando o mês de início e o de término. Deve combinar com o cronograma informado na declaração.</p>
-            <p class="field__error" data-error-for="termino_obras"></p>
+          <div class="field-row">
+            <div class="field">
+              <label for="inicio_obras">Previsão início das Obras</label>
+              <input type="month" id="inicio_obras">
+              <p class="field__error" data-error-for="inicio_obras"></p>
+            </div>
+            <div class="field">
+              <label for="termino_obras">Previsão Término das Obras</label>
+              <input type="month" id="termino_obras" aria-describedby="dica-periodo">
+              <p class="field__hint" id="dica-periodo">No máximo 24 meses, contando o mês de início e o de término. Deve combinar com o cronograma informado na declaração.</p>
+              <p class="field__error" data-error-for="termino_obras"></p>
+            </div>
           </div>
-        </div>
 
-        <h3 class="section-title">Cronograma</h3>
-        <p class="section-desc">
-          Informe o percentual de cada serviço executado em cada mês. O total de cada serviço
-          deve fechar 100% (ex.: 50% + 50%, ou 25% em quatro meses). Deixe em branco os meses sem execução.
-        </p>
-        <div class="cronograma" id="cronograma">
-          <p class="cronograma__vazio">Informe a previsão de início e de término das obras para montar o cronograma.</p>
-        </div>
-        <p class="field__error" data-error-for="servicos"></p>
-        <div class="field" id="adicionar-servico-wrapper" hidden>
-          <button type="button" class="btn-secondary" id="btn-adicionar-servico">+ Adicionar serviço</button>
-        </div>
+          <h3 class="section-title">Cronograma</h3>
+          <p class="section-desc">
+            Informe o percentual de cada serviço executado em cada mês. O total de cada serviço
+            deve fechar 100% (ex.: 50% + 50%, ou 25% em quatro meses). Deixe em branco os meses sem execução.
+          </p>
+          <div class="cronograma" id="cronograma">
+            <p class="cronograma__vazio">Informe a previsão de início e de término das obras para montar o cronograma.</p>
+          </div>
+          <p class="field__error" data-error-for="servicos"></p>
+          <div class="field" id="adicionar-servico-wrapper" hidden>
+            <button type="button" class="btn-secondary" id="btn-adicionar-servico">+ Adicionar serviço</button>
+          </div>
 
-        <div class="feedback" id="feedback" aria-live="polite" hidden></div>
+          <div class="feedback" id="feedback" aria-live="polite" hidden></div>
 
-        <div class="card__footer">
-          <a class="btn-secondary" href="home.html">← Voltar ao formulário</a>
-          <button type="submit" class="btn-primary" id="btn-salvar">Salvar e gerar PDF</button>
-        </div>
-      </form>
+          <div class="card__footer">
+            <a class="btn-secondary" href="home.html">← Voltar ao formulário</a>
+            <button type="submit" class="btn-primary" id="btn-salvar">Salvar e gerar PDF</button>
+          </div>
+        </form>
+      </section>
 
     </main>
   </div>
