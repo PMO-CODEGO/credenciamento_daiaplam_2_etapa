@@ -531,6 +531,19 @@
             <p class="field__error" data-error-for="rs_unidade"></p>
           </div>
         </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="rs_quantidade_recuperada">Quantidade Recuperada (diária)</label>
+            <input type="text" id="rs_quantidade_recuperada" name="rs_quantidade_recuperada" inputmode="decimal" placeholder="Reciclada, reutilizada etc.">
+            <p class="field__hint">Na mesma unidade da quantidade diária.</p>
+            <p class="field__error" data-error-for="rs_quantidade_recuperada"></p>
+          </div>
+          <div class="field">
+            <label for="rs_irr">IRR</label>
+            <input type="text" id="rs_irr" value="" placeholder="Calculado automaticamente" readonly aria-readonly="true" aria-describedby="rs_irr-aviso">
+            <p class="field__hint" id="rs_irr-aviso">Quantidade gerada ÷ quantidade recuperada.</p>
+          </div>
+        </div>
 
         <div class="field">
           <label for="rs_armazenamento">Forma de Armazenamento</label>

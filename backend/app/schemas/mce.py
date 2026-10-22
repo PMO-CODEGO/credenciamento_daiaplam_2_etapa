@@ -205,6 +205,8 @@ MCE_ESTRUTURA: list[dict] = [
                     ("rs_descricao", "Descrição"),
                     ("rs_quantidade_diaria", "Quantidade Diária"),
                     ("rs_unidade", "Unidade de Medida"),
+                    ("rs_quantidade_recuperada", "Quantidade Recuperada (diária)"),
+                    ("rs_irr", "IRR (quantidade gerada ÷ quantidade recuperada)"),
                     ("rs_armazenamento", "Forma de Armazenamento"),
                     ("rs_destino_final", "Destino Final"),
                     ("rs_licenca_transporte", "Licença de Operação da Empresa de Transporte"),
@@ -384,6 +386,8 @@ class MceIn(BaseModel):
     rs_classe: str = ""
     rs_descricao: str = ""
     rs_quantidade_diaria: str = ""
+    rs_quantidade_recuperada: str = ""  # mesma unidade da quantidade diária
+    rs_irr: str = ""  # calculado: quantidade gerada ÷ quantidade recuperada
     rs_unidade: str = ""
     rs_armazenamento: str = ""
     rs_destino_final: str = ""
@@ -555,6 +559,27 @@ class MceIn(BaseModel):
             self.percentual_area_verde = f"{percentual:.1f}%".replace(".", ",")
         else:
             self.percentual_area_verde = ""
+
+        # IRR dos resíduos sólidos: quantidade gerada ÷ quantidade recuperada.
+        self.rs_irr = ""
+        if self.rs_quantidade_recuperada:
+            try:
+                recuperada = numero_br(self.rs_quantidade_recuperada)
+            except ValueError as exc:
+                raise ValueError(f"Quantidade Recuperada: {exc}") from exc
+            try:
+                gerada = numero_br(self.rs_quantidade_diaria)
+            except ValueError as exc:
+                raise ValueError(
+                    "Para calcular o IRR, informe a Quantidade Diária de resíduos sólidos só com números (ex.: 120 ou 85,5)."
+                ) from exc
+            if recuperada > gerada:
+                raise ValueError("A quantidade recuperada não pode ser maior que a quantidade diária gerada.")
+            self.rs_quantidade_recuperada = formatar_numero_br(recuperada)
+            self.rs_irr = (
+                "Não se aplica (nada é recuperado)" if recuperada == 0
+                else f"{gerada / recuperada:.2f}".replace(".", ",")
+            )
         return self
 
     @model_validator(mode="after")

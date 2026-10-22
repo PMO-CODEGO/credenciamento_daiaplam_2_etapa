@@ -213,6 +213,32 @@ function atualizarPercentualAreaVerde() {
 }
 [areaTotalInput, areaVerdeInput].forEach((el) => el.addEventListener('input', atualizarPercentualAreaVerde));
 
+// IRR dos resíduos sólidos: quantidade gerada ÷ quantidade recuperada (o backend recalcula).
+const rsGeradaInput = document.getElementById('rs_quantidade_diaria');
+const rsRecuperadaInput = document.getElementById('rs_quantidade_recuperada');
+const rsIrrInput = document.getElementById('rs_irr');
+const rsIrrAviso = document.getElementById('rs_irr-aviso');
+function atualizarIrr() {
+  const gerada = numeroBr(rsGeradaInput.value);
+  const recuperada = numeroBr(rsRecuperadaInput.value);
+  rsIrrAviso.className = 'field__hint';
+  rsIrrAviso.textContent = 'Quantidade gerada ÷ quantidade recuperada.';
+  rsIrrInput.value = '';
+  if (!rsRecuperadaInput.value.trim()) return;
+  if (Number.isNaN(gerada) || Number.isNaN(recuperada)) {
+    rsIrrAviso.textContent = 'Informe as duas quantidades só com números (ex.: 120 ou 85,5).';
+    rsIrrAviso.className = 'field__hint field__hint--warn';
+  } else if (recuperada > gerada) {
+    rsIrrAviso.textContent = 'A quantidade recuperada não pode ser maior que a gerada.';
+    rsIrrAviso.className = 'field__hint field__hint--warn';
+  } else if (recuperada === 0) {
+    rsIrrInput.value = 'Não se aplica (nada é recuperado)';
+  } else {
+    rsIrrInput.value = (gerada / recuperada).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+}
+[rsGeradaInput, rsRecuperadaInput].forEach((el) => el.addEventListener('input', atualizarIrr));
+
 function setError(fieldName, message) {
   const errorEl = document.querySelector(`[data-error-for="${fieldName}"]`);
   if (!errorEl) return;
@@ -492,6 +518,7 @@ function preencherFormulario(dados) {
   atualizarSituacao();
   atualizarCamposCondicionais();
   atualizarPercentualAreaVerde();
+  atualizarIrr();
   atualizarTotalMaoDeObra();
 }
 
