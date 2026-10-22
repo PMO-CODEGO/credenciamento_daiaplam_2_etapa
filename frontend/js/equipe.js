@@ -204,7 +204,7 @@
       partes.push(`<p class="field__hint field__hint--warn">Há alterações no formulário salvas como rascunho (incompletas) em ${dataHora(d.rascunho_em)}.</p>`);
     }
 
-    partes.push(`<section class="det-secao"><h4>Documentos (incisos II a X)</h4><ul class="det-docs">${d.documentos.map((t) => `
+    partes.push(`<section class="det-secao"><h4>Documentos (itens 1 a 9)</h4><ul class="det-docs">${d.documentos.map((t) => `
       <li><span class="det-doc-rotulo">${esc(t.rotulo)}${t.obrigatorio ? '' : ' <small>(opcional)</small>'}</span>
         ${t.arquivos.length ? `<ul>${t.arquivos.map(arquivoBtn).join('')}</ul>` : `<span class="${t.obrigatorio ? 'painel-alerta' : 'field__hint'}">não enviado</span>`}
       </li>`).join('')}</ul></section>`);

@@ -1,4 +1,4 @@
-// Documentos do Anexo II (incisos II a X): envio, visualização e remoção.
+// Documentos do Anexo II (itens 1 a 9 na tela; incisos II a X do edital): envio, visualização e remoção.
 // Cada arquivo é salvo no servidor assim que é enviado (não depende do
 // botão "Salvar solicitação"). A lista de incisos vem da API.
 const DianotDocumentos = (function () {

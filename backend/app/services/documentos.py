@@ -6,18 +6,19 @@ from fastapi import HTTPException, UploadFile
 
 from app.config import settings
 
-# Incisos do Anexo II, na ordem em que aparecem no formulário.
+# Documentos do Anexo II (incisos II a X do edital), mostrados como "Item 1" a "Item 9",
+# na ordem em que aparecem no formulário.
 # (chave, rótulo, obrigatório). O Inciso I é o próprio formulário (Anexo IV).
 TIPOS = [
-    ("inciso2", "Inciso II — Cópia do documento de identidade e CPF do responsável pela administração da sociedade", True),
-    ("inciso3", "Inciso III — Em caso do exercício de representação, procuração nos termos do art. 5º do presente regulamento", False),
-    ("inciso4", "Inciso IV — Cópia do contrato social e das alterações", True),
-    ("inciso5", "Inciso V — Certidão Simplificada da empresa, emitida pela Junta Comercial, em até 30 (trinta) dias corridos", True),
-    ("inciso6", "Inciso VI — Certidão negativa de débitos junto à fazenda pública federal", True),
-    ("inciso7", "Inciso VII — Certidão negativa de débitos junto à fazenda pública estadual", True),
-    ("inciso8", "Inciso VIII — Certidão negativa de débitos junto à fazenda pública municipal", True),
-    ("inciso9", "Inciso IX — Certificado de regularidade do FGTS", True),
-    ("inciso10", "Inciso X — Certidão negativa de débitos trabalhistas", True),
+    ("inciso2", "Item 1 — Cópia do documento de identidade e CPF do responsável pela administração da sociedade", True),
+    ("inciso3", "Item 2 — Em caso do exercício de representação, procuração nos termos do art. 5º do presente regulamento", False),
+    ("inciso4", "Item 3 — Cópia do contrato social e das alterações", True),
+    ("inciso5", "Item 4 — Certidão Simplificada da empresa, emitida pela Junta Comercial, em até 30 (trinta) dias corridos", True),
+    ("inciso6", "Item 5 — Certidão negativa de débitos junto à fazenda pública federal", True),
+    ("inciso7", "Item 6 — Certidão negativa de débitos junto à fazenda pública estadual", True),
+    ("inciso8", "Item 7 — Certidão negativa de débitos junto à fazenda pública municipal", True),
+    ("inciso9", "Item 8 — Certificado de regularidade do FGTS", True),
+    ("inciso10", "Item 9 — Certidão negativa de débitos trabalhistas", True),
 ]
 TIPOS_POR_CHAVE = {chave: (rotulo, obrigatorio) for chave, rotulo, obrigatorio in TIPOS}
 OBRIGATORIOS = [chave for chave, _r, obrigatorio in TIPOS if obrigatorio]
