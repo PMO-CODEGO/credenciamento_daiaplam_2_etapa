@@ -38,7 +38,12 @@ def usuario_atual(
     cred: HTTPAuthorizationCredentials | None = Depends(bearer), db: Session = Depends(get_db)
 ) -> Usuario:
     dados = decodificar_token(cred.credentials) if cred else None
+    # Só sessão de empresa (com CNPJ): a sessão da equipe da CODEGO não vale aqui.
+    if dados and (dados.get("papel") or not dados.get("cnpj")):
+        dados = None
     usuario = db.get(Usuario, int(dados["sub"])) if dados else None
+    if usuario is not None and usuario.cnpj != dados["cnpj"]:
+        usuario = None
     if usuario is None or not usuario.ativo:
         raise HTTPException(status_code=401, detail="Sessão expirada. Entre novamente.")
     return usuario

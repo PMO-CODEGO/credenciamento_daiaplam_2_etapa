@@ -155,3 +155,18 @@ class Rascunho(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
     dados = Column(JSON, nullable=False)  # mesmos campos do PUT /api/solicitacoes/minha
     data_atualizacao = Column(DateTime, server_default=func.now())
+
+
+class Equipe(Base):
+    """Pessoa da equipe da CODEGO que acompanha os credenciamentos (tela equipe.html).
+    Criada pelo comando app.scripts.equipe; não tem relação com as empresas."""
+
+    __tablename__ = "equipe"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False, unique=True, index=True)
+    senha_hash = Column(String(255), nullable=False)
+    ativo = Column(Boolean, nullable=False, default=True)
+    data_criacao = Column(DateTime, server_default=func.now())
+    ultimo_acesso = Column(DateTime)

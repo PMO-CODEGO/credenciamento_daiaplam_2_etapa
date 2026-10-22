@@ -31,6 +31,10 @@ Na VM `192.168.0.245` (junto com o asent-jur), com banco e containers próprios,
 interna; para fora, https pelo nginx da VM quando o TI publicar um subdomínio. Passo a passo em
 [deploy/README.md](deploy/README.md) (`deploy/subir.ps1` sobe/atualiza, `deploy/backup.ps1` faz o backup).
 
+## Equipe da CODEGO
+Tela `/equipe.html` (login próprio, só leitura) para acompanhar os credenciamentos: todas as empresas com a situação,
+dados, documentos, PDFs dos incisos e comprovantes. Usuários criados com `python -m app.scripts.equipe` (ver deploy/README.md).
+
 ## Autenticação
 - `POST /api/auth/cadastro` (CNPJ validado, e-mail, senha) · `POST /api/auth/login` · `GET /api/auth/me`
 - Login = CNPJ; senha com bcrypt; sessão por JWT (`APP_SECRET_KEY`, `TOKEN_EXPIRA_MINUTOS`).

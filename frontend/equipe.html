@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Equipe CODEGO — Credenciamento DIANOT</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="page page--equipe">
+    <header class="letterhead">
+      <img class="letterhead__mark" src="assets/brasao_codego.png" alt="CODEGO">
+      <div class="letterhead__text">
+        <p class="letterhead__org">Companhia de Desenvolvimento Econômico de Goiás</p>
+        <h1 class="letterhead__title">Credenciamento DIANOT — 2ª etapa</h1>
+      </div>
+      <div class="letterhead__sessao" id="sessao-equipe" hidden>
+        <span class="letterhead__empresa" id="membro-nome"></span>
+        <button type="button" class="letterhead__sair" id="btn-sair-equipe">Sair</button>
+      </div>
+    </header>
+
+    <main class="card">
+      <!-- Login da equipe -->
+      <section id="tela-login" hidden>
+        <div class="card__intro">
+          <h2 class="card__title">Acesso da equipe CODEGO</h2>
+          <p class="card__desc">Área para acompanhar os credenciamentos recebidos. Entre com o seu e-mail e a senha recebida.</p>
+        </div>
+        <form id="form-login-equipe" class="form-equipe-login" novalidate>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" autocomplete="username" maxlength="255" autofocus>
+            <p class="field__error" data-error-for="email"></p>
+          </div>
+          <div class="field">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" autocomplete="current-password" maxlength="72">
+            <p class="field__error" data-error-for="senha"></p>
+          </div>
+          <div class="feedback feedback--error" id="feedback-login" role="alert" hidden></div>
+          <div class="card__footer card__footer--stack">
+            <button type="submit" class="btn-primary" id="btn-entrar">Entrar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Painel -->
+      <section id="tela-painel" hidden>
+        <div class="card__intro">
+          <h2 class="card__title">Credenciamentos recebidos</h2>
+          <p class="card__desc">Todas as empresas cadastradas e a situação de cada uma. Clique numa empresa para ver os dados, os documentos e os comprovantes.</p>
+        </div>
+
+        <div class="painel-filtros" role="group" aria-label="Filtrar por situação">
+          <button type="button" class="painel-filtro is-ativo" data-filtro="todas">Todas <strong data-total="todas">0</strong></button>
+          <button type="button" class="painel-filtro" data-filtro="finalizado">Finalizadas <strong data-total="finalizado">0</strong></button>
+          <button type="button" class="painel-filtro" data-filtro="preenchendo">Preenchendo <strong data-total="preenchendo">0</strong></button>
+          <button type="button" class="painel-filtro" data-filtro="cadastrado">Só cadastradas <strong data-total="cadastrado">0</strong></button>
+        </div>
+
+        <div class="painel-barra">
+          <div class="field painel-busca">
+            <label for="busca" class="visualmente-oculto">Buscar</label>
+            <input type="search" id="busca" placeholder="Buscar por empresa, CNPJ ou protocolo" autocomplete="off">
+          </div>
+          <button type="button" class="btn-secondary" id="btn-atualizar">Atualizar</button>
+        </div>
+        <p class="field__hint" id="painel-status" aria-live="polite"></p>
+
+        <div class="painel-tabela-wrap">
+          <table class="painel-tabela">
+            <thead>
+              <tr><th>Empresa</th><th>Situação</th><th>Protocolo</th><th>Pendências</th><th>Última atividade</th></tr>
+            </thead>
+            <tbody id="lista-empresas"></tbody>
+          </table>
+        </div>
+        <p class="painel-vazio" id="painel-vazio" hidden>Nenhuma empresa encontrada.</p>
+      </section>
+    </main>
+  </div>
+  <script src="js/form.js"></script>
+  <script src="js/equipe.js"></script>
+</body>
+</html>

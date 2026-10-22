@@ -40,6 +40,22 @@ def criar_token(usuario_id: int, cnpj: str) -> str:
     return jwt.encode(payload, settings.app_secret_key, algorithm=ALGORITMO)
 
 
+# Sessões da equipe da CODEGO levam este papel e nenhum CNPJ: não servem como
+# sessão de empresa, e sessão de empresa não serve na tela da equipe.
+PAPEL_EQUIPE = "equipe"
+
+
+def criar_token_equipe(membro_id: int) -> str:
+    agora = datetime.now(timezone.utc)
+    payload = {
+        "sub": str(membro_id),
+        "papel": PAPEL_EQUIPE,
+        "iat": agora,
+        "exp": agora + timedelta(minutes=settings.token_expira_minutos),
+    }
+    return jwt.encode(payload, settings.app_secret_key, algorithm=ALGORITMO)
+
+
 def decodificar_token(token: str) -> dict | None:
     try:
         return jwt.decode(token, settings.app_secret_key, algorithms=[ALGORITMO])

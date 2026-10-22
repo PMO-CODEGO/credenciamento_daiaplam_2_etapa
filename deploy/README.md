@@ -167,6 +167,33 @@ docker @compose down                           # parar tudo (os dados continuam 
 
 ---
 
+## Equipe da CODEGO (tela de acompanhamento)
+
+A equipe acompanha os credenciamentos em **`/equipe.html`** (ex.:
+<http://192.168.0.245:8081/equipe.html>): lista de todas as empresas com a
+situação de cada uma e, em cada empresa, os dados, os documentos, os PDFs dos
+incisos e os comprovantes. O login é próprio (e-mail + senha), separado do das
+empresas, e a tela é só de leitura.
+
+Os usuários são criados na VM. Funciona também por SSH (não baixa imagens):
+
+```powershell
+cd C:\credenciamento_dianot_2_etapa
+$compose = @('compose','-f','deploy\docker-compose.prod.yml','--env-file','.env')
+
+docker @compose exec backend python -m app.scripts.equipe criar --nome "Fulana de Tal" --email fulana@codego.com.br
+docker @compose exec backend python -m app.scripts.equipe listar
+docker @compose exec backend python -m app.scripts.equipe nova-senha --email fulana@codego.com.br
+docker @compose exec backend python -m app.scripts.equipe desativar --email fulana@codego.com.br
+docker @compose exec backend python -m app.scripts.equipe ativar --email fulana@codego.com.br
+```
+
+A senha é gerada pelo comando e aparece **uma única vez** no terminal: passe-a
+para a pessoa por um meio seguro. Quem sair da equipe deve ser **desativado**
+(o histórico de acessos continua no `listar`).
+
+---
+
 ## 7. Abrir para fora da CODEGO (domínio e https)
 
 As empresas acessam de fora da rede da CODEGO, então o sistema precisa de um
@@ -261,5 +288,6 @@ não reconhece o endereço `192.168.0.245`.
 - [ ] TI: subdomínio, portas 80/443 encaminhadas e certificado válido
 - [ ] Bloco do credenciamento no nginx; https funcionando de fora da rede
 - [ ] reCAPTCHA com o subdomínio adicionado e `RECAPTCHA_ENABLED=true`
+- [ ] Usuários da equipe da CODEGO criados (tela `/equipe.html`)
 - [ ] Backup agendado e copiado para fora da VM
 - [ ] Restauração de um backup testada pelo menos uma vez

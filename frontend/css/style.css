@@ -1844,3 +1844,315 @@ input[readonly] {
     transform: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Tela da equipe da CODEGO (equipe.html)                              */
+/* ------------------------------------------------------------------ */
+
+.page--equipe {
+  max-width: 1120px;
+}
+
+.form-equipe-login {
+  max-width: 420px;
+}
+
+.painel-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.painel-filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), background-color 150ms ease, border-color 150ms ease;
+}
+
+.painel-filtro strong {
+  color: var(--ink);
+}
+
+.painel-filtro:active {
+  transform: scale(0.97);
+}
+
+.painel-filtro.is-ativo {
+  border-color: var(--primary);
+  background: #e3efe8;
+  color: var(--primary-dark);
+}
+
+.painel-filtro:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.painel-barra {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.painel-busca {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.painel-busca input[type="search"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+}
+
+.painel-tabela-wrap {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.painel-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.painel-tabela th {
+  padding: 10px 12px;
+  background: var(--paper);
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--border);
+}
+
+.painel-tabela td {
+  padding: 12px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+.painel-tabela small {
+  color: var(--ink-soft);
+}
+
+.painel-linha {
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.painel-linha[aria-expanded="true"] {
+  background: #f3f6f1;
+}
+
+.painel-linha:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .painel-linha:hover {
+    background: #f7f8f4;
+  }
+}
+
+.selo {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.selo--finalizado {
+  background: #e3efe8;
+  color: var(--primary-dark);
+}
+
+.selo--preenchendo {
+  background: #f6eedc;
+  color: var(--gold-dark);
+}
+
+.selo--cadastrado {
+  background: var(--paper);
+  color: var(--ink-soft);
+}
+
+.painel-alerta {
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+.painel-ok {
+  color: var(--primary-dark);
+}
+
+.painel-vazio {
+  padding: 24px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+/* Detalhe da empresa, aberto embaixo da linha */
+.painel-detalhe > td {
+  padding: 0 !important;
+  background: #fbfbf8;
+}
+
+.det {
+  display: grid;
+  gap: 18px;
+  padding: 20px 24px 24px;
+  border-left: 3px solid var(--primary);
+}
+
+.det-secao h4 {
+  margin: 0 0 8px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.det-secao dl {
+  margin: 0;
+}
+
+.det-linha {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.det-linha dt {
+  color: var(--ink-soft);
+}
+
+.det-linha dd {
+  margin: 0;
+}
+
+.det-docs,
+.det-docs ul,
+.det-pendencias {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.det-docs > li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.det-docs ul {
+  margin-top: 4px;
+}
+
+.det-doc-rotulo {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.det-arquivo {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--primary-dark);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.det-arquivo:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.det-pendencias li {
+  padding: 3px 0 3px 14px;
+  position: relative;
+}
+
+.det-pendencias li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--gold-dark);
+}
+
+/* Celular: cada empresa vira um cartão */
+@media (max-width: 720px) {
+  .painel-tabela thead {
+    display: none;
+  }
+
+  .painel-tabela,
+  .painel-tabela tbody,
+  .painel-tabela tr,
+  .painel-tabela td {
+    display: block;
+    width: 100%;
+  }
+
+  .painel-linha td {
+    padding: 4px 12px;
+    border-bottom: none;
+  }
+
+  .painel-linha td::before {
+    content: attr(data-rotulo) ": ";
+    color: var(--ink-soft);
+    font-size: 12px;
+  }
+
+  .painel-linha td:first-child::before {
+    content: none;
+  }
+
+  .painel-linha {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .det {
+    padding: 16px;
+  }
+
+  .det-linha {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .painel-barra {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .painel-filtro:active {
+    transform: none;
+  }
+}

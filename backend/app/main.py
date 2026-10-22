@@ -10,7 +10,7 @@ from sqlalchemy import text
 from app.config import settings
 from app.database import Base, engine, wait_for_db
 from app.models import orm  # noqa: F401 — registra as tabelas no create_all
-from app.routers import auth, cronograma, documentos, envio, evtf, mce, solicitacao
+from app.routers import auth, cronograma, documentos, envio, equipe, evtf, mce, solicitacao
 from app.database import SessionLocal
 from app.services.cnae import carga_inicial
 from app.services import migracoes
@@ -125,6 +125,7 @@ app.include_router(documentos.router, prefix="/api", tags=["Documentos"])
 app.include_router(cronograma.router, prefix="/api", tags=["Cronograma físico de obras"])
 app.include_router(mce.router, prefix="/api", tags=["Memorial de caracterização (MCE)"])
 app.include_router(evtf.router, prefix="/api", tags=["Viabilidade técnica e financeira (EVTF)"])
+app.include_router(equipe.router, prefix="/api", tags=["Equipe da CODEGO"])
 app.include_router(envio.router, prefix="/api", tags=["Envio final e comprovante"])
 
 # Site servido pelo próprio backend (SERVIR_FRONTEND=true, ex.: no Render). Fica
