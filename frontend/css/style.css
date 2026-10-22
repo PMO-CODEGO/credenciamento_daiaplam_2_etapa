@@ -1795,6 +1795,10 @@ input[readonly] {
   background: var(--surface);
 }
 
+.anexo-imagem + .anexo-imagem {
+  margin-top: 12px;
+}
+
 .anexo-imagem__fonte {
   margin: 10px 0 0;
   font-size: 13px;
