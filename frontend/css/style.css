@@ -1702,7 +1702,7 @@ input[readonly] {
 
 /* Formulário logo abaixo do título "Ou preencha o formulário…": a primeira
    seção dele não repete a linha divisória do título. */
-.section-title--formulario + form > .section-title:first-child {
+.section-title--formulario ~ form > .section-title:first-child {
   margin-top: 8px;
   padding-top: 0;
   border-top: none;
@@ -2155,4 +2155,24 @@ input[readonly] {
   .painel-filtro:active {
     transform: none;
   }
+}
+
+/* Telas com duas formas de entrega (ex.: EVTF): "Opção 1" / "Opção 2" */
+.opcao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+}
+
+.opcao-titulo__tag {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--surface);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
