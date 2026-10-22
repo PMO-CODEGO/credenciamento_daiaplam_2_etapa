@@ -378,8 +378,6 @@
       botao.nextElementSibling.hidden = !abrir;
     });
   });
-  const linkAnexo2 = (window.DIANOT_LINKS || {}).anexo2;
-  if (linkAnexo2 && $('anexo2-pdf')) $('anexo2-pdf').href = linkAnexo2;
 
   const botoesInciso = [...document.querySelectorAll('.inciso-link__botao[data-pagina]')];
   botoesInciso.forEach((botao) => {

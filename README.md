@@ -42,7 +42,7 @@ dados, documentos, PDFs dos incisos e comprovantes. Usuários criados com `pytho
 - Limite de tentativas: 5 logins errados/15 min por IP+CNPJ; 10 cadastros/hora por IP.
 
 ## Formulário de solicitação de área (tela após o login)
-- `frontend/home.html` + `js/solicitacao.js`: links dos anexos (`js/links.js` — preencher quando existirem), área em m² (2 casas), dados da empresa, do administrador e CNAE.
+- `frontend/home.html` + `js/solicitacao.js`: Anexos I (mapa) e II (lista de documentos) em painéis com imagem e PDF (`frontend/assets/anexo-i-*`, `anexo-ii-*`), área em m² (2 casas), dados da empresa, do administrador e CNAE.
 - `GET /api/cnae/{codigo}`, `GET /api/cnae?q=` · `GET/PUT /api/solicitacoes/minha` (uma solicitação por empresa, editável).
 - CNAE validado contra a tabela `cnaes`. A carga inicial vem de `backend/app/data/cnaes.csv` (formato `codigo;descricao`) e hoje tem só **códigos de exemplo**: substituir pela Tabela de CNAEs do Anexo X.
 
