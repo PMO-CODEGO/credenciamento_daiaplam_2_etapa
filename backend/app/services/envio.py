@@ -87,9 +87,9 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
         if not por_tipo.get(chave):
             falta.append(docs.TIPOS_POR_CHAVE[chave][0].split(" — ")[0] + ": envie o documento.")
     if not (evtf or por_tipo.get("evtf")):
-        falta.append("Inciso XI (EVTF): preencha o formulário ou envie o arquivo.")
+        falta.append("Anexo V (EVTF): preencha o formulário ou envie o arquivo.")
     if not (crono or por_tipo.get("inciso12")):
-        falta.append("Inciso XII (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
+        falta.append("Anexo VI (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
     if not ((mce and mce.dados) or por_tipo.get("inciso13")):
         falta.append("Inciso XIII (MCE): preencha o formulário ou envie o arquivo.")
     if not mce or mce.ciencia_rede != "aceito":
@@ -137,8 +137,8 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
             "arquivos": itens,
         })
     for chave, rotulo, reg in (
-        ("evtf", "Inciso XI — Estudo de Viabilidade Técnica e Financeira — EVTF (Anexo V)", evtf),
-        ("inciso12", "Inciso XII — Cronograma Físico de Obras (Anexo VI)", crono),
+        ("evtf", "Anexo V — Estudo de Viabilidade Técnica e Financeira — EVTF", evtf),
+        ("inciso12", "Anexo VI — Cronograma Físico de Obras", crono),
         ("inciso13", "Inciso XIII — Memorial de Caracterização do Empreendimento — MCE (Anexo VII)", mce if mce and mce.dados else None),
     ):
         itens = _itens(arquivos, chave)

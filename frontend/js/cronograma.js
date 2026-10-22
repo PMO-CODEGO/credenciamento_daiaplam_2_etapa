@@ -1,4 +1,4 @@
-// Inciso XII — Cronograma Físico de Obras: formulário (serviços x meses), PDF e
+// Anexo VI — Cronograma Físico de Obras: formulário (serviços x meses), PDF e
 // envio de arquivo próprio. O estado do cronograma fica em memória; a tabela só
 // é redesenhada quando a estrutura muda, para não perder o foco ao digitar.
 (function () {
@@ -191,7 +191,7 @@
     if (estado.dados) partes.push('cronograma preenchido pelo formulário');
     if (estado.arquivos.length) partes.push(`${estado.arquivos.length} arquivo(s) enviado(s)`);
     const el = $('situacao');
-    el.textContent = partes.length ? `✔ Situação deste inciso: ${partes.join(' e ')}.` : 'Situação deste inciso: pendente — preencha o formulário ou envie um arquivo.';
+    el.textContent = partes.length ? `✔ Situação deste anexo: ${partes.join(' e ')}.` : 'Situação deste anexo: pendente — preencha o formulário ou envie um arquivo.';
     el.className = `field__hint field__hint--${partes.length ? 'ok' : 'warn'}`;
   }
 

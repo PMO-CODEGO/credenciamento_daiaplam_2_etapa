@@ -31,7 +31,7 @@ ROTULOS = {
     "obra_fim": "Fim da obra",
     "declaracao_cidade": "Cidade da assinatura",
     "declaracao_uf": "Estado",
-    "declaracao_aceita": "Aceite da declaração do Inciso XII",
+    "declaracao_aceita": "Aceite da declaração do Anexo VI",
     "conhecimento_objeto_aceito": "Aceite da declaração do Inciso XIV",
     "sede_endereco": "Endereço completo da sede",
     "liquidacao_prazo_meses": "Prazo de liquidação",

@@ -69,68 +69,71 @@
       </ul>
 
       <form id="form-solicitacao" novalidate>
-        <h3 class="section-title">Distrito de interesse: DIANOT 2ª ETAPA</h3>
-        <div class="field">
-          <label for="area_m2">Área solicitada/demandada (em m²)</label>
-          <input type="text" id="area_m2" name="area_m2" inputmode="decimal" placeholder="Ex.: 1.000,00" autocomplete="off">
-          <p class="field__hint">Informe em metros quadrados, com duas casas depois da vírgula.</p>
-          <p class="field__error" data-error-for="area_m2"></p>
-        </div>
-
-        <h3 class="section-title">Dados cadastrais da empresa</h3>
-        <div class="field">
-          <label for="nome_empresarial">Nome empresarial</label>
-          <input type="text" id="nome_empresarial" name="nome_empresarial" maxlength="255" autocomplete="organization">
-          <p class="field__error" data-error-for="nome_empresarial"></p>
-        </div>
-        <div class="field">
-          <label for="cnpj">CNPJ</label>
-          <input type="text" id="cnpj" name="cnpj" readonly>
-          <p class="field__hint">É o CNPJ do seu login.</p>
-        </div>
-        <div class="field">
-          <label for="endereco_correspondencia">Endereço para correspondência</label>
-          <input type="text" id="endereco_correspondencia" name="endereco_correspondencia" maxlength="500" autocomplete="street-address">
-          <p class="field__error" data-error-for="endereco_correspondencia"></p>
-        </div>
-        <div class="field-row">
+        <section class="anexo-secao" aria-labelledby="anexo4-titulo">
+          <h3 class="section-title opcao-titulo anexo-secao__titulo" id="anexo4-titulo"><span class="opcao-titulo__tag">Anexo IV</span> Requerimento para solicitação de áreas</h3>
+          <h4 class="section-title">Distrito de interesse: DIANOT 2ª ETAPA</h4>
           <div class="field">
-            <label for="email">Endereço eletrônico (e-mail)</label>
-            <input type="email" id="email" name="email" maxlength="255" autocomplete="email">
-            <p class="field__error" data-error-for="email"></p>
+            <label for="area_m2">Área solicitada/demandada (em m²)</label>
+            <input type="text" id="area_m2" name="area_m2" inputmode="decimal" placeholder="Ex.: 1.000,00" autocomplete="off">
+            <p class="field__hint">Informe em metros quadrados, com duas casas depois da vírgula.</p>
+            <p class="field__error" data-error-for="area_m2"></p>
+          </div>
+
+          <h4 class="section-title">Dados cadastrais da empresa</h4>
+          <div class="field">
+            <label for="nome_empresarial">Nome empresarial</label>
+            <input type="text" id="nome_empresarial" name="nome_empresarial" maxlength="255" autocomplete="organization">
+            <p class="field__error" data-error-for="nome_empresarial"></p>
           </div>
           <div class="field">
-            <label for="telefone">Telefone</label>
-            <input type="tel" id="telefone" name="telefone" inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel">
-            <p class="field__error" data-error-for="telefone"></p>
+            <label for="cnpj">CNPJ</label>
+            <input type="text" id="cnpj" name="cnpj" readonly>
+            <p class="field__hint">É o CNPJ do seu login.</p>
           </div>
-        </div>
+          <div class="field">
+            <label for="endereco_correspondencia">Endereço para correspondência</label>
+            <input type="text" id="endereco_correspondencia" name="endereco_correspondencia" maxlength="500" autocomplete="street-address">
+            <p class="field__error" data-error-for="endereco_correspondencia"></p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="email">Endereço eletrônico (e-mail)</label>
+              <input type="email" id="email" name="email" maxlength="255" autocomplete="email">
+              <p class="field__error" data-error-for="email"></p>
+            </div>
+            <div class="field">
+              <label for="telefone">Telefone</label>
+              <input type="tel" id="telefone" name="telefone" inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel">
+              <p class="field__error" data-error-for="telefone"></p>
+            </div>
+          </div>
 
-        <h3 class="section-title">Dados cadastrais do administrador da sociedade</h3>
-        <div class="field">
-          <label for="administrador_nome">Nome</label>
-          <input type="text" id="administrador_nome" name="administrador_nome" maxlength="255">
-          <p class="field__error" data-error-for="administrador_nome"></p>
-        </div>
-        <div class="field">
-          <label for="administrador_cpf">CPF</label>
-          <input type="text" id="administrador_cpf" name="administrador_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
-          <p class="field__error" data-error-for="administrador_cpf"></p>
-        </div>
+          <h4 class="section-title">Dados cadastrais do administrador da sociedade</h4>
+          <div class="field">
+            <label for="administrador_nome">Nome</label>
+            <input type="text" id="administrador_nome" name="administrador_nome" maxlength="255">
+            <p class="field__error" data-error-for="administrador_nome"></p>
+          </div>
+          <div class="field">
+            <label for="administrador_cpf">CPF</label>
+            <input type="text" id="administrador_cpf" name="administrador_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
+            <p class="field__error" data-error-for="administrador_cpf"></p>
+          </div>
 
-        <h3 class="section-title">Nº do CNAE / Descrição da atividade</h3>
-        <p class="section-desc">Conforme a Tabela de CNAEs do Anexo X. Digite o código (ou parte da descrição) e escolha na lista.</p>
-        <div class="field">
-          <label for="cnae">Nº do CNAE</label>
-          <input type="text" id="cnae" name="cnae" list="cnae-sugestoes" maxlength="40" placeholder="0000-0/00" autocomplete="off">
-          <datalist id="cnae-sugestoes"></datalist>
-          <p class="field__hint" id="cnae-status" aria-live="polite"></p>
-          <p class="field__error" data-error-for="cnae"></p>
-        </div>
-        <div class="field">
-          <label for="cnae_descricao">Descrição da atividade</label>
-          <input type="text" id="cnae_descricao" readonly placeholder="Preenchida automaticamente quando o CNAE for válido">
-        </div>
+          <h4 class="section-title">Nº do CNAE / Descrição da atividade</h4>
+          <p class="section-desc">Conforme a Tabela de CNAEs do Anexo X. Digite o código (ou parte da descrição) e escolha na lista.</p>
+          <div class="field">
+            <label for="cnae">Nº do CNAE</label>
+            <input type="text" id="cnae" name="cnae" list="cnae-sugestoes" maxlength="40" placeholder="0000-0/00" autocomplete="off">
+            <datalist id="cnae-sugestoes"></datalist>
+            <p class="field__hint" id="cnae-status" aria-live="polite"></p>
+            <p class="field__error" data-error-for="cnae"></p>
+          </div>
+          <div class="field">
+            <label for="cnae_descricao">Descrição da atividade</label>
+            <input type="text" id="cnae_descricao" readonly placeholder="Preenchida automaticamente quando o CNAE for válido">
+          </div>
+        </section>
 
         <p class="section-desc section-desc--separada">Envie em PDF, JPG ou PNG, até 20 MB por arquivo. Cada arquivo fica salvo assim que é enviado, e você pode enviar mais de um arquivo por item (ex.: contrato social e alterações).</p>
         <div id="documentos" class="doc-uploads">
@@ -139,15 +142,23 @@
 
         <div class="inciso-link">
           <button type="button" class="doc-list__link inciso-link__botao" aria-expanded="false" data-pagina="evtf.html" data-estado="/api/evtf/minha">
-            <span class="doc-list__tag">Inciso XI</span>
-            <span class="doc-list__title">Estudo de Viabilidade Técnica e Financeira — EVTF (Anexo V)</span>
+            <span class="doc-list__tag">Anexo V</span>
+            <span class="doc-list__title">Estudo de Viabilidade Técnica e Financeira — EVTF</span>
             <span class="inciso-link__status"></span>
           </button>
           <div class="inciso-painel" hidden></div>
         </div>
 
         <div class="declaracao" id="declaracao">
-          <h3 class="section-title">Inciso XII - Declaração de compromisso com a Taxa de Ocupação de Área (ANEXO VI)</h3>
+          <h3 class="section-title">Anexo VI - Declaração de compromisso com a Taxa de Ocupação de Área</h3>
+          <div class="inciso-link inciso-link--topo">
+            <button type="button" class="doc-list__link inciso-link__botao" aria-expanded="false" data-pagina="cronograma.html" data-estado="/api/cronograma/minha">
+              <span class="doc-list__tag">Anexo VI</span>
+              <span class="doc-list__title">Cronograma Físico de Obras</span>
+              <span class="inciso-link__status"></span>
+            </button>
+            <div class="inciso-painel" hidden></div>
+          </div>
           <div class="field-row">
             <div class="field">
               <label for="representante_nome">Nome do representante legal</label>
@@ -239,15 +250,6 @@
               <span>Li a declaração acima, confirmo que as informações são verdadeiras e a assino eletronicamente, sob as penas da Lei.</span>
             </label>
             <p class="field__error" data-error-for="declaracao_aceita"></p>
-          </div>
-
-          <div class="inciso-link">
-            <button type="button" class="doc-list__link inciso-link__botao" aria-expanded="false" data-pagina="cronograma.html" data-estado="/api/cronograma/minha">
-              <span class="doc-list__tag">Inciso XII</span>
-              <span class="doc-list__title">Cronograma Físico de Obras (Anexo VI)</span>
-              <span class="inciso-link__status"></span>
-            </button>
-            <div class="inciso-painel" hidden></div>
           </div>
         </div>
 

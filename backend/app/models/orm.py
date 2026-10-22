@@ -89,7 +89,7 @@ class Documento(Base):
 
 
 class Cronograma(Base):
-    """Cronograma Físico de Obras (Inciso XII) preenchido no formulário — um por empresa."""
+    """Cronograma Físico de Obras (Anexo VI) preenchido no formulário — um por empresa."""
 
     __tablename__ = "cronogramas"
 

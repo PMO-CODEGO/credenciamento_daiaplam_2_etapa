@@ -1,4 +1,4 @@
-// Inciso XI — Estudo de Viabilidade Técnica e Financeira (EVTF, Anexo V): formulário (com PDF
+// Anexo V — Estudo de Viabilidade Técnica e Financeira (EVTF, inciso XI do edital): formulário (com PDF
 // gerado no servidor) e envio de arquivo próprio. Segue o mesmo modelo das
 // telas do Cronograma e do MCE.
 (function () {
@@ -133,9 +133,22 @@
     if (estado.dados) partes.push('EVTF preenchido pelo formulário');
     if (estado.arquivos.length) partes.push(`${estado.arquivos.length} arquivo(s) enviado(s)`);
     const el = $('situacao');
-    el.textContent = partes.length ? `✔ Situação deste inciso: ${partes.join(' e ')}.` : 'Situação deste inciso: pendente — preencha o formulário ou envie um arquivo.';
+    el.textContent = partes.length ? `✔ Situação deste anexo: ${partes.join(' e ')}.` : 'Situação deste anexo: pendente — preencha o formulário ou envie um arquivo.';
     el.className = `field__hint field__hint--${partes.length ? 'ok' : 'warn'}`;
   }
+
+  // ---------- Escolha entre a Opção 1 (arquivo pronto) e a Opção 2 (formulário) ----------
+  // Na primeira vez só aparecem os dois botões; quem já usou uma das opções
+  // volta direto para ela. Dá para trocar a qualquer momento.
+  const botoesOpcao = document.querySelectorAll('.escolha-opcao__botao');
+  function escolherOpcao(id) {
+    botoesOpcao.forEach((b) => {
+      const ativa = b.dataset.opcao === id;
+      b.setAttribute('aria-pressed', String(ativa));
+      $(b.dataset.opcao).hidden = !ativa;
+    });
+  }
+  botoesOpcao.forEach((b) => b.addEventListener('click', () => escolherOpcao(b.dataset.opcao)));
 
   async function carregar() {
     try {
@@ -144,6 +157,8 @@
       totalEditado = !!(estado.dados && estado.dados.capital_recursos_total);
       situacao(estado);
       desenharArquivos(estado);
+      if (estado.dados) escolherOpcao('opcao-2');
+      else if (estado.arquivos.length) escolherOpcao('opcao-1');
       if (estado.dados) mostrarPdf('EVTF salvo. Você pode alterá-lo e salvar de novo.');
     } catch (e) {
       mostrar('error', esc(e.message || 'Falha de conexão. Recarregue a página.'));

@@ -192,7 +192,7 @@
         ${linhaDado('CNAE', `${esc(s.cnae_codigo)} — ${esc(s.cnae_descricao)}`)}
       </dl></section>`);
       partes.push(`<section class="det-secao"><h4>Declarações</h4><dl>
-        ${linhaDado('Inciso XII — Taxa de ocupação', s.ocupacao_percentual ? `${s.ocupacao_percentual}% · obra de ${mesAno(s.obra_inicio)} a ${mesAno(s.obra_fim)} · assinada em ${dataHora(s.declaracao_aceita_em)}` : '—')}
+        ${linhaDado('Anexo VI — Taxa de ocupação', s.ocupacao_percentual ? `${s.ocupacao_percentual}% · obra de ${mesAno(s.obra_inicio)} a ${mesAno(s.obra_fim)} · assinada em ${dataHora(s.declaracao_aceita_em)}` : '—')}
         ${linhaDado('Inciso XIV — Pleno conhecimento do objeto', s.conhecimento_objeto_aceito_em ? `assinada em ${dataHora(s.conhecimento_objeto_aceito_em)}` : '—')}
         ${linhaDado('Inciso XV — Liquidação', s.liquidacao_prazo_meses ? `${s.liquidacao_prazo_meses} meses · sede: ${esc(s.sede_endereco)} · assinada em ${dataHora(s.liquidacao_aceita_em)}` : '—')}
         ${linhaDado('Representante / local', `${esc(s.representante_nome || '—')}${s.representante_cargo ? ` (${esc(s.representante_cargo)})` : ''} · ${esc(s.declaracao_cidade || '—')}${s.declaracao_uf ? `/${esc(s.declaracao_uf)}` : ''}`)}
@@ -219,7 +219,7 @@
         </ul>
         ${chave === 'mce' ? `<p class="field__hint">Ciência da rede de água e esgoto: ${i.ciencia ? `${i.ciencia === 'aceito' ? 'Aceito' : 'Recuso'} em ${dataHora(i.ciencia_em)}` : 'não respondida'}</p>` : ''}
       </li>`;
-    partes.push(`<section class="det-secao"><h4>Incisos XI, XII e XIII</h4><ul class="det-docs">
+    partes.push(`<section class="det-secao"><h4>Anexos V e VI e Inciso XIII</h4><ul class="det-docs">
       ${blocoInciso('evtf', inc.evtf)}${blocoInciso('cronograma', inc.cronograma)}${blocoInciso('mce', inc.mce)}
     </ul></section>`);
 
