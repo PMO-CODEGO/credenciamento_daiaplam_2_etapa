@@ -213,7 +213,7 @@ function atualizarPercentualAreaVerde() {
 }
 [areaTotalInput, areaVerdeInput].forEach((el) => el.addEventListener('input', atualizarPercentualAreaVerde));
 
-// IRR dos resíduos sólidos: quantidade gerada ÷ quantidade recuperada (o backend recalcula).
+// IRR dos resíduos sólidos: quantidade recuperada ÷ quantidade gerada × 100, em % (o backend recalcula).
 const rsGeradaInput = document.getElementById('rs_quantidade_diaria');
 const rsRecuperadaInput = document.getElementById('rs_quantidade_recuperada');
 const rsIrrInput = document.getElementById('rs_irr');
@@ -222,7 +222,7 @@ function atualizarIrr() {
   const gerada = numeroBr(rsGeradaInput.value);
   const recuperada = numeroBr(rsRecuperadaInput.value);
   rsIrrAviso.className = 'field__hint';
-  rsIrrAviso.textContent = 'Quantidade gerada ÷ quantidade recuperada.';
+  rsIrrAviso.textContent = 'Quantidade recuperada ÷ quantidade gerada × 100.';
   rsIrrInput.value = '';
   if (!rsRecuperadaInput.value.trim()) return;
   if (Number.isNaN(gerada) || Number.isNaN(recuperada)) {
@@ -231,10 +231,10 @@ function atualizarIrr() {
   } else if (recuperada > gerada) {
     rsIrrAviso.textContent = 'A quantidade recuperada não pode ser maior que a gerada.';
     rsIrrAviso.className = 'field__hint field__hint--warn';
-  } else if (recuperada === 0) {
-    rsIrrInput.value = 'Não se aplica (nada é recuperado)';
+  } else if (gerada === 0) {
+    rsIrrInput.value = 'Não se aplica (nenhum resíduo gerado)';
   } else {
-    rsIrrInput.value = (gerada / recuperada).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    rsIrrInput.value = `${((recuperada / gerada) * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
   }
 }
 [rsGeradaInput, rsRecuperadaInput].forEach((el) => el.addEventListener('input', atualizarIrr));

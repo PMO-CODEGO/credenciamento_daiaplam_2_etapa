@@ -206,7 +206,7 @@ MCE_ESTRUTURA: list[dict] = [
                     ("rs_quantidade_diaria", "Quantidade Diária"),
                     ("rs_unidade", "Unidade de Medida"),
                     ("rs_quantidade_recuperada", "Quantidade Recuperada (diária)"),
-                    ("rs_irr", "IRR (quantidade gerada ÷ quantidade recuperada)"),
+                    ("rs_irr", "IRR (quantidade recuperada ÷ quantidade gerada × 100)"),
                     ("rs_armazenamento", "Forma de Armazenamento"),
                     ("rs_destino_final", "Destino Final"),
                     ("rs_licenca_transporte", "Licença de Operação da Empresa de Transporte"),
@@ -387,7 +387,7 @@ class MceIn(BaseModel):
     rs_descricao: str = ""
     rs_quantidade_diaria: str = ""
     rs_quantidade_recuperada: str = ""  # mesma unidade da quantidade diária
-    rs_irr: str = ""  # calculado: quantidade gerada ÷ quantidade recuperada
+    rs_irr: str = ""  # calculado: recuperada ÷ gerada × 100 (%)
     rs_unidade: str = ""
     rs_armazenamento: str = ""
     rs_destino_final: str = ""
@@ -560,7 +560,7 @@ class MceIn(BaseModel):
         else:
             self.percentual_area_verde = ""
 
-        # IRR dos resíduos sólidos: quantidade gerada ÷ quantidade recuperada.
+        # IRR dos resíduos sólidos: quantidade recuperada ÷ quantidade gerada × 100 (%).
         self.rs_irr = ""
         if self.rs_quantidade_recuperada:
             try:
@@ -577,8 +577,8 @@ class MceIn(BaseModel):
                 raise ValueError("A quantidade recuperada não pode ser maior que a quantidade diária gerada.")
             self.rs_quantidade_recuperada = formatar_numero_br(recuperada)
             self.rs_irr = (
-                "Não se aplica (nada é recuperado)" if recuperada == 0
-                else f"{gerada / recuperada:.2f}".replace(".", ",")
+                "Não se aplica (nenhum resíduo gerado)" if gerada == 0
+                else f"{recuperada / gerada * 100:.1f}%".replace(".", ",")
             )
         return self
 
