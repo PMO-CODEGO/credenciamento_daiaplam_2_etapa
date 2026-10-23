@@ -62,6 +62,20 @@ def _carregar(db: Session, usuario: Usuario):
     return sol, arquivos, evtf, crono, mce
 
 
+# Nomes curtos dos itens 1 a 9 para o checklist (o rótulo completo fica nos campos de envio).
+NOMES_CURTOS = {
+    "inciso2": "Item 1 — Identidade e CPF do administrador",
+    "inciso3": "Item 2 — Procuração",
+    "inciso4": "Item 3 — Contrato social e alterações",
+    "inciso5": "Item 4 — Certidão simplificada (Junta Comercial)",
+    "inciso6": "Item 5 — Certidão negativa federal",
+    "inciso7": "Item 6 — Certidão negativa estadual",
+    "inciso8": "Item 7 — Certidão negativa municipal",
+    "inciso9": "Item 8 — Certificado do FGTS",
+    "inciso10": "Item 9 — Certidão negativa trabalhista",
+}
+
+
 def checklist(db: Session, usuario: Usuario) -> list[dict]:
     """Tudo o que a empresa precisa fazer, na ordem do formulário, com o que já foi feito.
 
@@ -84,7 +98,7 @@ def checklist(db: Session, usuario: Usuario) -> list[dict]:
 
     def ciencia(anexo: str):
         c = cientes[anexo]
-        item(f"Anexo {anexo} — {c['titulo']}: declarar ciência", c["ciente_em"],
+        item(f"Ciência do Anexo {anexo}", c["ciente_em"],
              f"Anexo {anexo}: declare ciência (abra o anexo e marque a ciência).")
 
     def declaracao(rotulo: str, campo: str, nome: str):
@@ -96,35 +110,36 @@ def checklist(db: Session, usuario: Usuario) -> list[dict]:
         ciencia(anexo)
     if rasc is not None:
         faltando = rascunhos.conferir(db, usuario, rasc.dados)[2] or ["revisar os dados"]
-        item("Anexo IV — Requerimento para solicitação de áreas: preencher", False,
+        item("Anexo IV — Requerimento", False,
              "Formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII): falta " + ", ".join(faltando) + ".",
-             detalhe="Falta: " + ", ".join(faltando) + ".")
+             detalhe="Falta: " + ", ".join(faltando[:3])
+             + (f" e mais {len(faltando) - 3}." if len(faltando) > 3 else "."))
     else:
-        item("Anexo IV — Requerimento para solicitação de áreas: preencher", sol is not None,
+        item("Anexo IV — Requerimento", sol is not None,
              "Preencha o formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII).")
     for chave, rotulo, obrigatorio in docs.TIPOS:
-        item(f"{rotulo}: enviar", por_tipo.get(chave),
+        item(NOMES_CURTOS.get(chave, rotulo), por_tipo.get(chave),
              rotulo.split(" — ")[0] + ": envie o documento." if obrigatorio else None, obrigatorio=obrigatorio)
-    item("Anexo V — Estudo de Viabilidade Técnica e Financeira (EVTF): preencher ou enviar o arquivo",
+    item("Anexo V — EVTF",
          evtf or por_tipo.get("evtf"), "Anexo V (EVTF): preencha o formulário ou envie o arquivo.")
-    item("Anexo VI — Cronograma Físico de Obras: preencher ou enviar o arquivo",
+    item("Anexo VI — Cronograma Físico de Obras",
          crono or por_tipo.get("inciso12"),
          "Anexo VI (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
-    declaracao("Anexo VI — Declaração de compromisso com a Taxa de Ocupação de Área: assinar",
+    declaracao("Anexo VI — Declaração da taxa de ocupação",
                "declaracao_aceita_em", "Anexo VI (taxa de ocupação)")
-    item("Anexo VII — Memorial de Caracterização do Empreendimento (MCE): preencher ou enviar o arquivo",
+    item("Anexo VII — MCE",
          (mce and mce.dados) or por_tipo.get("inciso13"), "Anexo VII (MCE): preencha o formulário ou envie o arquivo.")
-    item("Anexo VII — Ciência da rede de água e esgoto: responder \"Aceito\"",
+    item("Anexo VII — Ciência da rede de água e esgoto",
          mce and mce.ciencia_rede == "aceito", "Anexo VII: responda \"Aceito\" na ciência da rede de água e esgoto.")
     ciencia("VIII")
-    declaracao("Anexo IX — Declaração de Pleno Conhecimento do Objeto: assinar",
+    declaracao("Anexo IX — Declaração de pleno conhecimento",
                "conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento do objeto)")
     ciencia("X")
     ciencia("XI")
-    declaracao("Anexo XII — Declaração Liquidação Alienação de Áreas: assinar",
+    declaracao("Anexo XII — Declaração de liquidação",
                "liquidacao_aceita_em", "Anexo XII (liquidação)")
     ciencia("XIII")
-    item(f"{docs.ROTULO_COMPLEMENTAR}: enviar, se houver", por_tipo.get(docs.TIPO_COMPLEMENTAR), None, obrigatorio=False)
+    item(docs.ROTULO_COMPLEMENTAR, por_tipo.get(docs.TIPO_COMPLEMENTAR), None, obrigatorio=False)
     return itens
 
 

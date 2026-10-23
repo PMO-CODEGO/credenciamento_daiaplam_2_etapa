@@ -1702,74 +1702,78 @@ input[readonly] {
   margin-top: 8px;
 }
 
-/* Checklist do credenciamento (Finalizar credenciamento): ✓ feito, ○ pendente */
+/* Checklist do credenciamento (Finalizar credenciamento): lista curta e discreta do que
+   falta; os itens concluídos só aparecem quando a pessoa pede. */
 .checklist {
   list-style: none;
-  margin: 6px 0 16px;
+  margin: 2px 0 6px;
   padding: 0;
-  font-size: 14px;
+  font-size: 13px;
+  color: var(--ink-soft);
 }
 
 .checklist__item {
   position: relative;
-  padding: 7px 0 7px 30px;
-  border-bottom: 1px solid var(--border);
+  padding: 2px 0 2px 18px;
   line-height: 1.45;
+  break-inside: avoid;
 }
 
-.checklist__item:last-child {
-  border-bottom: none;
+@media (min-width: 640px) {
+  .checklist {
+    columns: 2;
+    column-gap: 28px;
+  }
 }
 
+/* Marcador de lista comum (ponto cheio), para não parecer um botão de marcar */
 .checklist__item::before {
   position: absolute;
-  left: 0;
-  top: 7px;
-  width: 20px;
-  height: 20px;
+  left: 5px;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 20px;
-  text-align: center;
+  content: "";
+  background: var(--gold-dark);
 }
 
-.checklist__item.is-feito {
-  color: var(--ink-soft);
+.checklist__item.is-opcional::before {
+  background: var(--border);
 }
 
 .checklist__item.is-feito::before {
   content: "✓";
-  background: #e3efe8;
-  color: var(--primary-dark);
+  left: 2px;
+  top: 0.15em;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  font-size: 11px;
+  color: var(--primary);
 }
 
-.checklist__item.is-pendente {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-.checklist__item.is-pendente::before,
-.checklist__item.is-opcional::before {
-  content: "";
-  border: 2px solid var(--gold-dark);
-  box-sizing: border-box;
-}
-
-.checklist__item.is-opcional {
-  color: var(--ink-soft);
-}
-
-.checklist__item.is-opcional::before {
-  border-color: var(--border);
+.checklist__item.is-feito {
+  opacity: 0.75;
 }
 
 .checklist__detalhe {
   display: block;
-  margin-top: 2px;
   font-size: 12px;
-  font-weight: 400;
   color: var(--gold-dark);
+}
+
+.checklist-alternar {
+  margin: 0 0 14px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  color: var(--primary-dark);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /* Indicador do salvamento automático do formulário principal */

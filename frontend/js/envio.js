@@ -16,9 +16,20 @@
     return resp;
   }
 
+  // Por padrão o checklist mostra só o que falta; os itens concluídos (e os opcionais)
+  // aparecem quando a pessoa pede.
+  let completo = false;
+  let ultimoEstado = null;
+  $('envio-checklist-alternar').addEventListener('click', () => {
+    completo = !completo;
+    if (ultimoEstado) desenhar(ultimoEstado);
+  });
+
   function desenhar(estado) {
+    ultimoEstado = estado;
     const lista = $('envio-checklist');
-    lista.innerHTML = estado.checklist.map((i) => {
+    const visiveis = completo ? estado.checklist : estado.checklist.filter((i) => i.obrigatorio && !i.feito);
+    lista.innerHTML = visiveis.map((i) => {
       const classe = i.feito ? 'is-feito' : (i.obrigatorio ? 'is-pendente' : 'is-opcional');
       const situacao = i.feito ? 'feito' : (i.obrigatorio ? 'pendente' : 'opcional');
       return `<li class="checklist__item ${classe}">
@@ -26,14 +37,19 @@
         ${i.detalhe && !i.feito ? `<span class="checklist__detalhe">${esc(i.detalhe)}</span>` : ''}
       </li>`;
     }).join('');
-    lista.hidden = false;
+    lista.hidden = !visiveis.length;
+    const escondidos = estado.checklist.length - estado.checklist.filter((i) => i.obrigatorio && !i.feito).length;
+    const alternar = $('envio-checklist-alternar');
+    alternar.hidden = !escondidos;
+    alternar.textContent = completo ? 'Mostrar só o que falta' : `Ver o checklist completo (${estado.checklist.length} itens)`;
+    alternar.setAttribute('aria-expanded', String(completo));
     const obrigatorios = estado.checklist.filter((i) => i.obrigatorio);
     const feitos = obrigatorios.filter((i) => i.feito).length;
     if (estado.pendencias.length) {
-      $('envio-situacao').textContent = `${feitos} de ${obrigatorios.length} itens obrigatórios concluídos. Faltam ${obrigatorios.length - feitos} para poder finalizar:`;
+      $('envio-situacao').textContent = `${feitos} de ${obrigatorios.length} itens concluídos. Falta${obrigatorios.length - feitos > 1 ? 'm' : ''}:`;
       $('envio-situacao').className = 'field__hint field__hint--warn';
     } else {
-      $('envio-situacao').textContent = `✔ Todos os ${obrigatorios.length} itens obrigatórios concluídos. Você já pode finalizar e gerar o comprovante.`;
+      $('envio-situacao').textContent = `✔ Todos os ${obrigatorios.length} itens concluídos. Você já pode finalizar e gerar o comprovante.`;
       $('envio-situacao').className = 'field__hint field__hint--ok';
     }
     $('btn-finalizar').disabled = !estado.pode_finalizar;
