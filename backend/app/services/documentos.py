@@ -26,6 +26,16 @@ OBRIGATORIOS = [chave for chave, _r, obrigatorio in TIPOS if obrigatorio]
 # Vários arquivos por inciso (ex.: contrato social + alterações).
 MAX_ARQUIVOS_POR_TIPO = 5
 
+# Documentação complementar (opcional), depois do Anexo XIII: o que a empresa quiser
+# apresentar além dos itens pedidos. Aceita os mesmos formatos dos itens, com mais arquivos.
+TIPO_COMPLEMENTAR = "complementar"
+ROTULO_COMPLEMENTAR = "Documentação complementar"
+MAX_ARQUIVOS_COMPLEMENTAR = 4
+
+
+def limite_de_arquivos(tipo: str) -> int:
+    return MAX_ARQUIVOS_COMPLEMENTAR if tipo == TIPO_COMPLEMENTAR else MAX_ARQUIVOS_POR_TIPO
+
 # Formatos aceitos, conferidos pelo conteúdo do arquivo (não só pela extensão).
 FORMATOS = {
     "pdf": (b"%PDF-", "application/pdf"),

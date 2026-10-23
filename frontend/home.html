@@ -26,7 +26,7 @@
 
       <ul class="doc-list">
         <li class="doc-list__item inciso-link inciso-link--lista">
-          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="I">
             <span class="doc-list__tag">Anexo I</span>
             <span class="doc-list__title">Mapa das áreas disponíveis</span>
           </button>
@@ -39,7 +39,7 @@
           </div>
         </li>
         <li class="doc-list__item inciso-link inciso-link--lista">
-          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="II">
             <span class="doc-list__tag">Anexo II</span>
             <span class="doc-list__title">Documentos de apresentação integral e obrigatória</span>
           </button>
@@ -52,7 +52,7 @@
           </div>
         </li>
         <li class="doc-list__item inciso-link inciso-link--lista">
-          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="III">
             <span class="doc-list__tag">Anexo III</span>
             <span class="doc-list__title">Critérios de pontuação para definição do subsídio locacional</span>
           </button>
@@ -251,7 +251,7 @@
         </div>
 
         <div class="inciso-link">
-          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="VIII">
             <span class="doc-list__tag">Anexo VIII</span>
             <span class="doc-list__title">Fator para cálculo do subsídio do valor da área</span>
           </button>
@@ -284,7 +284,7 @@
         </div>
 
         <div class="inciso-link">
-          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="X">
             <span class="doc-list__tag">Anexo X</span>
             <span class="doc-list__title">Tabelas de pontuação e CNAEs</span>
           </button>
@@ -328,7 +328,7 @@
         </div>
 
         <div class="inciso-link">
-          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="XI">
             <span class="doc-list__tag">Anexo XI</span>
             <span class="doc-list__title">Minuta de contrato CDRU</span>
           </button>
@@ -389,7 +389,7 @@
         </div>
 
         <div class="inciso-link">
-          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="XIII">
             <span class="doc-list__tag">Anexo XIII</span>
             <span class="doc-list__title">Regulamento para Alienações e Empreendimentos da CODEGO 2026</span>
           </button>
@@ -528,6 +528,10 @@
           </div>
         </div>
 
+        <h3 class="section-title">Documentação complementar <span class="doc-upload__opcional">Opcional</span></h3>
+        <p class="section-desc">Envie aqui outros documentos que queira apresentar, além dos pedidos acima. PDF, JPG ou PNG, até 20 MB por arquivo e até 4 arquivos. Cada arquivo fica salvo assim que é enviado.</p>
+        <div id="documentos-complementar" class="doc-uploads"></div>
+
         <div class="feedback" id="feedback" aria-live="polite" hidden></div>
 
         <p class="autosalvar" id="autosalvar" role="status" aria-live="polite" hidden></p>
@@ -548,6 +552,7 @@
 
       <p class="nota-autosalvar">O formulário é salvo automaticamente a cada alteração.</p>
     </main>
+    <p class="rodape-lgpd"><a href="privacidade.html" target="_blank" rel="noopener">Aviso de Privacidade (LGPD)</a></p>
   </div>
   <script src="js/form.js"></script>
   <script src="js/documentos.js"></script>

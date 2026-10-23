@@ -1792,6 +1792,48 @@ input[readonly] {
   margin-top: 12px;
 }
 
+/* Aviso de Privacidade (privacidade.html) */
+.texto-legal p,
+.texto-legal li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.texto-legal ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+
+.texto-legal li + li {
+  margin-top: 4px;
+}
+
+.texto-legal a {
+  color: var(--primary-dark);
+}
+
+/* Link para o Aviso de Privacidade no rodapé das telas */
+.rodape-lgpd {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.rodape-lgpd a {
+  color: var(--primary-dark);
+}
+
+/* "Declaro que li e tenho ciência do Anexo ..." no fim dos anexos só de leitura */
+.ciencia-anexo {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
 .anexo-imagem[hidden] {
   display: none;
 }
@@ -1806,8 +1848,17 @@ input[readonly] {
 }
 
 .anexo-paginacao__indicador {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 13px;
   color: var(--ink-soft);
+}
+
+.anexo-paginacao .anexo-paginacao__numero {
+  width: 64px;
+  padding: 6px 8px;
+  text-align: center;
 }
 
 .anexo-paginacao .btn-secondary:disabled {

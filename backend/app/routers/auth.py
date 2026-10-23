@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.exc import IntegrityError
@@ -71,6 +73,7 @@ def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depend
         email=payload.email,
         representante_nome=payload.representante_nome,
         representante_cpf=payload.representante_cpf,
+        privacidade_ciente_em=datetime.now(),
         senha_hash=gerar_hash_senha(senha),
     )
     db.add(usuario)

@@ -376,8 +376,65 @@
     });
   });
 
-  // Anexos com várias páginas (III e X): uma página por vez, com Anterior/Próxima,
-  // para o painel não ficar enorme. As páginas escondidas nem são baixadas (loading="lazy").
+  // Ciência nos anexos só de leitura (data-ciencia): a marcação "Declaro ciência" fica no
+  // fim do painel e a situação aparece no card. É salva na hora, separada do formulário.
+  const caixasCiencia = {};
+  function mostrarCiencias(lista) {
+    lista.forEach((c) => {
+      const item = caixasCiencia[c.anexo];
+      if (!item) return;
+      item.caixa.checked = Boolean(c.ciente_em);
+      item.status.textContent = c.ciente_em ? 'Ciente' : 'Pendente';
+      item.status.classList.toggle('is-ok', Boolean(c.ciente_em));
+      item.status.classList.toggle('is-pendente', !c.ciente_em);
+    });
+  }
+  document.querySelectorAll('[data-ciencia]').forEach((botao) => {
+    const anexo = botao.dataset.ciencia;
+    const status = document.createElement('span');
+    status.className = 'inciso-link__status';
+    botao.appendChild(status);
+    const rotulo = document.createElement('label');
+    rotulo.className = 'checkbox-item ciencia-anexo';
+    const caixa = document.createElement('input');
+    caixa.type = 'checkbox';
+    const texto = document.createElement('span');
+    texto.textContent = `Declaro que li e tenho ciência do Anexo ${anexo}.`;
+    rotulo.append(caixa, texto);
+    const erro = document.createElement('p');
+    erro.className = 'field__error';
+    erro.setAttribute('role', 'alert');
+    const painel = botao.nextElementSibling;
+    const fechar = painel.querySelector('.inciso-painel__fechar');
+    painel.insertBefore(rotulo, fechar);
+    painel.insertBefore(erro, fechar);
+    caixasCiencia[anexo] = { caixa, status };
+    // Alguns anexos ficam dentro do formulário: a marcação não dispara o salvamento automático.
+    caixa.addEventListener('input', (e) => e.stopPropagation());
+    caixa.addEventListener('change', async (e) => {
+      e.stopPropagation();
+      caixa.disabled = true;
+      erro.textContent = '';
+      try {
+        const r = await api(`/api/anexos/${anexo}/ciencia`, { method: 'PUT', body: JSON.stringify({ ciente: caixa.checked }) });
+        mostrarCiencias(r.anexos);
+        // "Finalizar credenciamento" confere as pendências de novo.
+        window.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
+      } catch (err) {
+        caixa.checked = !caixa.checked;
+        erro.textContent = err.message || 'Não foi possível salvar. Tente de novo.';
+      } finally {
+        caixa.disabled = false;
+      }
+    });
+  });
+  if (Object.keys(caixasCiencia).length) {
+    api('/api/anexos/ciencias').then((r) => mostrarCiencias(r.anexos)).catch(() => {});
+  }
+
+  // Anexos com várias páginas (III, X, XI e XIII): uma página por vez, com Anterior/Próxima
+  // e um campo para ir direto a uma página, para o painel não ficar enorme.
+  // As páginas escondidas nem são baixadas (loading="lazy").
   document.querySelectorAll('[data-anexo-paginas]').forEach((grupo) => {
     const paginas = [...grupo.querySelectorAll('img')];
     if (paginas.length < 2) return;
@@ -387,16 +444,20 @@
     anterior.type = 'button'; anterior.className = 'btn-secondary'; anterior.textContent = '‹ Anterior';
     const proxima = document.createElement('button');
     proxima.type = 'button'; proxima.className = 'btn-secondary'; proxima.textContent = 'Próxima ›';
-    const indicador = document.createElement('span');
+    const indicador = document.createElement('label');
     indicador.className = 'anexo-paginacao__indicador';
-    indicador.setAttribute('aria-live', 'polite');
+    const numero = document.createElement('input');
+    numero.type = 'number'; numero.min = '1'; numero.max = String(paginas.length);
+    numero.inputMode = 'numeric'; numero.className = 'anexo-paginacao__numero';
+    numero.setAttribute('aria-label', `Número da página (1 a ${paginas.length})`);
+    indicador.append('Página ', numero, ` de ${paginas.length}`);
     nav.append(anterior, indicador, proxima);
     grupo.after(nav);
     let atual = 0;
     const mostrar = (i) => {
       atual = Math.max(0, Math.min(paginas.length - 1, i));
       paginas.forEach((img, k) => { img.hidden = k !== atual; });
-      indicador.textContent = `Página ${atual + 1} de ${paginas.length}`;
+      numero.value = String(atual + 1);
       anterior.disabled = atual === 0;
       proxima.disabled = atual === paginas.length - 1;
     };
@@ -407,6 +468,20 @@
     };
     anterior.addEventListener('click', () => ir(atual - 1));
     proxima.addEventListener('click', () => ir(atual + 1));
+    // Digitar o número e dar Enter (ou sair do campo) vai direto para a página.
+    // O campo está dentro do formulário: o Enter não pode enviá-lo, e as mudanças
+    // aqui não disparam o salvamento automático.
+    const irParaDigitada = () => {
+      const n = parseInt(numero.value, 10);
+      if (Number.isNaN(n)) numero.value = String(atual + 1);
+      else if (n - 1 !== atual) ir(n - 1);
+      else numero.value = String(atual + 1);
+    };
+    numero.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); irParaDigitada(); }
+    });
+    numero.addEventListener('change', (e) => { e.stopPropagation(); irParaDigitada(); });
+    numero.addEventListener('input', (e) => e.stopPropagation());
     mostrar(0);
   });
 

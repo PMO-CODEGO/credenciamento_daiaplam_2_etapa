@@ -47,6 +47,7 @@ dados, documentos, PDFs dos incisos e comprovantes. Usuários criados com `pytho
 - CNAE validado contra a tabela `cnaes`, que é sincronizada a cada início com `backend/app/data/cnaes.csv` (formato `codigo;descricao;setor_ocde;pontuacao`): as 433 subclasses da Tabela de CNAEs do Anexo X. Quando o Anexo X lista uma classe inteira, entram todas as subclasses dela.
 
 ## Segurança
+- LGPD: Aviso de Privacidade em `frontend/privacidade.html` (link no rodapé das telas); a empresa declara ciência no cadastro (`usuarios.privacidade_ciente_em`). O texto deve ser revisado pelo jurídico/encarregado de dados da CODEGO.
 - `.env` nunca vai para o Git; em produção `APP_ENV=production` (docs fechadas) e `APP_SECRET_KEY` próprio.
 
 ## Convenção de branches

@@ -18,12 +18,21 @@ class CadastroUsuarioIn(BaseModel):
     email: EmailStr
     representante_nome: str = Field(min_length=3, max_length=255)
     representante_cpf: str
+    # Ciência do Aviso de Privacidade (LGPD); validado mesmo quando não vem no pedido.
+    privacidade_ciente: bool = Field(default=False, validate_default=True)
     g_recaptcha_response: str = ""
 
     @field_validator("cnpj")
     @classmethod
     def _v_cnpj(cls, v):
         return _cnpj(v)
+
+    @field_validator("privacidade_ciente")
+    @classmethod
+    def _v_privacidade(cls, v):
+        if not v:
+            raise ValueError("É preciso declarar ciência do Aviso de Privacidade.")
+        return v
 
     @field_validator("nome_empresarial", "representante_nome")
     @classmethod

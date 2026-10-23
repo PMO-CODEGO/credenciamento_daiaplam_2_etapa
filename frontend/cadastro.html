@@ -55,6 +55,14 @@
         </div>
 
         <div class="field">
+          <label class="checkbox-item" for="privacidade_ciente">
+            <input type="checkbox" id="privacidade_ciente" name="privacidade_ciente">
+            <span>Li e estou ciente do <a href="privacidade.html" target="_blank" rel="noopener">Aviso de Privacidade</a>, que explica como a CODEGO trata os dados pessoais informados neste sistema (LGPD — Lei nº 13.709/2018).</span>
+          </label>
+          <p class="field__error" data-error-for="privacidade_ciente"></p>
+        </div>
+
+        <div class="field">
           <div id="recaptcha"></div>
           <p class="field__error" data-error-for="recaptcha"></p>
         </div>
@@ -67,6 +75,7 @@
         </div>
       </form>
     </main>
+    <p class="rodape-lgpd"><a href="privacidade.html" target="_blank" rel="noopener">Aviso de Privacidade (LGPD)</a></p>
   </div>
   <script src="js/form.js"></script>
   <script src="js/auth.js"></script>

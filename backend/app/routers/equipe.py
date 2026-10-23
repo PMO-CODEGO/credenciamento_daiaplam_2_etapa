@@ -21,6 +21,7 @@ from app.routers import documentos as documentos_rotas
 from app.routers import evtf as evtf_rotas
 from app.routers import mce as mce_rotas
 from app.schemas.solicitacao import SolicitacaoOut
+from app.services import ciencias
 from app.services import documentos as docs
 from app.services import envio as envio_servico
 from app.services.seguranca import (
@@ -134,6 +135,7 @@ def empresa(empresa_id: int, _m: Equipe = Depends(membro_atual), db: Session = D
     crono = cronograma_rotas.estado(usuario=e, db=db)
     mce = mce_rotas.estado(usuario=e, db=db)
     envios = db.query(Envio).filter(Envio.usuario_id == e.id).order_by(Envio.id.desc()).all()
+    docs_empresa = documentos_rotas.listar(usuario=e, db=db).model_dump()
 
     def inciso(estado, rotulo: str) -> dict:
         return {
@@ -150,16 +152,18 @@ def empresa(empresa_id: int, _m: Equipe = Depends(membro_atual), db: Session = D
             "cnpj": e.cnpj, "nome_empresarial": e.nome_empresarial, "email": e.email,
             "representante_nome": e.representante_nome, "representante_cpf": e.representante_cpf,
             "cadastrado_em": e.data_criacao,
+            "privacidade_ciente_em": e.privacidade_ciente_em,
         },
         "solicitacao": SolicitacaoOut.model_validate(sol).model_dump() if sol else None,
         "rascunho_em": rasc.data_atualizacao if rasc else None,
-        "documentos": documentos_rotas.listar(usuario=e, db=db).model_dump()["tipos"],
+        "documentos": [*docs_empresa["tipos"], docs_empresa["complementar"]],
         "incisos": {
             "evtf": inciso(evtf, "Anexo V — Estudo de Viabilidade Técnica e Financeira (EVTF)"),
             "cronograma": inciso(crono, "Anexo VI — Cronograma Físico de Obras"),
             "mce": {**inciso(mce, "Anexo VII — Memorial de Caracterização do Empreendimento (MCE)"),
                     "ciencia": mce.ciencia, "ciencia_em": mce.ciencia_em},
         },
+        "ciencias": ciencias.listar(db, e),
         "envios": [{"id": v.id, "protocolo": v.protocolo, "enviado_em": v.enviado_em} for v in envios],
         "pendencias": envio_servico.pendencias(db, e),
     }

@@ -227,6 +227,7 @@ const CodegoAuth = (function () {
         erro('representante_nome', 'Informe o nome completo do Representante Legal.'); ok = false;
       }
       if (!cpfValido($('representante_cpf').value)) { erro('representante_cpf', 'Informe um CPF válido.'); ok = false; }
+      if (!$('privacidade_ciente').checked) { erro('privacidade_ciente', 'Declare ciência do Aviso de Privacidade para continuar.'); ok = false; }
       if (recaptchaAtivo && !tokenRecaptcha()) { erro('recaptcha', 'Confirme que você não é um robô.'); ok = false; }
       if (!ok) { CodegoForm.focarPrimeiroErro(form); return; }
       const dados = await enviar('/api/auth/cadastro', {
@@ -235,6 +236,7 @@ const CodegoAuth = (function () {
         email: $('email').value.trim(),
         representante_nome: $('representante_nome').value.trim(),
         representante_cpf: somenteDigitos($('representante_cpf').value),
+        privacidade_ciente: $('privacidade_ciente').checked,
         g_recaptcha_response: tokenRecaptcha(),
       }, $('btn-enviar'), 'Cadastrando…');
       if (dados) mostrarSenhaGerada(dados);

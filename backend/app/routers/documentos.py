@@ -23,7 +23,7 @@ def _do_usuario(db: Session, usuario: Usuario, documento_id: int) -> Documento:
 
 @router.get("/documentos", response_model=DocumentosOut)
 def listar(usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_db)):
-    """Incisos do Anexo II com os arquivos já enviados pela empresa."""
+    """Itens do Anexo II e documentação complementar, com os arquivos já enviados pela empresa."""
     enviados = (
         db.query(Documento).filter(Documento.usuario_id == usuario.id).order_by(Documento.data_envio, Documento.id).all()
     )
@@ -37,7 +37,14 @@ def listar(usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_
             )
             for chave, rotulo, obrigatorio in docs.TIPOS
         ],
+        complementar=TipoDocumentoOut(
+            tipo=docs.TIPO_COMPLEMENTAR,
+            rotulo=docs.ROTULO_COMPLEMENTAR,
+            obrigatorio=False,
+            arquivos=[DocumentoOut.model_validate(d) for d in enviados if d.tipo == docs.TIPO_COMPLEMENTAR],
+        ),
         max_arquivos_por_tipo=docs.MAX_ARQUIVOS_POR_TIPO,
+        max_arquivos_complementar=docs.MAX_ARQUIVOS_COMPLEMENTAR,
         max_mb=settings.upload_max_mb,
     )
 
@@ -49,12 +56,13 @@ def enviar(
     usuario: Usuario = Depends(usuario_atual),
     db: Session = Depends(get_db),
 ):
-    if tipo not in docs.TIPOS_POR_CHAVE and tipo not in docs.TIPOS_EXTRAS:
+    if tipo not in docs.TIPOS_POR_CHAVE and tipo not in docs.TIPOS_EXTRAS and tipo != docs.TIPO_COMPLEMENTAR:
         raise HTTPException(status_code=404, detail="Tipo de documento desconhecido.")
     ja_enviados = db.query(Documento).filter(Documento.usuario_id == usuario.id, Documento.tipo == tipo).count()
-    if ja_enviados >= docs.MAX_ARQUIVOS_POR_TIPO:
+    limite = docs.limite_de_arquivos(tipo)
+    if ja_enviados >= limite:
         raise HTTPException(
-            status_code=422, detail=f"Limite de {docs.MAX_ARQUIVOS_POR_TIPO} arquivos neste item. Remova um para enviar outro."
+            status_code=422, detail=f"Limite de {limite} arquivos neste item. Remova um para enviar outro."
         )
     relativo, content_type, tamanho = docs.salvar(usuario.id, arquivo, aceita_excel=tipo in docs.TIPOS_EXTRAS)
     d = Documento(

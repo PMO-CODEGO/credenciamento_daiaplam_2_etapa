@@ -1,4 +1,5 @@
-// Documentos do Anexo II (itens 1 a 9 na tela; incisos II a X do edital): envio, visualização e remoção.
+// Documentos do Anexo II (itens 1 a 9 na tela; incisos II a X do edital) e documentação
+// complementar (opcional, depois do Anexo XIII): envio, visualização e remoção.
 // Cada arquivo é salvo no servidor assim que é enviado (não depende do
 // botão "Salvar solicitação"). A lista de incisos vem da API.
 const DianotDocumentos = (function () {
@@ -10,7 +11,8 @@ const DianotDocumentos = (function () {
   let token = null;
   try { token = sessionStorage.getItem(CHAVE); } catch (_) {}
 
-  let config = { tipos: [], max_arquivos_por_tipo: 5, max_mb: 20 };
+  let config = { tipos: [], complementar: null, max_arquivos_por_tipo: 5, max_arquivos_complementar: 4, max_mb: 20 };
+  const limiteDe = (t) => (t.tipo === 'complementar' ? config.max_arquivos_complementar : config.max_arquivos_por_tipo);
 
   function sessaoExpirada() {
     try { sessionStorage.removeItem(CHAVE); } catch (_) {}
@@ -33,9 +35,15 @@ const DianotDocumentos = (function () {
     const raiz = $('documentos');
     raiz.innerHTML = '';
     config.tipos.forEach((t) => raiz.appendChild(item(t)));
+    // A documentação complementar já tem título na página: o rótulo do campo fica só para leitores de tela.
+    const complementar = $('documentos-complementar');
+    if (complementar && config.complementar) {
+      complementar.innerHTML = '';
+      complementar.appendChild(item(config.complementar, { rotuloOculto: true }));
+    }
   }
 
-  function item(t) {
+  function item(t, { rotuloOculto = false } = {}) {
     const campo = document.createElement('div');
     campo.className = 'field doc-upload';
     campo.dataset.tipo = t.tipo;
@@ -44,7 +52,8 @@ const DianotDocumentos = (function () {
     rotulo.className = 'doc-upload__rotulo';
     rotulo.id = `rotulo-doc-${t.tipo}`;
     rotulo.textContent = t.rotulo;
-    if (!t.obrigatorio) {
+    if (rotuloOculto) rotulo.classList.add('visualmente-oculto');
+    else if (!t.obrigatorio) {
       const opc = document.createElement('span');
       opc.className = 'doc-upload__opcional';
       opc.textContent = 'Opcional';
@@ -59,7 +68,7 @@ const DianotDocumentos = (function () {
       campo.appendChild(lista);
     }
 
-    const cheio = t.arquivos.length >= config.max_arquivos_por_tipo;
+    const cheio = t.arquivos.length >= limiteDe(t);
     const zona = document.createElement('label');
     zona.className = 'doc-upload__zona';
     zona.hidden = cheio;
@@ -102,7 +111,7 @@ const DianotDocumentos = (function () {
     if (cheio) {
       const aviso = document.createElement('p');
       aviso.className = 'field__hint';
-      aviso.textContent = `Limite de ${config.max_arquivos_por_tipo} arquivos atingido. Remova um para enviar outro.`;
+      aviso.textContent = `Limite de ${limiteDe(t)} arquivos atingido. Remova um para enviar outro.`;
       campo.appendChild(aviso);
     }
 

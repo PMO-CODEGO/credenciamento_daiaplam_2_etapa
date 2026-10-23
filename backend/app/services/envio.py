@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from weasyprint import HTML
 
 from app.models.orm import Cronograma, Documento, Envio, Evtf, Mce, Solicitacao, Usuario
+from app.services import ciencias
 from app.services import documentos as docs
 from app.services import rascunho as rascunhos
 
@@ -68,10 +69,10 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
     if rasc is not None:
         # Formulário salvo automaticamente, mas ainda incompleto: diz o que falta.
         faltando = rascunhos.conferir(db, usuario, rasc.dados)[2] or ["revisar os dados"]
-        falta.append("Formulário principal (Inciso I e declarações dos incisos XII, XIV e XV): falta "
+        falta.append("Formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII): falta "
                      + ", ".join(faltando) + ".")
     elif sol is None:
-        falta.append("Preencha o formulário principal (Inciso I e declarações dos incisos XII, XIV e XV).")
+        falta.append("Preencha o formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII).")
     else:
         for campo, nome in (
             ("declaracao_aceita_em", "Anexo VI (taxa de ocupação)"),
@@ -94,6 +95,10 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
         falta.append("Anexo VII (MCE): preencha o formulário ou envie o arquivo.")
     if not mce or mce.ciencia_rede != "aceito":
         falta.append("Anexo VII: responda \"Aceito\" na ciência da rede de água e esgoto.")
+    sem_ciencia = ciencias.pendentes(db, usuario)
+    if sem_ciencia:
+        nomes = ", ".join(sem_ciencia[:-1]) + " e " + sem_ciencia[-1] if len(sem_ciencia) > 1 else sem_ciencia[0]
+        falta.append(f"Declare ciência {'dos Anexos' if len(sem_ciencia) > 1 else 'do Anexo'} {nomes} (abra cada um e marque a ciência).")
     return falta
 
 
@@ -125,7 +130,7 @@ def _itens(arquivos: list[Documento], tipo: str) -> list[dict]:
 def montar_resumo(db: Session, usuario: Usuario) -> dict:
     sol, arquivos, evtf, crono, mce = _carregar(db, usuario)
     incisos = [{
-        "rotulo": "Inciso I — Formulário Padrão para Solicitação de Área (Anexo IV)",
+        "rotulo": "Anexo IV — Requerimento para solicitação de áreas",
         "situacao": "formulario", "formulario_em": _iso(sol.data_atualizacao), "arquivos": [],
     }]
     for chave, rotulo, obrigatorio in docs.TIPOS:
@@ -136,6 +141,13 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
             "obrigatorio": obrigatorio,
             "arquivos": itens,
         })
+    complementares = _itens(arquivos, docs.TIPO_COMPLEMENTAR)
+    incisos.append({
+        "rotulo": docs.ROTULO_COMPLEMENTAR,
+        "situacao": "arquivos" if complementares else "nao_enviado",
+        "obrigatorio": False,
+        "arquivos": complementares,
+    })
     for chave, rotulo, reg in (
         ("evtf", "Anexo V — Estudo de Viabilidade Técnica e Financeira — EVTF", evtf),
         ("inciso12", "Anexo VI — Cronograma Físico de Obras", crono),
@@ -159,6 +171,10 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
          "assinada_em": _iso(sol.liquidacao_aceita_em)},
         {"rotulo": "Ciência da rede de água e esgoto fornecida pela CODEGO (Anexo VII)",
          "detalhe": "Resposta: Aceito.", "assinada_em": _iso(mce.ciencia_em) if mce else None},
+    ] + [
+        {"rotulo": f"Ciência do Anexo {c['anexo']} — {c['titulo']}", "detalhe": "",
+         "assinada_em": _iso(c["ciente_em"])}
+        for c in ciencias.listar(db, usuario)
     ]
     return {
         "empresa": {

@@ -23,5 +23,7 @@ class TipoDocumentoOut(BaseModel):
 
 class DocumentosOut(BaseModel):
     tipos: list[TipoDocumentoOut]
+    complementar: TipoDocumentoOut  # documentação complementar (opcional)
     max_arquivos_por_tipo: int
+    max_arquivos_complementar: int
     max_mb: int

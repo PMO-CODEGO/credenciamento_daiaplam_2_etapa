@@ -180,10 +180,11 @@
       ${linhaDado('E-mail', esc(c.email))}
       ${linhaDado('Representante legal', `${esc(c.representante_nome || '—')}${c.representante_cpf ? ` — CPF ${esc(cpf(c.representante_cpf))}` : ''}`)}
       ${linhaDado('Cadastrado em', dataHora(c.cadastrado_em))}
+      ${linhaDado('Ciência do Aviso de Privacidade (LGPD)', c.privacidade_ciente_em ? dataHora(c.privacidade_ciente_em) : 'não registrada (cadastro anterior ao aviso)')}
     </dl></section>`);
 
     if (s) {
-      partes.push(`<section class="det-secao"><h4>Inciso I — Formulário de solicitação de área</h4><dl>
+      partes.push(`<section class="det-secao"><h4>Anexo IV — Requerimento para solicitação de áreas</h4><dl>
         ${linhaDado('Área solicitada', area(s.area_m2))}
         ${linhaDado('Endereço para correspondência', esc(s.endereco_correspondencia))}
         ${linhaDado('Telefone / e-mail', `${esc(tel(s.telefone))} · ${esc(s.email)}`)}
@@ -197,13 +198,13 @@
         ${linhaDado('Representante / local', `${esc(s.representante_nome || '—')}${s.representante_cargo ? ` (${esc(s.representante_cargo)})` : ''} · ${esc(s.declaracao_cidade || '—')}${s.declaracao_uf ? `/${esc(s.declaracao_uf)}` : ''}`)}
       </dl></section>`);
     } else {
-      partes.push('<section class="det-secao"><h4>Inciso I — Formulário de solicitação de área</h4><p class="field__hint">Ainda não preenchido por completo.</p></section>');
+      partes.push('<section class="det-secao"><h4>Anexo IV — Requerimento para solicitação de áreas</h4><p class="field__hint">Ainda não preenchido por completo.</p></section>');
     }
     if (d.rascunho_em) {
       partes.push(`<p class="field__hint field__hint--warn">Há alterações no formulário salvas como rascunho (incompletas) em ${dataHora(d.rascunho_em)}.</p>`);
     }
 
-    partes.push(`<section class="det-secao"><h4>Documentos (itens 1 a 9)</h4><ul class="det-docs">${d.documentos.map((t) => `
+    partes.push(`<section class="det-secao"><h4>Documentos (itens 1 a 9 e complementar)</h4><ul class="det-docs">${d.documentos.map((t) => `
       <li><span class="det-doc-rotulo">${esc(t.rotulo)}${t.obrigatorio ? '' : ' <small>(opcional)</small>'}</span>
         ${t.arquivos.length ? `<ul>${t.arquivos.map(arquivoBtn).join('')}</ul>` : `<span class="${t.obrigatorio ? 'painel-alerta' : 'field__hint'}">não enviado</span>`}
       </li>`).join('')}</ul></section>`);
@@ -221,6 +222,10 @@
     partes.push(`<section class="det-secao"><h4>Anexos V, VI e VII</h4><ul class="det-docs">
       ${blocoInciso('evtf', inc.evtf)}${blocoInciso('cronograma', inc.cronograma)}${blocoInciso('mce', inc.mce)}
     </ul></section>`);
+
+    partes.push(`<section class="det-secao"><h4>Ciência nos anexos</h4><dl>${d.ciencias.map((c) =>
+      linhaDado(`Anexo ${c.anexo} — ${c.titulo}`, c.ciente_em ? `ciente em ${dataHora(c.ciente_em)}` : '<span class="painel-alerta">pendente</span>')).join('')}
+    </dl></section>`);
 
     partes.push(`<section class="det-secao"><h4>Envios (protocolos)</h4>${d.envios.length ? `<ul class="det-docs">${d.envios.map((v, k) => `
       <li><strong>${esc(v.protocolo)}</strong> — ${dataHora(v.enviado_em)}${k === 0 ? ' <small>(mais recente)</small>' : ''}

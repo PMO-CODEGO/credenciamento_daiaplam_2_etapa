@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, func
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, UniqueConstraint, func
 
 from app.database import Base
 
@@ -14,6 +14,7 @@ class Usuario(Base):
     email = Column(String(255), nullable=False)
     representante_nome = Column(String(255))  # Representante Legal (nulo nos cadastros antigos)
     representante_cpf = Column(String(11))
+    privacidade_ciente_em = Column(DateTime)  # ciência do Aviso de Privacidade (LGPD) no cadastro
     senha_hash = Column(String(255), nullable=False)
     ativo = Column(Boolean, nullable=False, default=True)
     data_criacao = Column(DateTime, server_default=func.now())
@@ -122,6 +123,18 @@ class Evtf(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
     dados = Column(JSON, nullable=False)  # campos do formulário (ver schemas/evtf.py)
     data_atualizacao = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class CienciaAnexo(Base):
+    """Ciência da empresa em um anexo só de leitura (I, II, III, VIII, X, XI e XIII)."""
+
+    __tablename__ = "ciencias_anexos"
+    __table_args__ = (UniqueConstraint("usuario_id", "anexo"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, index=True)
+    anexo = Column(String(5), nullable=False)  # "I", "II", ... (ver services/ciencias.py)
+    ciente_em = Column(DateTime, nullable=False)
 
 
 class Envio(Base):
