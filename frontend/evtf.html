@@ -32,7 +32,7 @@
         <button type="button" class="escolha-opcao__botao" data-opcao="opcao-1" aria-pressed="false" aria-controls="opcao-1">
           <span class="opcao-titulo__tag">Opção 1</span>
           <span class="escolha-opcao__nome">Enviar o EVTF pronto</span>
-          <span class="escolha-opcao__desc">Para quem já tem o EVTF feito: é só enviar o arquivo (PDF, imagem ou planilha Excel).</span>
+          <span class="escolha-opcao__desc">Baixe o modelo oficial do Anexo V em Excel, preencha e envie (ou envie o seu EVTF já pronto, em PDF, imagem ou Excel).</span>
         </button>
         <button type="button" class="escolha-opcao__botao" data-opcao="opcao-2" aria-pressed="false" aria-controls="opcao-2">
           <span class="opcao-titulo__tag">Opção 2</span>
@@ -43,6 +43,12 @@
 
       <section id="opcao-1" class="opcao-conteudo" hidden>
         <h3 class="section-title opcao-titulo"><span class="opcao-titulo__tag">Opção 1</span> Enviar o EVTF pronto</h3>
+        <div class="modelo-download">
+          <p><strong>1.</strong> Baixe o modelo do Anexo V, preencha e salve.</p>
+          <a class="btn-secondary" href="assets/anexo-v-evtf-modelo.xlsx" download="Anexo V - EVTF (modelo).xlsx">Baixar o modelo do Anexo V (Excel)</a>
+          <p class="field__hint">O edital pede o formulário em duas vias: uma assinada pelo responsável técnico (com o nº do registro profissional) e outra no Excel editável. Envie as duas abaixo.</p>
+        </div>
+        <p class="section-desc"><strong>2.</strong> Envie o arquivo preenchido.</p>
         <p class="section-desc" id="texto-upload"></p>
         <div id="upload-evtf" class="doc-uploads"></div>
       </section>

@@ -2296,6 +2296,29 @@ input[readonly] {
   font-size: 17px;
 }
 
+/* EVTF, Opção 1: modelo oficial em Excel para baixar antes de enviar */
+.modelo-download {
+  margin: 4px 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.modelo-download p {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.modelo-download .btn-secondary {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.modelo-download .field__hint {
+  margin: 10px 0 0;
+}
+
 /* EVTF: dois botões para escolher entre enviar o arquivo pronto (Opção 1)
    e preencher o formulário (Opção 2). */
 .escolha-opcao {

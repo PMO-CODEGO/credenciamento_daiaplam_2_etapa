@@ -1,4 +1,5 @@
 import logging
+import mimetypes
 import os
 
 from fastapi import FastAPI, Request
@@ -14,6 +15,10 @@ from app.routers import anexos, auth, cronograma, documentos, envio, equipe, evt
 from app.database import SessionLocal
 from app.services.cnae import sincronizar as sincronizar_cnaes
 from app.services import migracoes
+
+# A imagem do servidor não traz a tabela de tipos do sistema: sem isto, o modelo do
+# Anexo V (.xlsx) sairia como texto.
+mimetypes.add_type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx")
 
 logging.basicConfig(
     level=logging.INFO,
