@@ -62,44 +62,78 @@ def _carregar(db: Session, usuario: Usuario):
     return sol, arquivos, evtf, crono, mce
 
 
-def pendencias(db: Session, usuario: Usuario) -> list[str]:
+def checklist(db: Session, usuario: Usuario) -> list[dict]:
+    """Tudo o que a empresa precisa fazer, na ordem do formulário, com o que já foi feito.
+
+    Cada item: rotulo, feito, obrigatorio, detalhe (opcional) e pendencia — a mensagem
+    que aparece em "o que falta" quando o item obrigatório não foi feito (None quando
+    outro item já cobre, ex.: as declarações enquanto o formulário está incompleto).
+    """
     sol, arquivos, evtf, crono, mce = _carregar(db, usuario)
-    falta = []
     rasc = rascunhos.rascunho(db, usuario)
-    if rasc is not None:
-        # Formulário salvo automaticamente, mas ainda incompleto: diz o que falta.
-        faltando = rascunhos.conferir(db, usuario, rasc.dados)[2] or ["revisar os dados"]
-        falta.append("Formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII): falta "
-                     + ", ".join(faltando) + ".")
-    elif sol is None:
-        falta.append("Preencha o formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII).")
-    else:
-        for campo, nome in (
-            ("declaracao_aceita_em", "Anexo VI (taxa de ocupação)"),
-            ("conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento do objeto)"),
-            ("liquidacao_aceita_em", "Anexo XII (liquidação)"),
-        ):
-            if getattr(sol, campo) is None:
-                falta.append(f"Assine a declaração do {nome}.")
+    form_ok = sol is not None and rasc is None
     por_tipo: dict[str, int] = {}
     for a in arquivos:
         por_tipo[a.tipo] = por_tipo.get(a.tipo, 0) + 1
-    for chave in docs.OBRIGATORIOS:
-        if not por_tipo.get(chave):
-            falta.append(docs.TIPOS_POR_CHAVE[chave][0].split(" — ")[0] + ": envie o documento.")
-    if not (evtf or por_tipo.get("evtf")):
-        falta.append("Anexo V (EVTF): preencha o formulário ou envie o arquivo.")
-    if not (crono or por_tipo.get("inciso12")):
-        falta.append("Anexo VI (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
-    if not ((mce and mce.dados) or por_tipo.get("inciso13")):
-        falta.append("Anexo VII (MCE): preencha o formulário ou envie o arquivo.")
-    if not mce or mce.ciencia_rede != "aceito":
-        falta.append("Anexo VII: responda \"Aceito\" na ciência da rede de água e esgoto.")
-    sem_ciencia = ciencias.pendentes(db, usuario)
-    if sem_ciencia:
-        nomes = ", ".join(sem_ciencia[:-1]) + " e " + sem_ciencia[-1] if len(sem_ciencia) > 1 else sem_ciencia[0]
-        falta.append(f"Declare ciência {'dos Anexos' if len(sem_ciencia) > 1 else 'do Anexo'} {nomes} (abra cada um e marque a ciência).")
-    return falta
+    cientes = {c["anexo"]: c for c in ciencias.listar(db, usuario)}
+    itens: list[dict] = []
+
+    def item(rotulo: str, feito, pendencia: str | None, obrigatorio: bool = True, detalhe: str | None = None):
+        itens.append({"rotulo": rotulo, "feito": bool(feito), "obrigatorio": obrigatorio,
+                      "detalhe": detalhe, "pendencia": pendencia})
+
+    def ciencia(anexo: str):
+        c = cientes[anexo]
+        item(f"Anexo {anexo} — {c['titulo']}: declarar ciência", c["ciente_em"],
+             f"Anexo {anexo}: declare ciência (abra o anexo e marque a ciência).")
+
+    def declaracao(rotulo: str, campo: str, nome: str):
+        # Com o formulário incompleto, quem avisa é o item do Anexo IV.
+        item(rotulo, form_ok and getattr(sol, campo) is not None,
+             f"Assine a declaração do {nome}." if form_ok else None)
+
+    for anexo in ("I", "II", "III"):
+        ciencia(anexo)
+    if rasc is not None:
+        faltando = rascunhos.conferir(db, usuario, rasc.dados)[2] or ["revisar os dados"]
+        item("Anexo IV — Requerimento para solicitação de áreas: preencher", False,
+             "Formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII): falta " + ", ".join(faltando) + ".",
+             detalhe="Falta: " + ", ".join(faltando) + ".")
+    else:
+        item("Anexo IV — Requerimento para solicitação de áreas: preencher", sol is not None,
+             "Preencha o formulário principal (Anexo IV e declarações dos Anexos VI, IX e XII).")
+    for chave, rotulo, obrigatorio in docs.TIPOS:
+        item(f"{rotulo}: enviar", por_tipo.get(chave),
+             rotulo.split(" — ")[0] + ": envie o documento." if obrigatorio else None, obrigatorio=obrigatorio)
+    item("Anexo V — Estudo de Viabilidade Técnica e Financeira (EVTF): preencher ou enviar o arquivo",
+         evtf or por_tipo.get("evtf"), "Anexo V (EVTF): preencha o formulário ou envie o arquivo.")
+    item("Anexo VI — Cronograma Físico de Obras: preencher ou enviar o arquivo",
+         crono or por_tipo.get("inciso12"),
+         "Anexo VI (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
+    declaracao("Anexo VI — Declaração de compromisso com a Taxa de Ocupação de Área: assinar",
+               "declaracao_aceita_em", "Anexo VI (taxa de ocupação)")
+    item("Anexo VII — Memorial de Caracterização do Empreendimento (MCE): preencher ou enviar o arquivo",
+         (mce and mce.dados) or por_tipo.get("inciso13"), "Anexo VII (MCE): preencha o formulário ou envie o arquivo.")
+    item("Anexo VII — Ciência da rede de água e esgoto: responder \"Aceito\"",
+         mce and mce.ciencia_rede == "aceito", "Anexo VII: responda \"Aceito\" na ciência da rede de água e esgoto.")
+    ciencia("VIII")
+    declaracao("Anexo IX — Declaração de Pleno Conhecimento do Objeto: assinar",
+               "conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento do objeto)")
+    ciencia("X")
+    ciencia("XI")
+    declaracao("Anexo XII — Declaração Liquidação Alienação de Áreas: assinar",
+               "liquidacao_aceita_em", "Anexo XII (liquidação)")
+    ciencia("XIII")
+    item(f"{docs.ROTULO_COMPLEMENTAR}: enviar, se houver", por_tipo.get(docs.TIPO_COMPLEMENTAR), None, obrigatorio=False)
+    return itens
+
+
+def pendencias_de(itens: list[dict]) -> list[str]:
+    return [i["pendencia"] for i in itens if i["obrigatorio"] and not i["feito"] and i["pendencia"]]
+
+
+def pendencias(db: Session, usuario: Usuario) -> list[str]:
+    return pendencias_de(checklist(db, usuario))
 
 
 # ---------------------------------------------------------------- retrato do envio

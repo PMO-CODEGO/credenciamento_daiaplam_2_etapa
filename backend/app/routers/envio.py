@@ -18,9 +18,11 @@ def _ultimo(db: Session, usuario: Usuario) -> Envio | None:
 
 
 def _estado(db: Session, usuario: Usuario) -> EnvioEstado:
-    falta = servico.pendencias(db, usuario)
+    itens = servico.checklist(db, usuario)
+    falta = servico.pendencias_de(itens)
     ultimo = _ultimo(db, usuario)
     return EnvioEstado(
+        checklist=itens,
         pendencias=falta,
         pode_finalizar=not falta,
         protocolo=ultimo.protocolo if ultimo else None,

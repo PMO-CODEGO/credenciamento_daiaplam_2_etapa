@@ -1702,15 +1702,74 @@ input[readonly] {
   margin-top: 8px;
 }
 
-.envio-final__pendencias {
-  margin: 4px 0 14px;
-  padding-left: 20px;
+/* Checklist do credenciamento (Finalizar credenciamento): ✓ feito, ○ pendente */
+.checklist {
+  list-style: none;
+  margin: 6px 0 16px;
+  padding: 0;
   font-size: 14px;
+}
+
+.checklist__item {
+  position: relative;
+  padding: 7px 0 7px 30px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.45;
+}
+
+.checklist__item:last-child {
+  border-bottom: none;
+}
+
+.checklist__item::before {
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+.checklist__item.is-feito {
   color: var(--ink-soft);
 }
 
-.envio-final__pendencias li {
-  margin-bottom: 4px;
+.checklist__item.is-feito::before {
+  content: "✓";
+  background: #e3efe8;
+  color: var(--primary-dark);
+}
+
+.checklist__item.is-pendente {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.checklist__item.is-pendente::before,
+.checklist__item.is-opcional::before {
+  content: "";
+  border: 2px solid var(--gold-dark);
+  box-sizing: border-box;
+}
+
+.checklist__item.is-opcional {
+  color: var(--ink-soft);
+}
+
+.checklist__item.is-opcional::before {
+  border-color: var(--border);
+}
+
+.checklist__detalhe {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gold-dark);
 }
 
 /* Indicador do salvamento automático do formulário principal */

@@ -1,4 +1,4 @@
-// Envio final: mostra o que falta, gera o protocolo e baixa o comprovante em PDF.
+// Envio final: checklist do que já foi feito e do que falta, protocolo e comprovante em PDF.
 (function () {
   const API = window.CODEGO_API_BASE_URL;
   const CHAVE = 'dianot_token';
@@ -17,15 +17,23 @@
   }
 
   function desenhar(estado) {
-    const lista = $('envio-pendencias');
+    const lista = $('envio-checklist');
+    lista.innerHTML = estado.checklist.map((i) => {
+      const classe = i.feito ? 'is-feito' : (i.obrigatorio ? 'is-pendente' : 'is-opcional');
+      const situacao = i.feito ? 'feito' : (i.obrigatorio ? 'pendente' : 'opcional');
+      return `<li class="checklist__item ${classe}">
+        <span class="visualmente-oculto">${situacao}: </span>${esc(i.rotulo)}${i.obrigatorio ? '' : ' <span class="doc-upload__opcional">Opcional</span>'}
+        ${i.detalhe && !i.feito ? `<span class="checklist__detalhe">${esc(i.detalhe)}</span>` : ''}
+      </li>`;
+    }).join('');
+    lista.hidden = false;
+    const obrigatorios = estado.checklist.filter((i) => i.obrigatorio);
+    const feitos = obrigatorios.filter((i) => i.feito).length;
     if (estado.pendencias.length) {
-      lista.innerHTML = estado.pendencias.map((p) => `<li>${esc(p)}</li>`).join('');
-      lista.hidden = false;
-      $('envio-situacao').textContent = 'Ainda há itens pendentes antes de finalizar:';
+      $('envio-situacao').textContent = `${feitos} de ${obrigatorios.length} itens obrigatórios concluídos. Faltam ${obrigatorios.length - feitos} para poder finalizar:`;
       $('envio-situacao').className = 'field__hint field__hint--warn';
     } else {
-      lista.hidden = true;
-      $('envio-situacao').textContent = '✔ Tudo preenchido. Você já pode finalizar e gerar o comprovante.';
+      $('envio-situacao').textContent = `✔ Todos os ${obrigatorios.length} itens obrigatórios concluídos. Você já pode finalizar e gerar o comprovante.`;
       $('envio-situacao').className = 'field__hint field__hint--ok';
     }
     $('btn-finalizar').disabled = !estado.pode_finalizar;
