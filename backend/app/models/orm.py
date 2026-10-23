@@ -57,6 +57,7 @@ class Solicitacao(Base):
     representante_nome = Column(String(255))
     representante_cargo = Column(String(100))
     ocupacao_percentual = Column(Integer)  # 33 a 80
+    # Datas da obra: não são mais pedidas no Anexo VI (ficam no Cronograma); colunas mantidas pelos dados antigos.
     obra_inicio = Column(String(7))  # "AAAA-MM"
     obra_fim = Column(String(7))  # "AAAA-MM"
     declaracao_cidade = Column(String(100))
@@ -64,7 +65,7 @@ class Solicitacao(Base):
     declaracao_aceita_em = Column(DateTime)  # data da assinatura (aceite) mais recente
     # Anexo IX — Declaração de Pleno Conhecimento do Objeto (aceite no formulário)
     conhecimento_objeto_aceito_em = Column(DateTime)
-    # Anexo XIII — Declaração Liquidação Alienação de Áreas (aceite no formulário)
+    # Anexo XII — Declaração Liquidação Alienação de Áreas (aceite no formulário)
     sede_endereco = Column(String(500))
     liquidacao_prazo_meses = Column(Integer)  # 1 a 36
     liquidacao_aceita_em = Column(DateTime)
@@ -100,7 +101,7 @@ class Cronograma(Base):
 
 
 class Mce(Base):
-    """MCE (Inciso XIII, Anexo VII) preenchido no formulário + ciência da rede de água e esgoto."""
+    """MCE (Anexo VII) preenchido no formulário + ciência da rede de água e esgoto."""
 
     __tablename__ = "mce"
 

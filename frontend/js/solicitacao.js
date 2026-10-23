@@ -164,27 +164,26 @@
     const d = Math.floor(n / 10), u = n % 10;
     return u ? `${DEZENAS[d]} e ${UNIDADES[u]}` : DEZENAS[d];
   }
-  const mesAno = (v) => (/^\d{4}-\d{2}$/.test(v || '') ? `${v.slice(5)}/${v.slice(0, 4)}` : '');
   const dataPorExtenso = (d) => `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
   const percentual = () => Number(digitos($('ocupacao_percentual').value)) || 0;
 
   let aceitaEm = null; // data da última assinatura salva
   let conhecimentoEm = null; // idem, Anexo IX
-  let liquidacaoEm = null; // idem, Anexo XIII
+  let liquidacaoEm = null; // idem, Anexo XII
   let sedeEditada = false;
   let representanteEditado = false;
   // Campos que mudam o texto da declaração: alterar algum desfaz o aceite.
   const CAMPOS_DECLARACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
-    'ocupacao_percentual', 'obra_inicio', 'obra_fim', 'declaracao_cidade', 'administrador_nome']);
+    'ocupacao_percentual', 'declaracao_cidade', 'administrador_nome']);
   // Os que entram no texto do Anexo IX.
   const CAMPOS_CONHECIMENTO = new Set(['nome_empresarial', 'representante_nome', 'declaracao_cidade',
     'administrador_nome']);
-  // Os que entram no texto do Anexo XIII.
+  // Os que entram no texto do Anexo XII.
   const CAMPOS_LIQUIDACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
     'declaracao_cidade', 'declaracao_uf', 'administrador_nome', 'sede_endereco', 'endereco_correspondencia',
     'liquidacao_prazo_meses']);
   const prazoLiquidacao = () => Number(digitos($('liquidacao_prazo_meses').value)) || 0;
-  // Tabela de pontuação do Anexo XIII.
+  // Tabela de pontuação do Anexo XII.
   function pontosLiquidacao(meses) {
     if (meses <= 6) return 100;
     if (meses <= 12) return 75;
@@ -208,8 +207,6 @@
     lacuna('cargo', $('representante_cargo').value.trim());
     const p = percentual();
     lacuna('percentual', p >= 33 && p <= 80 ? `${p}% (${porExtenso(p)} por cento)` : '');
-    lacuna('inicio', mesAno($('obra_inicio').value));
-    lacuna('fim', mesAno($('obra_fim').value));
     lacuna('cidade', $('declaracao_cidade').value.trim());
     lacuna('cidadeuf', $('declaracao_cidade').value.trim() && `${$('declaracao_cidade').value.trim()}/${$('declaracao_uf').value}`);
     lacuna('data', dataPorExtenso(aceitaEm || new Date()));
@@ -276,8 +273,6 @@
     representanteEditado = !!s.representante_nome && s.representante_nome !== s.administrador_nome;
     $('representante_cargo').value = s.representante_cargo || '';
     $('ocupacao_percentual').value = s.ocupacao_percentual || '';
-    $('obra_inicio').value = s.obra_inicio || '';
-    $('obra_fim').value = s.obra_fim || '';
     if (s.declaracao_cidade) $('declaracao_cidade').value = s.declaracao_cidade;
     if (s.declaracao_uf) $('declaracao_uf').value = s.declaracao_uf;
     aceitaEm = s.declaracao_aceita_em ? new Date(s.declaracao_aceita_em) : null;
@@ -300,7 +295,7 @@
       $('area_m2').value = r.valor ? formatarArea(r.valor) : String(d.area_m2);
     }
     ['nome_empresarial', 'endereco_correspondencia', 'email', 'administrador_nome', 'representante_nome',
-      'representante_cargo', 'obra_inicio', 'obra_fim', 'declaracao_cidade', 'declaracao_uf', 'sede_endereco']
+      'representante_cargo', 'declaracao_cidade', 'declaracao_uf', 'sede_endereco']
       .forEach((k) => { if (tem(k)) $(k).value = d[k]; });
     if (tem('telefone')) $('telefone').value = mascaraTel(d.telefone);
     if (tem('administrador_cpf')) $('administrador_cpf').value = mascaraCpf(d.administrador_cpf);
@@ -346,7 +341,9 @@
   function ajustarAltura(iframe) {
     const doc = iframe.contentDocument;
     if (!doc || !doc.body) return;
-    const medir = () => { iframe.style.height = `${doc.documentElement.scrollHeight}px`; };
+    // Mede o conteúdo (body), não a página: a altura da página nunca fica menor que
+    // o próprio iframe, e o painel não encolheria ao trocar a Opção 2 pela Opção 1.
+    const medir = () => { iframe.style.height = `${Math.ceil(doc.body.getBoundingClientRect().height)}px`; };
     medir();
     new ResizeObserver(medir).observe(doc.body);
   }
@@ -377,6 +374,40 @@
       botao.setAttribute('aria-expanded', String(abrir));
       botao.nextElementSibling.hidden = !abrir;
     });
+  });
+
+  // Anexos com várias páginas (III e X): uma página por vez, com Anterior/Próxima,
+  // para o painel não ficar enorme. As páginas escondidas nem são baixadas (loading="lazy").
+  document.querySelectorAll('[data-anexo-paginas]').forEach((grupo) => {
+    const paginas = [...grupo.querySelectorAll('img')];
+    if (paginas.length < 2) return;
+    const nav = document.createElement('div');
+    nav.className = 'anexo-paginacao';
+    const anterior = document.createElement('button');
+    anterior.type = 'button'; anterior.className = 'btn-secondary'; anterior.textContent = '‹ Anterior';
+    const proxima = document.createElement('button');
+    proxima.type = 'button'; proxima.className = 'btn-secondary'; proxima.textContent = 'Próxima ›';
+    const indicador = document.createElement('span');
+    indicador.className = 'anexo-paginacao__indicador';
+    indicador.setAttribute('aria-live', 'polite');
+    nav.append(anterior, indicador, proxima);
+    grupo.after(nav);
+    let atual = 0;
+    const mostrar = (i) => {
+      atual = Math.max(0, Math.min(paginas.length - 1, i));
+      paginas.forEach((img, k) => { img.hidden = k !== atual; });
+      indicador.textContent = `Página ${atual + 1} de ${paginas.length}`;
+      anterior.disabled = atual === 0;
+      proxima.disabled = atual === paginas.length - 1;
+    };
+    // A navegação fica embaixo: ao trocar, volta para o começo da nova página.
+    const ir = (i) => {
+      mostrar(i);
+      if (grupo.getBoundingClientRect().top < 0) grupo.scrollIntoView({ block: 'start' });
+    };
+    anterior.addEventListener('click', () => ir(atual - 1));
+    proxima.addEventListener('click', () => ir(atual + 1));
+    mostrar(0);
   });
 
   const botoesInciso = [...document.querySelectorAll('.inciso-link__botao[data-pagina]')];
@@ -431,8 +462,6 @@
       representante_nome: $('representante_nome').value.trim(),
       representante_cargo: $('representante_cargo').value.trim(),
       ocupacao_percentual: percentual() || null,
-      obra_inicio: $('obra_inicio').value,
-      obra_fim: $('obra_fim').value,
       declaracao_cidade: $('declaracao_cidade').value.trim(),
       declaracao_uf: $('declaracao_uf').value,
       declaracao_aceita: $('declaracao_aceita').checked,

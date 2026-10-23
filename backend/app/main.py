@@ -12,7 +12,7 @@ from app.database import Base, engine, wait_for_db
 from app.models import orm  # noqa: F401 — registra as tabelas no create_all
 from app.routers import auth, cronograma, documentos, envio, equipe, evtf, mce, solicitacao
 from app.database import SessionLocal
-from app.services.cnae import carga_inicial
+from app.services.cnae import sincronizar as sincronizar_cnaes
 from app.services import migracoes
 
 logging.basicConfig(
@@ -27,7 +27,7 @@ wait_for_db()
 Base.metadata.create_all(bind=engine)
 migracoes.aplicar(engine)
 with SessionLocal() as _db:
-    carga_inicial(_db)
+    sincronizar_cnaes(_db)
 
 app = FastAPI(
     title="Credenciamento DIANOT 2ª etapa",

@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 from app.schemas.validacoes import cnpj_valido, cpf_valido, somente_digitos, telefone_valido
 
@@ -22,8 +22,6 @@ class SolicitacaoIn(BaseModel):
     representante_nome: str = Field(min_length=3, max_length=255)
     representante_cargo: str = Field(min_length=2, max_length=100)
     ocupacao_percentual: int = Field(ge=33, le=80)
-    obra_inicio: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")
-    obra_fim: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")
     declaracao_cidade: str = Field(min_length=2, max_length=100)
     declaracao_uf: Literal[
         "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR",
@@ -32,7 +30,7 @@ class SolicitacaoIn(BaseModel):
     declaracao_aceita: bool
     # Anexo IX — Declaração de Pleno Conhecimento do Objeto
     conhecimento_objeto_aceito: bool
-    # Anexo XIII — Declaração Liquidação Alienação de Áreas
+    # Anexo XII — Declaração Liquidação Alienação de Áreas
     sede_endereco: str = Field(min_length=5, max_length=500)
     liquidacao_prazo_meses: int = Field(ge=1, le=36)
     liquidacao_aceita: bool
@@ -74,17 +72,6 @@ class SolicitacaoIn(BaseModel):
             raise ValueError("É preciso aceitar a declaração.")
         return v
 
-    @model_validator(mode="after")
-    def _cronograma(self):
-        ai, mi = map(int, self.obra_inicio.split("-"))
-        af, mf = map(int, self.obra_fim.split("-"))
-        meses = (af - ai) * 12 + (mf - mi) + 1  # conta o mês de início e o de fim
-        if meses < 1:
-            raise ValueError("O fim da obra deve ser igual ou posterior ao início.")
-        if meses > 24:
-            raise ValueError("A obra não pode passar de 2 anos (24 meses, contando o mês de início e o de fim).")
-        return self
-
 
 class SolicitacaoOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -103,8 +90,6 @@ class SolicitacaoOut(BaseModel):
     representante_nome: str | None = None
     representante_cargo: str | None = None
     ocupacao_percentual: int | None = None
-    obra_inicio: str | None = None
-    obra_fim: str | None = None
     declaracao_cidade: str | None = None
     declaracao_uf: str | None = None
     declaracao_aceita_em: datetime | None = None

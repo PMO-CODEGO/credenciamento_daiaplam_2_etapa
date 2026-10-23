@@ -157,7 +157,7 @@ def empresa(empresa_id: int, _m: Equipe = Depends(membro_atual), db: Session = D
         "incisos": {
             "evtf": inciso(evtf, "Anexo V — Estudo de Viabilidade Técnica e Financeira (EVTF)"),
             "cronograma": inciso(crono, "Anexo VI — Cronograma Físico de Obras"),
-            "mce": {**inciso(mce, "Inciso XIII — Memorial de Caracterização do Empreendimento (MCE)"),
+            "mce": {**inciso(mce, "Anexo VII — Memorial de Caracterização do Empreendimento (MCE)"),
                     "ciencia": mce.ciencia, "ciencia_em": mce.ciencia_em},
         },
         "envios": [{"id": v.id, "protocolo": v.protocolo, "enviado_em": v.enviado_em} for v in envios],

@@ -1,4 +1,4 @@
-"""Inciso XIII — MCE (Anexo VII): formulário com PDF gerado ou arquivo próprio,
+"""Anexo VII — MCE: formulário com PDF gerado ou arquivo próprio,
 mais a ciência da rede de água e esgoto fornecida pela CODEGO (Aceito/Recuso)."""
 from datetime import datetime
 
@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.database import get_db
-from app.models.orm import Documento, Mce, Solicitacao, Usuario
+from app.models.orm import Cronograma, Documento, Mce, Solicitacao, Usuario
 from app.routers.auth import usuario_atual
 from app.schemas.documentos import DocumentoOut
 from app.schemas.mce import MceIn
@@ -21,8 +21,9 @@ router = APIRouter()
 TIPO_ARQUIVO = "inciso13"
 
 
-def _sugestao(usuario: Usuario, sol: Solicitacao | None) -> dict:
-    """Valores iniciais do formulário, para a empresa não digitar de novo."""
+def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | None) -> dict:
+    """Valores iniciais do formulário, para a empresa não digitar de novo.
+    A previsão de funcionamento é o término da obra no Cronograma (Anexo VI), se já preenchido."""
     s = {"razao_social": usuario.nome_empresarial, "cnpj": usuario.cnpj}
     if sol is not None:
         s.update(
@@ -38,8 +39,8 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None) -> dict:
         )
         if sol.ocupacao_percentual:
             s["area_construida"] = formatar_numero_br(round(float(sol.area_m2) * sol.ocupacao_percentual / 100, 2))
-        if sol.obra_fim:
-            s["previsao_funcionamento"] = sol.obra_fim
+    if crono is not None and crono.dados.get("termino_obras"):
+        s["previsao_funcionamento"] = crono.dados["termino_obras"]
     return s
 
 
@@ -61,7 +62,7 @@ def _montar_estado(db: Session, usuario: Usuario) -> MceEstado:
     return MceEstado(
         dados=reg.dados if reg else None,
         atualizado_em=reg.data_atualizacao if reg and reg.dados else None,
-        sugestao=_sugestao(usuario, sol),
+        sugestao=_sugestao(usuario, sol, db.query(Cronograma).filter(Cronograma.usuario_id == usuario.id).first()),
         arquivos=[DocumentoOut.model_validate(a) for a in arquivos],
         max_arquivos=docs.MAX_ARQUIVOS_POR_TIPO,
         max_mb=settings.upload_max_mb,

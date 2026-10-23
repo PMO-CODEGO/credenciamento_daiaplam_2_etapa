@@ -1,9 +1,434 @@
-codigo;descricao
-1011201;Frigorífico - abate de bovinos
-1091102;Fabricação de produtos de panificação industrial
-2599399;Fabricação de outros produtos de metal não especificados anteriormente
-4120400;Construção de edifícios
-4639701;Comércio atacadista de produtos alimentícios em geral
-4930201;Transporte rodoviário de carga, exceto produtos perigosos e mudanças, municipal
-5611201;Restaurantes e similares
-6201501;Desenvolvimento de programas de computador sob encomenda
+codigo;descricao;setor_ocde;pontuacao
+0141501;Produção de sementes certificadas, exceto de forrageiras para pasto;01-03: Agricultura, pecuária, florestal e pesca;30
+0141502;Produção de sementes certificadas de forrageiras para formação de pasto;01-03: Agricultura, pecuária, florestal e pesca;30
+1031700;Fabricação de conservas de frutas;10-12: Alimentos, bebidas e fumo;100
+1032501;Fabricação de conservas de palmito;10-12: Alimentos, bebidas e fumo;100
+1032599;Fabricação de conservas de legumes e outros vegetais, exceto palmito;10-12: Alimentos, bebidas e fumo;100
+1033301;Fabricação de sucos concentrados de frutas, hortaliças e legumes;10-12: Alimentos, bebidas e fumo;100
+1033302;Fabricação de sucos de frutas, hortaliças e legumes, exceto concentrados;10-12: Alimentos, bebidas e fumo;100
+1041400;Fabricação de óleos vegetais em bruto, exceto óleo de milho;10-12: Alimentos, bebidas e fumo;100
+1042200;Fabricação de óleos vegetais refinados, exceto óleo de milho;10-12: Alimentos, bebidas e fumo;100
+1043100;Fabricação de margarina e outras gorduras vegetais e de óleos não comestíveis de animais;10-12: Alimentos, bebidas e fumo;100
+1051100;Preparação do leite;10-12: Alimentos, bebidas e fumo;100
+1052000;Fabricação de laticínios;10-12: Alimentos, bebidas e fumo;100
+1053800;Fabricação de sorvetes e outros gelados comestíveis;10-12: Alimentos, bebidas e fumo;100
+1061901;Beneficiamento de arroz;10-12: Alimentos, bebidas e fumo;100
+1061902;Fabricação de produtos do arroz;10-12: Alimentos, bebidas e fumo;100
+1062700;Moagem de trigo e fabricação de derivados;10-12: Alimentos, bebidas e fumo;100
+1063500;Fabricação de farinha de mandioca e derivados;10-12: Alimentos, bebidas e fumo;100
+1064300;Fabricação de farinha de milho e derivados, exceto óleos de milho;10-12: Alimentos, bebidas e fumo;100
+1065101;Fabricação de amidos e féculas de vegetais;10-12: Alimentos, bebidas e fumo;100
+1065102;Fabricação de óleo de milho em bruto;10-12: Alimentos, bebidas e fumo;100
+1065103;Fabricação de óleo de milho refinado;10-12: Alimentos, bebidas e fumo;100
+1066000;Fabricação de alimentos para animais;10-12: Alimentos, bebidas e fumo;100
+1069400;Moagem e fabricação de produtos de origem vegetal não especificados anteriormente;10-12: Alimentos, bebidas e fumo;100
+1071600;Fabricação de açúcar em bruto;10-12: Alimentos, bebidas e fumo;100
+1072401;Fabricação de açúcar de cana refinado;10-12: Alimentos, bebidas e fumo;100
+1072402;Fabricação de açúcar de cereais (dextrose) e de beterraba;10-12: Alimentos, bebidas e fumo;100
+1081301;Beneficiamento de café;10-12: Alimentos, bebidas e fumo;100
+1081302;Torrefação e moagem de café;10-12: Alimentos, bebidas e fumo;100
+1082100;Fabricação de produtos à base de café;10-12: Alimentos, bebidas e fumo;100
+1091101;Fabricação de produtos de panificação industrial;10-12: Alimentos, bebidas e fumo;100
+1091102;Fabricação de produtos de padaria e confeitaria com predominância de produção própria;10-12: Alimentos, bebidas e fumo;100
+1092900;Fabricação de biscoitos e bolachas;10-12: Alimentos, bebidas e fumo;100
+1093701;Fabricação de produtos derivados do cacau e de chocolates;10-12: Alimentos, bebidas e fumo;100
+1093702;Fabricação de frutas cristalizadas, balas e semelhantes;10-12: Alimentos, bebidas e fumo;100
+1094500;Fabricação de massas alimentícias;10-12: Alimentos, bebidas e fumo;100
+1095300;Fabricação de especiarias, molhos, temperos e condimentos;10-12: Alimentos, bebidas e fumo;100
+1096100;Fabricação de alimentos e pratos prontos;10-12: Alimentos, bebidas e fumo;100
+1099601;Fabricação de vinagres;10-12: Alimentos, bebidas e fumo;100
+1099602;Fabricação de pós-alimentícios;10-12: Alimentos, bebidas e fumo;100
+1099603;Fabricação de fermentos e leveduras;10-12: Alimentos, bebidas e fumo;100
+1099604;Fabricação de gelo comum;10-12: Alimentos, bebidas e fumo;100
+1099605;Fabricação de produtos para infusão (chá, mate, etc.);10-12: Alimentos, bebidas e fumo;100
+1099606;Fabricação de adoçantes naturais e artificiais;10-12: Alimentos, bebidas e fumo;100
+1099607;Fabricação de alimentos dietéticos e complementos alimentares;10-12: Alimentos, bebidas e fumo;100
+1099699;Fabricação de outros produtos alimentícios não especificados anteriormente;10-12: Alimentos, bebidas e fumo;100
+1111901;Fabricação de aguardente de cana-de-açúcar;10-12: Alimentos, bebidas e fumo;100
+1111902;Fabricação de outras aguardentes e bebidas destiladas;10-12: Alimentos, bebidas e fumo;100
+1112700;Fabricação de vinho;10-12: Alimentos, bebidas e fumo;100
+1113501;Fabricação de malte, inclusive malte uísque;10-12: Alimentos, bebidas e fumo;100
+1113502;Fabricação de cervejas e chopes;10-12: Alimentos, bebidas e fumo;100
+1121600;Fabricação de águas envasadas;10-12: Alimentos, bebidas e fumo;100
+1122401;Fabricação de refrigerantes;10-12: Alimentos, bebidas e fumo;100
+1122402;Fabricação de chá mate e outros chás prontos para consumo;10-12: Alimentos, bebidas e fumo;100
+1122403;Fabricação de refrescos, xaropes e pós para refrescos, exceto refrescos de frutas;10-12: Alimentos, bebidas e fumo;100
+1122404;Fabricação de bebidas isotônicas;10-12: Alimentos, bebidas e fumo;100
+1122499;Fabricação de outras bebidas não alcoólicas não especificadas anteriormente;10-12: Alimentos, bebidas e fumo;100
+1210700;Processamento industrial do fumo;10-12: Alimentos, bebidas e fumo;50
+1220401;Fabricação de cigarros;10-12: Alimentos, bebidas e fumo;50
+1220402;Fabricação de cigarrilhas e charutos;10-12: Alimentos, bebidas e fumo;50
+1220403;Fabricação de filtros para cigarros;10-12: Alimentos, bebidas e fumo;50
+1220499;Fabricação de outros produtos do fumo, exceto cigarros, cigarrilhas e charutos;10-12: Alimentos, bebidas e fumo;50
+1311100;Preparação e fiação de fibras de algodão;13: Têxteis;90
+1312000;Preparação e fiação de fibras têxteis naturais, exceto algodão;13: Têxteis;90
+1313800;Fiação de fibras artificiais e sintéticas;13: Têxteis;90
+1314600;Fabricação de linhas para costurar e bordar;13: Têxteis;90
+1321900;Tecelagem de fios de algodão;13: Têxteis;90
+1322700;Tecelagem de fios de fibras têxteis naturais, exceto algodão;13: Têxteis;90
+1323500;Tecelagem de fios de fibras artificiais e sintéticas;13: Têxteis;90
+1330800;Fabricação de tecidos de malha;13: Têxteis;90
+1340501;Estamparia e texturização em fios, tecidos, artefatos têxteis e peças do vestuário;13: Têxteis;90
+1340502;Alvejamento, tingimento e torção em fios, tecidos, artefatos têxteis e peças do vestuário;13: Têxteis;90
+1340599;Outros serviços de acabamento em fios, tecidos, artefatos têxteis e peças do vestuário;13: Têxteis;90
+1351100;Fabricação de artefatos têxteis para uso doméstico;13: Têxteis;90
+1352900;Fabricação de artefatos de tapeçaria;13: Têxteis;90
+1353700;Fabricação de artefatos de cordoaria;13: Têxteis;90
+1354500;Fabricação de tecidos especiais, inclusive artefatos;13: Têxteis;90
+1359600;Fabricação de outros produtos têxteis não especificados anteriormente;13: Têxteis;90
+1411801;Confecção de roupas íntimas;14: Vestuário e acessórios;90
+1411802;Facção de roupas íntimas;14: Vestuário e acessórios;90
+1412601;Confecção de peças do vestuário, exceto roupas íntimas e as confeccionadas sob medida;14: Vestuário e acessórios;90
+1412602;Confecção, sob medida, de peças do vestuário, exceto roupas íntimas;14: Vestuário e acessórios;90
+1412603;Facção de peças do vestuário, exceto roupas íntimas;14: Vestuário e acessórios;90
+1413401;Confecção de roupas profissionais, exceto sob medida;14: Vestuário e acessórios;90
+1413402;Confecção, sob medida, de roupas profissionais;14: Vestuário e acessórios;90
+1413403;Facção de roupas profissionais;14: Vestuário e acessórios;90
+1414200;Fabricação de acessórios do vestuário, exceto para segurança e proteção;14: Vestuário e acessórios;90
+1421500;Fabricação de meias;14: Vestuário e acessórios;90
+1422300;Fabricação de artigos do vestuário, produzidos em malharias e tricotagens, exceto meias;14: Vestuário e acessórios;90
+1521100;Fabricação de artigos para viagem, bolsas e semelhantes de qualquer material;15: Calçados e artefatos de couros;90
+1529700;Fabricação de artefatos de couro não especificados anteriormente;15: Calçados e artefatos de couros;90
+1531901;Fabricação de calçados de couro;15: Calçados e artefatos de couros;90
+1531902;Acabamento de calçados de couro sob contrato;15: Calçados e artefatos de couros;90
+1532700;Fabricação de tênis de qualquer material;15: Calçados e artefatos de couros;90
+1533500;Fabricação de calçados de material sintético;15: Calçados e artefatos de couros;90
+1539400;Fabricação de calçados de materiais não especificados anteriormente;15: Calçados e artefatos de couros;90
+1540800;Fabricação de partes para calçados, de qualquer material;15: Calçados e artefatos de couros;90
+1621800;Fabricação de madeira laminada e de chapas de madeira compensada, prensada e aglomerada;16: Madeira e produtos da madeira;50
+1622601;Fabricação de casas de madeira pré-fabricadas;16: Madeira e produtos da madeira;50
+1622602;Fabricação de esquadrias de madeira e de peças de madeira para instalações industriais e comerciais;16: Madeira e produtos da madeira;50
+1622699;Fabricação de outros artigos de carpintaria para construção;16: Madeira e produtos da madeira;50
+1623400;Fabricação de artefatos de tanoaria e de embalagens de madeira;16: Madeira e produtos da madeira;50
+1629301;Fabricação de artefatos diversos de madeira, exceto móveis;16: Madeira e produtos da madeira;50
+1629302;Fabricação de artefatos diversos de cortiça, bambu, palha, vime e outros materiais trançados, exceto móveis;16: Madeira e produtos da madeira;50
+1710900;Fabricação de celulose e outras pastas para a fabricação de papel;17: Papel e celulose;50
+1721400;Fabricação de papel;17: Papel e celulose;50
+1722200;Fabricação de cartolina e papel-cartão;17: Papel e celulose;50
+1731100;Fabricação de embalagens de papel;17: Papel e celulose;50
+1732000;Fabricação de embalagens de cartolina e papel-cartão;17: Papel e celulose;50
+1733800;Fabricação de chapas e de embalagens de papelão ondulado;17: Papel e celulose;50
+1741901;Fabricação de formulários contínuos;17: Papel e celulose;50
+1741902;Fabricação de produtos de papel, cartolina, papel-cartão e papelão ondulado para uso comercial e de escritório;17: Papel e celulose;50
+1742701;Fabricação de fraldas descartáveis;17: Papel e celulose;50
+1742702;Fabricação de absorventes higiênicos;17: Papel e celulose;50
+1742799;Fabricação de produtos de papel para uso doméstico e higiênico-sanitário não especificados anteriormente;17: Papel e celulose;50
+1749400;Fabricação de produtos de pastas celulósicas, papel, cartolina, papel-cartão e papelão ondulado não especificados anteriormente;17: Papel e celulose;50
+1811301;Impressão de jornais;18: Impressão e reprodução de gravações;30
+1811302;Impressão de livros, revistas e outras publicações periódicas;18: Impressão e reprodução de gravações;30
+1812100;Impressão de material de segurança;18: Impressão e reprodução de gravações;30
+1813001;Impressão de material para uso publicitário;18: Impressão e reprodução de gravações;30
+1813099;Impressão de material para outros usos;18: Impressão e reprodução de gravações;30
+1821100;Serviços de pré-impressão;18: Impressão e reprodução de gravações;30
+1822901;Serviços de encadernação e plastificação;18: Impressão e reprodução de gravações;30
+1822999;Serviços de acabamentos gráficos, exceto encadernação e plastificação;18: Impressão e reprodução de gravações;30
+1921700;Fabricação de produtos do refino de petróleo;19: Refino de petróleo e biocombustíveis;30
+1922501;Formulação de combustíveis;19: Refino de petróleo e biocombustíveis;30
+1922502;Rerrefino de óleos lubrificantes;19: Refino de petróleo e biocombustíveis;30
+1922599;Fabricação de outros produtos derivados do petróleo, exceto produtos do refino;19: Refino de petróleo e biocombustíveis;30
+1931400;Fabricação de álcool;32X: Produtos diversos;30
+1932200;Fabricação de biocombustíveis, exceto álcool;32X: Produtos diversos;30
+2011800;Fabricação de cloro e álcalis;20: Químicos;100
+2012600;Fabricação de intermediários para fertilizantes;20: Químicos;100
+2013401;Fabricação de adubos e fertilizantes organo-minerais;20: Químicos;100
+2013402;Fabricação de adubos e fertilizantes, exceto organo-minerais;20: Químicos;100
+2014200;Fabricação de gases industriais;20: Químicos;100
+2019301;Elaboração de combustíveis nucleares;20: Químicos;100
+2019399;Fabricação de outros produtos químicos inorgânicos não especificados anteriormente;20: Químicos;100
+2021500;Fabricação de produtos petroquímicos básicos;20: Químicos;100
+2022300;Fabricação de intermediários para plastificantes, resinas e fibras;20: Químicos;100
+2029100;Fabricação de produtos químicos orgânicos não especificados anteriormente;20: Químicos;100
+2031200;Fabricação de resinas termoplásticas;20: Químicos;100
+2032100;Fabricação de resinas termofixas;20: Químicos;100
+2033900;Fabricação de elastômeros;20: Químicos;100
+2040100;Fabricação de fibras artificiais e sintéticas;20: Químicos;100
+2051700;Fabricação de defensivos agrícolas;20: Químicos;100
+2052500;Fabricação de desinfestantes domissanitários;20: Químicos;100
+2061400;Fabricação de sabões e detergentes sintéticos;20: Químicos;100
+2062200;Fabricação de produtos de limpeza e polimento;20: Químicos;100
+2063100;Fabricação de cosméticos, produtos de perfumaria e de higiene pessoal;20: Químicos;100
+2071100;Fabricação de tintas, vernizes, esmaltes e lacas;20: Químicos;100
+2072000;Fabricação de tintas de impressão;20: Químicos;100
+2073800;Fabricação de impermeabilizantes, solventes e produtos afins;20: Químicos;100
+2091600;Fabricação de adesivos e selantes;20: Químicos;100
+2092401;Fabricação de pólvoras, explosivos e detonantes;20: Químicos;100
+2092402;Fabricação de artigos pirotécnicos;20: Químicos;100
+2092403;Fabricação de fósforos de segurança;20: Químicos;100
+2093200;Fabricação de aditivos de uso industrial;20: Químicos;100
+2094100;Fabricação de catalisadores;20: Químicos;100
+2099101;Fabricação de chapas, filmes, papéis e outros materiais e produtos químicos para fotografia;20: Químicos;100
+2099199;Fabricação de outros produtos químicos não especificados anteriormente;20: Químicos;100
+2110600;Fabricação de produtos farmoquímicos;21: Farmacêutica;100
+2121101;Fabricação de medicamentos alopáticos para uso humano;21: Farmacêutica;100
+2121102;Fabricação de medicamentos homeopáticos para uso humano;21: Farmacêutica;100
+2121103;Fabricação de medicamentos fitoterápicos para uso humano;21: Farmacêutica;100
+2122000;Fabricação de medicamentos para uso veterinário;21: Farmacêutica;100
+2123800;Fabricação de preparações farmacêuticas;21: Farmacêutica;100
+2211100;Fabricação de pneumáticos e de câmaras-de-ar;22: Plásticos e borracha;70
+2212900;Reforma de pneumáticos usados;22: Plásticos e borracha;70
+2219600;Fabricação de artefatos de borracha não especificados anteriormente;22: Plásticos e borracha;70
+2221800;Fabricação de laminados planos e tubulares de material plástico;22: Plásticos e borracha;70
+2222600;Fabricação de embalagens de material plástico;22: Plásticos e borracha;70
+2223400;Fabricação de tubos e acessórios de material plástico para uso na construção;22: Plásticos e borracha;70
+2229301;Fabricação de artefatos de material plástico para uso pessoal e doméstico;22: Plásticos e borracha;70
+2229302;Fabricação de artefatos de material plástico para usos industriais;22: Plásticos e borracha;70
+2229303;Fabricação de artefatos de material plástico para uso na construção, exceto tubos e acessórios;22: Plásticos e borracha;70
+2229399;Fabricação de artefatos de material plástico para outros usos não especificados anteriormente;22: Plásticos e borracha;70
+2311700;Fabricação de vidro plano e de segurança;23: Outros minerais não metálicos;80
+2312500;Fabricação de embalagens de vidro;23: Outros minerais não metálicos;80
+2319200;Fabricação de artigos de vidro;23: Outros minerais não metálicos;80
+2330301;Fabricação de estruturas pré-moldadas de concreto armado, em série e sob encomenda;23: Outros minerais não metálicos;30
+2330302;Fabricação de artefatos de cimento para uso na construção;23: Outros minerais não metálicos;30
+2330303;Fabricação de artefatos de fibrocimento para uso na construção;23: Outros minerais não metálicos;30
+2330304;Fabricação de casas pré-moldadas de concreto;23: Outros minerais não metálicos;30
+2330305;Preparação de massa de concreto e argamassa para construção;23: Outros minerais não metálicos;30
+2330399;Fabricação de outros artefatos e produtos de concreto, cimento, fibrocimento, gesso e materiais semelhantes;23: Outros minerais não metálicos;30
+2341900;Fabricação de produtos cerâmicos refratários;23: Outros minerais não metálicos;30
+2342701;Fabricação de azulejos e pisos;23: Outros minerais não metálicos;30
+2342702;Fabricação de artefatos de cerâmica e barro cozido para uso na construção, exceto azulejos e pisos;23: Outros minerais não metálicos;30
+2349401;Fabricação de material sanitário de cerâmica;23: Outros minerais não metálicos;30
+2349499;Fabricação de produtos cerâmicos não refratários não especificados anteriormente;23: Outros minerais não metálicos;30
+2399101;Decoração, lapidação, gravação, vitrificação e outros trabalhos em cerâmica, louça, vidro e cristal;23: Outros minerais não metálicos;30
+2399102;Fabricação de abrasivos;23: Outros minerais não metálicos;30
+2399199;Fabricação de outros produtos de minerais não metálicos não especificados anteriormente;23: Outros minerais não metálicos;30
+2421100;Produção de semi acabados de aço;24: Metalurgia básica;80
+2422901;Produção de laminados planos de aço ao carbono, revestidos ou não;24: Metalurgia básica;80
+2422902;Produção de laminados planos de aços especiais;24: Metalurgia básica;80
+2423701;Produção de tubos de aço sem costura;24: Metalurgia básica;80
+2423702;Produção de laminados longos de aço, exceto tubos;24: Metalurgia básica;80
+2424501;Produção de arames de aço;24: Metalurgia básica;80
+2424502;Produção de relaminados, trefilados e perfilados de aço, exceto arames;24: Metalurgia básica;80
+2431800;Produção de tubos de aço com costura;24: Metalurgia básica;80
+2439300;Produção de outros tubos de ferro e aço;24: Metalurgia básica;80
+2441501;Produção de alumínio e suas ligas em formas primárias;24: Metalurgia básica;80
+2441502;Produção de laminados de alumínio;24: Metalurgia básica;80
+2442300;Metalurgia dos metais preciosos;24: Metalurgia básica;80
+2443100;Metalurgia do cobre;24: Metalurgia básica;80
+2449101;Produção de zinco em formas primárias;24: Metalurgia básica;80
+2449102;Produção de laminados de zinco;24: Metalurgia básica;80
+2449103;Fabricação de ânodos para galvanoplastia;24: Metalurgia básica;80
+2449199;Metalurgia de outros metais não ferrosos e suas ligas não especificados anteriormente;24: Metalurgia básica;80
+2511000;Fabricação de estruturas metálicas;25X: Produtos de metal, exceto código 25.4;80
+2512800;Fabricação de esquadrias de metal;25X: Produtos de metal, exceto código 25.5;80
+2513600;Fabricação de obras de caldeiraria pesada;25X: Produtos de metal, exceto código 25.6;80
+2521700;Fabricação de tanques, reservatórios metálicos e caldeiras para aquecimento central;25X: Produtos de metal, exceto código 25.6;80
+2522500;Fabricação de caldeiras geradoras de vapor, exceto para aquecimento central e para veículos;25X: Produtos de metal, exceto código 25.6;80
+2531401;Produção de forjados de aço;25X: Produtos de metal, exceto código 25.8;80
+2531402;Produção de forjados de metais não ferrosos e suas ligas;25X: Produtos de metal, exceto código 25.8;80
+2532201;Produção de artefatos estampados de metal;25X: Produtos de metal, exceto código 25.9;80
+2532202;Metalurgia do pó;25X: Produtos de metal, exceto código 25.9;80
+2539001;Serviços de usinagem, torneiria e solda;25X: Produtos de metal, exceto código 25.10;80
+2539002;Serviços de tratamento e revestimento em metais;25X: Produtos de metal, exceto código 25.10;80
+2541100;Fabricação de artigos de cutelaria;25X: Produtos de metal, exceto código 25.12;80
+2542000;Fabricação de artigos de serralheria, exceto esquadrias;25X: Produtos de metal, exceto código 25.13;80
+2543800;Fabricação de ferramentas;25X: Produtos de metal, exceto código 25.14;80
+2550101;Fabricação de equipamento bélico pesado, exceto veículos militares de combate;25X: Produtos de metal, exceto código 25.16;50
+2550102;Fabricação de armas de fogo, outras armas e munições;25X: Produtos de metal, exceto código 25.16;50
+2591800;Fabricação de embalagens metálicas;25X: Produtos de metal, exceto código 25.18;80
+2592601;Fabricação de produtos de trefilados de metal padronizados;25X: Produtos de metal, exceto código 25.19;80
+2592602;Fabricação de produtos de trefilados de metal, exceto padronizados;25X: Produtos de metal, exceto código 25.19;80
+2593400;Fabricação de artigos de metal para uso doméstico e pessoal;25X: Produtos de metal, exceto código 25.20;80
+2599301;Serviços de confecção de armações metálicas para a construção;25X: Produtos de metal, exceto código 25.21;80
+2599302;Serviço de corte e dobra de metais;25X: Produtos de metal, exceto código 25.21;80
+2599399;Fabricação de outros produtos de metal não especificados anteriormente;25X: Produtos de metal, exceto código 25.21;80
+2610800;Fabricação de componentes eletrônicos;26: Informática, eletrônicos e produtos ópticos;70
+2621300;Fabricação de equipamentos de informática;26: Informática, eletrônicos e produtos ópticos;70
+2622100;Fabricação de periféricos para equipamentos de informática;26: Informática, eletrônicos e produtos ópticos;70
+2631100;Fabricação de equipamentos transmissores de comunicação, peças e acessórios;26: Informática, eletrônicos e produtos ópticos;70
+2632900;Fabricação de aparelhos telefônicos e de outros equipamentos de comunicação, peças e acessórios;26: Informática, eletrônicos e produtos ópticos;70
+2640000;Fabricação de aparelhos de recepção, reprodução, gravação e amplificação de áudio e vídeo;26: Informática, eletrônicos e produtos ópticos;70
+2651500;Fabricação de aparelhos e equipamentos de medida, teste e controle;26: Informática, eletrônicos e produtos ópticos;70
+2652300;Fabricação de cronômetros e relógios;26: Informática, eletrônicos e produtos ópticos;70
+2660400;Fabricação de aparelhos eletromédicos e eletroterapêuticos e equipamentos de irradiação;26: Informática, eletrônicos e produtos ópticos;90
+2670101;Fabricação de equipamentos e instrumentos ópticos, peças e acessórios;26: Informática, eletrônicos e produtos ópticos;70
+2670102;Fabricação de aparelhos fotográficos e cinematográficos, peças e acessórios;26: Informática, eletrônicos e produtos ópticos;70
+2680900;Fabricação de mídias virgens, magnéticas e ópticas;26: Informática, eletrônicos e produtos ópticos;70
+2710401;Fabricação de geradores de corrente contínua e alternada, peças e acessórios;27: Máquinas e equipamentos elétricos;80
+2710402;Fabricação de transformadores, indutores, conversores, sincronizadores e semelhantes, peças e acessórios;27: Máquinas e equipamentos elétricos;80
+2710403;Fabricação de motores elétricos, peças e acessórios;27: Máquinas e equipamentos elétricos;80
+2721000;Fabricação de pilhas, baterias e acumuladores elétricos, exceto para veículos automotores;27: Máquinas e equipamentos elétricos;80
+2722801;Fabricação de baterias e acumuladores para veículos automotores;27: Máquinas e equipamentos elétricos;80
+2722802;Recondicionamento de baterias e acumuladores para veículos automotores;27: Máquinas e equipamentos elétricos;80
+2731700;Fabricação de aparelhos e equipamentos para distribuição e controle de energia elétrica;27: Máquinas e equipamentos elétricos;80
+2732500;Fabricação de material elétrico para instalações em circuito de consumo;27: Máquinas e equipamentos elétricos;80
+2733300;Fabricação de fios, cabos e condutores elétricos isolados;27: Máquinas e equipamentos elétricos;80
+2740601;Fabricação de lâmpadas;27: Máquinas e equipamentos elétricos;80
+2740602;Fabricação de luminárias e outros equipamentos de iluminação;27: Máquinas e equipamentos elétricos;80
+2751100;Fabricação de fogões, refrigeradores e máquinas de lavar e secar para uso doméstico, peças e acessórios;27: Máquinas e equipamentos elétricos;80
+2759701;Fabricação de aparelhos elétricos de uso pessoal, peças e acessórios;27: Máquinas e equipamentos elétricos;80
+2759799;Fabricação de outros aparelhos eletrodomésticos não especificados anteriormente, peças e acessórios;27: Máquinas e equipamentos elétricos;80
+2790201;Fabricação de eletrodos, contatos e outros artigos de carvão e grafita para uso elétrico, eletroímãs e isoladores;27: Máquinas e equipamentos elétricos;80
+2790202;Fabricação de equipamentos para sinalização e alarme;27: Máquinas e equipamentos elétricos;80
+2790299;Fabricação de outros equipamentos e aparelhos elétricos não especificados anteriormente;27: Máquinas e equipamentos elétricos;80
+2811900;Fabricação de motores e turbinas, peças e acessórios, exceto para aviões e veículos rodoviários;28: Máquinas e Equipamentos (M&Es);60
+2812700;Fabricação de equipamentos hidráulicos e pneumáticos, peças e acessórios, exceto válvulas;28: Máquinas e Equipamentos (M&Es);60
+2813500;Fabricação de válvulas, registros e dispositivos semelhantes, peças e acessórios;28: Máquinas e Equipamentos (M&Es);60
+2814301;Fabricação de compressores para uso industrial, peças e acessórios;28: Máquinas e Equipamentos (M&Es);60
+2814302;Fabricação de compressores para uso não industrial, peças e acessórios;28: Máquinas e Equipamentos (M&Es);60
+2815101;Fabricação de rolamentos para fins industriais;28: Máquinas e Equipamentos (M&Es);60
+2815102;Fabricação de equipamentos de transmissão para fins industriais, exceto rolamentos;28: Máquinas e Equipamentos (M&Es);60
+2821601;Fabricação de fornos industriais, aparelhos e equipamentos não elétricos para instalações térmicas, peças e acessórios;28: Máquinas e Equipamentos (M&Es);60
+2821602;Fabricação de estufas e fornos elétricos para fins industriais, peças e acessórios;28: Máquinas e Equipamentos (M&Es);60
+2822401;Fabricação de máquinas, equipamentos e aparelhos para transporte e elevação de pessoas, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2822402;Fabricação de máquinas, equipamentos e aparelhos para transporte e elevação de cargas, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2823200;Fabricação de máquinas e aparelhos de refrigeração e ventilação para uso industrial e comercial, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2824101;Fabricação de aparelhos e equipamentos de ar condicionado para uso industrial;28: Máquinas e Equipamentos (M&Es);70
+2824102;Fabricação de aparelhos e equipamentos de ar condicionado para uso não industrial;28: Máquinas e Equipamentos (M&Es);70
+2825900;Fabricação de máquinas e equipamentos para saneamento básico e ambiental, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2829101;Fabricação de máquinas de escrever, calcular e outros equipamentos não eletrônicos para escritório, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2829199;Fabricação de outras máquinas e equipamentos de uso geral não especificados anteriormente, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2831300;Fabricação de tratores agrícolas, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2832100;Fabricação de equipamentos para irrigação agrícola, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2833000;Fabricação de máquinas e equipamentos para a agricultura e pecuária, peças e acessórios, exceto para irrigação;28: Máquinas e Equipamentos (M&Es);70
+2840200;Fabricação de máquinas-ferramenta, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2851800;Fabricação de máquinas e equipamentos para a prospecção e extração de petróleo, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2852600;Fabricação de outras máquinas e equipamentos para uso na extração mineral, peças e acessórios, exceto na extração de petróleo;28: Máquinas e Equipamentos (M&Es);70
+2853400;Fabricação de tratores, peças e acessórios, exceto agrícolas;28: Máquinas e Equipamentos (M&Es);70
+2854200;Fabricação de máquinas e equipamentos para terraplenagem, pavimentação e construção, peças e acessórios, exceto tratores;28: Máquinas e Equipamentos (M&Es);70
+2861500;Fabricação de máquinas para a indústria metalúrgica, peças e acessórios, exceto máquinas-ferramenta;28: Máquinas e Equipamentos (M&Es);70
+2862300;Fabricação de máquinas e equipamentos para as indústrias de alimentos, bebidas e fumo, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2863100;Fabricação de máquinas e equipamentos para a indústria têxtil, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2864000;Fabricação de máquinas e equipamentos para as indústrias do vestuário, do couro e de calçados, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2865800;Fabricação de máquinas e equipamentos para as indústrias de celulose, papel e papelão e artefatos, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2866600;Fabricação de máquinas e equipamentos para a indústria do plástico, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2869100;Fabricação de máquinas e equipamentos para uso industrial específico não especificados anteriormente, peças e acessórios;28: Máquinas e Equipamentos (M&Es);70
+2910701;Fabricação de automóveis, camionetas e utilitários;29: Veículos automotores e autopeças;100
+2910702;Fabricação de chassis com motor para automóveis, camionetas e utilitários;29: Veículos automotores e autopeças;100
+2910703;Fabricação de motores para automóveis, camionetas e utilitários;29: Veículos automotores e autopeças;100
+2920401;Fabricação de caminhões e ônibus;29: Veículos automotores e autopeças;100
+2920402;Fabricação de motores para caminhões e ônibus;29: Veículos automotores e autopeças;100
+2930101;Fabricação de cabines, carrocerias e reboques para caminhões;29: Veículos automotores e autopeças;100
+2930102;Fabricação de carrocerias para ônibus;29: Veículos automotores e autopeças;100
+2930103;Fabricação de cabines, carrocerias e reboques para outros veículos automotores, exceto caminhões e ônibus;29: Veículos automotores e autopeças;100
+2941700;Fabricação de peças e acessórios para o sistema motor de veículos automotores;29: Veículos automotores e autopeças;100
+2942500;Fabricação de peças e acessórios para os sistemas de marcha e transmissão de veículos automotores;29: Veículos automotores e autopeças;100
+2943300;Fabricação de peças e acessórios para o sistema de freios de veículos automotores;29: Veículos automotores e autopeças;100
+2944100;Fabricação de peças e acessórios para o sistema de direção e suspensão de veículos automotores;29: Veículos automotores e autopeças;100
+2945000;Fabricação de material elétrico e eletrônico para veículos automotores, exceto baterias;29: Veículos automotores e autopeças;100
+2949201;Fabricação de bancos e estofados para veículos automotores;29: Veículos automotores e autopeças;100
+2949299;Fabricação de outras peças e acessórios para veículos automotores não especificadas anteriormente;29: Veículos automotores e autopeças;100
+2950600;Recondicionamento e recuperação de motores para veículos automotores;29: Veículos automotores e autopeças;100
+3011301;Construção de embarcações de grande porte;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);30
+3011302;Construção de embarcações para uso comercial e para usos especiais, exceto de grande porte;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);30
+3012100;Construção de embarcações para esporte e lazer;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);30
+3041500;Fabricação de aeronaves;303: Aeronaves e componentes relacionados;70
+3042300;Fabricação de turbinas, motores e outros componentes e peças para aeronaves;303: Aeronaves e componentes relacionados;70
+3050400;Fabricação de veículos militares de combate;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);70
+3091101;Fabricação de motocicletas;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);100
+3091102;Fabricação de peças e acessórios para motocicletas;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);100
+3092000;Fabricação de bicicletas e triciclos não motorizados, peças e acessórios;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);70
+3099700;Fabricação de equipamentos de transporte não especificados anteriormente;30X: Veículos ferroviários, veículos militares de combate e outros (inclui ISIC 30.2, 30.4 e 30.9);70
+3101200;Fabricação de móveis com predominância de madeira;31: Móveis;30
+3102100;Fabricação de móveis com predominância de metal;31: Móveis;30
+3103900;Fabricação de móveis de outros materiais, exceto madeira e metal;31: Móveis;30
+3104700;Fabricação de colchões;31: Móveis;30
+3220500;Fabricação de instrumentos musicais, peças e acessórios;32X: Produtos diversos, exceto código 32.10;30
+3230200;Fabricação de artefatos para pesca e esporte;32X: Produtos diversos, exceto código 32.12;30
+3240001;Fabricação de jogos eletrônicos;32X: Produtos diversos, exceto código 32.14;30
+3240002;Fabricação de mesas de bilhar, de sinuca e acessórios não associada à locação;32X: Produtos diversos, exceto código 32.14;30
+3240003;Fabricação de mesas de bilhar, de sinuca e acessórios associada à locação;32X: Produtos diversos, exceto código 32.14;30
+3240099;Fabricação de outros brinquedos e jogos recreativos não especificados anteriormente;32X: Produtos diversos, exceto código 32.14;30
+3291400;Fabricação de escovas, pincéis e vassouras;32X: Produtos diversos, exceto código 32.16;30
+3292201;Fabricação de roupas de proteção e segurança e resistentes a fogo;32X: Produtos diversos, exceto código 32.17;30
+3292202;Fabricação de equipamentos e acessórios para segurança pessoal e profissional;32X: Produtos diversos, exceto código 32.17;30
+3299001;Fabricação de guarda-chuvas e similares;32X: Produtos diversos, exceto código 32.18;30
+3299002;Fabricação de canetas, lápis e outros artigos para escritório;32X: Produtos diversos, exceto código 32.18;30
+3299003;Fabricação de letras, letreiros e placas de qualquer material, exceto luminosos;32X: Produtos diversos, exceto código 32.18;30
+3299004;Fabricação de painéis e letreiros luminosos;32X: Produtos diversos, exceto código 32.18;30
+3299005;Fabricação de aviamentos para costura;32X: Produtos diversos, exceto código 32.18;30
+3299006;Fabricação de velas, inclusive decorativas;32X: Produtos diversos, exceto código 32.18;30
+3299099;Fabricação de produtos diversos não especificados anteriormente;32X: Produtos diversos, exceto código 32.18;30
+3311200;Manutenção e reparação de tanques, reservatórios metálicos e caldeiras, exceto para veículos;33: Manutenção, reparação e instalação de M&Es;30
+3312102;Manutenção e reparação de aparelhos e instrumentos de medida, teste e controle;33: Manutenção, reparação e instalação de M&Es;30
+3312103;Manutenção e reparação de aparelhos eletromédicos e eletroterapêuticos e equipamentos de irradiação;33: Manutenção, reparação e instalação de M&Es;30
+3312104;Manutenção e reparação de equipamentos e instrumentos ópticos;33: Manutenção, reparação e instalação de M&Es;30
+3313901;Manutenção e reparação de geradores, transformadores e motores elétricos;33: Manutenção, reparação e instalação de M&Es;30
+3313902;Manutenção e reparação de baterias e acumuladores elétricos, exceto para veículos;33: Manutenção, reparação e instalação de M&Es;30
+3313999;Manutenção e reparação de máquinas, aparelhos e materiais elétricos não especificados anteriormente;33: Manutenção, reparação e instalação de M&Es;30
+3314701;Manutenção e reparação de máquinas motrizes não elétricas;33: Manutenção, reparação e instalação de M&Es;30
+3314702;Manutenção e reparação de equipamentos hidráulicos e pneumáticos, exceto válvulas;33: Manutenção, reparação e instalação de M&Es;30
+3314703;Manutenção e reparação de válvulas industriais;33: Manutenção, reparação e instalação de M&Es;30
+3314704;Manutenção e reparação de compressores;33: Manutenção, reparação e instalação de M&Es;30
+3314705;Manutenção e reparação de equipamentos de transmissão para fins industriais;33: Manutenção, reparação e instalação de M&Es;30
+3314706;Manutenção e reparação de máquinas, aparelhos e equipamentos para instalações térmicas;33: Manutenção, reparação e instalação de M&Es;30
+3314707;Manutenção e reparação de máquinas e aparelhos de refrigeração e ventilação para uso industrial e comercial;33: Manutenção, reparação e instalação de M&Es;30
+3314708;Manutenção e reparação de máquinas, equipamentos e aparelhos para transporte e elevação de cargas;33: Manutenção, reparação e instalação de M&Es;30
+3314709;Manutenção e reparação de máquinas de escrever, calcular e de outros equipamentos não eletrônicos para escritório;33: Manutenção, reparação e instalação de M&Es;30
+3314710;Manutenção e reparação de máquinas e equipamentos para uso geral não especificados anteriormente;33: Manutenção, reparação e instalação de M&Es;30
+3314711;Manutenção e reparação de máquinas e equipamentos para agricultura e pecuária;33: Manutenção, reparação e instalação de M&Es;30
+3314712;Manutenção e reparação de tratores agrícolas;33: Manutenção, reparação e instalação de M&Es;30
+3314713;Manutenção e reparação de máquinas-ferramenta;33: Manutenção, reparação e instalação de M&Es;30
+3314714;Manutenção e reparação de máquinas e equipamentos para a prospecção e extração de petróleo;33: Manutenção, reparação e instalação de M&Es;30
+3314715;Manutenção e reparação de máquinas e equipamentos para uso na extração mineral, exceto na extração de petróleo;33: Manutenção, reparação e instalação de M&Es;30
+3314716;Manutenção e reparação de tratores, exceto agrícolas;33: Manutenção, reparação e instalação de M&Es;30
+3314717;Manutenção e reparação de máquinas e equipamentos de terraplenagem, pavimentação e construção, exceto tratores;33: Manutenção, reparação e instalação de M&Es;30
+3314718;Manutenção e reparação de máquinas para a indústria metalúrgica, exceto máquinas-ferramenta;33: Manutenção, reparação e instalação de M&Es;30
+3314719;Manutenção e reparação de máquinas e equipamentos para as indústrias de alimentos, bebidas e fumo;33: Manutenção, reparação e instalação de M&Es;30
+3314720;Manutenção e reparação de máquinas e equipamentos para a indústria têxtil, do vestuário, do couro e calçados;33: Manutenção, reparação e instalação de M&Es;30
+3314721;Manutenção e reparação de máquinas e aparelhos para a indústria de celulose, papel e papelão e artefatos;33: Manutenção, reparação e instalação de M&Es;30
+3314722;Manutenção e reparação de máquinas e aparelhos para a indústria do plástico;33: Manutenção, reparação e instalação de M&Es;30
+3314799;Manutenção e reparação de outras máquinas e equipamentos para usos industriais não especificados anteriormente;33: Manutenção, reparação e instalação de M&Es;30
+3316301;Manutenção e reparação de aeronaves, exceto a manutenção na pista;33: Manutenção, reparação e instalação de M&Es;30
+3316302;Manutenção de aeronaves na pista;33: Manutenção, reparação e instalação de M&Es;30
+3317101;Manutenção e reparação de embarcações e estruturas flutuantes;33: Manutenção, reparação e instalação de M&Es;30
+3317102;Manutenção e reparação de embarcações para esporte e lazer;33: Manutenção, reparação e instalação de M&Es;30
+3321000;Instalação de máquinas e equipamentos industriais;33: Manutenção, reparação e instalação de M&Es;30
+3511501;Geração de energia elétrica;35-39: Eletricidade e gás, água, esgoto e limpeza urbana;30
+4120400;Construção de edifícios;41-43: Construção;20
+4211101;Construção de rodovias e ferrovias;41-43: Construção;20
+4212000;Construção de obras de arte especiais;41-43: Construção;20
+4292801;Montagem de estruturas metálicas;41-43: Construção;20
+4292802;Obras de montagem industrial;41-43: Construção;20
+4511101;Comércio a varejo de automóveis, camionetas e utilitários novos;45-47: Comércio;30
+4511102;Comércio a varejo de automóveis, camionetas e utilitários usados;45-47: Comércio;30
+4511103;Comércio por atacado de automóveis, camionetas e utilitários novos e usados;45-47: Comércio;30
+4511104;Comércio por atacado de caminhões novos e usados;45-47: Comércio;30
+4511105;Comércio por atacado de reboques e semi reboques novos e usados;45-47: Comércio;30
+4511106;Comércio por atacado de ônibus e micro-ônibus novos e usados;45-47: Comércio;30
+4644301;Comércio atacadista de medicamentos e drogas de uso humano;45-47: Comércio;30
+4644302;Comércio atacadista de medicamentos e drogas de uso veterinário;45-47: Comércio;30
+4646001;Comércio atacadista de cosméticos e produtos de perfumaria;45-47: Comércio;30
+4646002;Comércio atacadista de produtos de higiene pessoal;45-47: Comércio;30
+4731800;Comércio varejista de combustíveis para veículos automotores;45-47: Comércio;30
+4930201;Transporte rodoviário de carga, exceto produtos perigosos e mudanças, municipal;49-53: Transporte, armazenagem e correio;20
+4930202;Transporte rodoviário de carga, exceto produtos perigosos e mudanças, intermunicipal, interestadual e internacional;49-53: Transporte, armazenagem e correio;20
+4930203;Transporte rodoviário de produtos perigosos;49-53: Transporte, armazenagem e correio;20
+4930204;Transporte rodoviário de mudanças;49-53: Transporte, armazenagem e correio;20
+5250801;Comissaria de despachos;49-53: Transporte, armazenagem e correio;20
+5250802;Atividades de despachantes aduaneiros;49-53: Transporte, armazenagem e correio;20
+5250803;Agenciamento de cargas, exceto para o transporte marítimo;49-53: Transporte, armazenagem e correio;20
+5250804;Organização logística do transporte de carga;49-53: Transporte, armazenagem e correio;20
+5250805;Operador de transporte multimodal - OTM;49-53: Transporte, armazenagem e correio;20
+5310501;Atividades do Correio Nacional;49-53: Transporte, armazenagem e correio;30
+5310502;Atividades de franqueadas do Correio Nacional;49-53: Transporte, armazenagem e correio;30
+5320201;Serviços de malote não realizados pelo Correio Nacional;49-53: Transporte, armazenagem e correio;30
+5320202;Serviços de entrega rápida;49-53: Transporte, armazenagem e correio;30
+5620101;Fornecimento de alimentos preparados preponderantemente para empresas;55-56: Alojamento e alimentação;20
+5620102;Serviços de alimentação para eventos e recepções - bufê;55-56: Alojamento e alimentação;20
+5620103;Cantinas - serviços de alimentação privativos;55-56: Alojamento e alimentação;20
+5620104;Fornecimento de alimentos preparados preponderantemente para consumo domiciliar;55-56: Alojamento e alimentação;20
+8640201;Laboratórios de anatomia patológica e citológica;não classificado;20
+8640202;Laboratórios clínicos;não classificado;20
+8640203;Serviços de diálise e nefrologia;não classificado;20
+8640204;Serviços de tomografia;não classificado;20
+8640205;Serviços de diagnóstico por imagem com uso de radiação ionizante, exceto tomografia;não classificado;20
+8640206;Serviços de ressonância magnética;não classificado;20
+8640207;Serviços de diagnóstico por imagem sem uso de radiação ionizante, exceto ressonância magnética;não classificado;20
+8640208;Serviços de diagnóstico por registro gráfico - ecg, eeg e outros exames análogos;não classificado;20
+8640209;Serviços de diagnóstico por métodos ópticos - endoscopia e outros exames análogos;não classificado;20
+8640210;Serviços de quimioterapia;não classificado;20
+8640211;Serviços de radioterapia;não classificado;20
+8640212;Serviços de hemoterapia;não classificado;20
+8640213;Serviços de litotripcia;não classificado;20
+8640214;Serviços de bancos de células e tecidos humanos;não classificado;20
+8640299;Atividades de serviços de complementação diagnóstica e terapêutica não especificadas anteriormente;não classificado;20
+9001901;Produção teatral;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9001902;Produção musical;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9001903;Produção de espetáculos de dança;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9001904;Produção de espetáculos circenses, de marionetes e similares;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9001905;Produção de espetáculos de rodeios, vaquejadas e similares;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9001906;Atividades de sonorização e de iluminação;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9001999;Artes cênicas, espetáculos e atividades complementares não especificadas anteriormente;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9601701;Lavanderias;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9601702;Tinturarias;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20
+9601703;Toalheiros;90-99: Artes, recreação, serviços domésticos, organizações associativas e outros serviços;20

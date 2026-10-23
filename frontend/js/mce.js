@@ -1,4 +1,4 @@
-// Inciso XIII — MCE: formulário (PDF gerado), arquivo próprio e ciência da rede de água e esgoto.
+// Anexo VII — MCE: formulário (PDF gerado), arquivo próprio e ciência da rede de água e esgoto.
 // A parte de validação/máscaras vem do formulário do sistema cadastral.
 const API_BASE_URL = window.CODEGO_API_BASE_URL; // definido em js/config.js
 const CHAVE_TOKEN = 'dianot_token';
@@ -523,7 +523,7 @@ function preencherFormulario(dados) {
 }
 
 // ---------------------------------------------------------------------------
-// Situação do inciso, ciência e arquivo próprio
+// Situação do anexo, ciência e arquivo próprio
 // ---------------------------------------------------------------------------
 let limites = { max_arquivos: 5, max_mb: 20 };
 const tamanho = (b) => (b < 1048576 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1048576).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
@@ -539,8 +539,8 @@ function mostrarSituacao(estado) {
   const el = document.getElementById('situacao');
   const ok = estado.concluido;
   el.textContent = ok
-    ? `✔ Situação deste inciso: ${partes.join(' e ')}; ciência aceita.`
-    : `Situação deste inciso: pendente — ${pendencias.join('; ')}.${partes.length ? ` (já há: ${partes.join(' e ')}.)` : ''}`;
+    ? `✔ Situação deste anexo: ${partes.join(' e ')}; ciência aceita.`
+    : `Situação deste anexo: pendente — ${pendencias.join('; ')}.${partes.length ? ` (já há: ${partes.join(' e ')}.)` : ''}`;
   el.className = `field__hint field__hint--${ok ? 'ok' : 'warn'}`;
 
   const radio = document.querySelector(`input[name="ciencia_rede"][value="${estado.ciencia}"]`);
@@ -679,12 +679,26 @@ form.addEventListener('submit', async (event) => {
   }
 });
 
+// Escolha entre a Opção 1 (arquivo pronto) e a Opção 2 (formulário): na primeira
+// vez só aparecem os dois botões; quem já usou uma das opções volta direto para ela.
+const botoesOpcao = document.querySelectorAll('.escolha-opcao__botao');
+function escolherOpcao(id) {
+  botoesOpcao.forEach((b) => {
+    const ativa = b.dataset.opcao === id;
+    b.setAttribute('aria-pressed', String(ativa));
+    document.getElementById(b.dataset.opcao).hidden = !ativa;
+  });
+}
+botoesOpcao.forEach((b) => b.addEventListener('click', () => escolherOpcao(b.dataset.opcao)));
+
 async function iniciar() {
   try {
     const estado = await (await api('/api/mce/minha')).json();
     preencherFormulario(estado.dados || estado.sugestao || {});
     mostrarSituacao(estado);
     desenharArquivos(estado);
+    if (estado.dados) escolherOpcao('opcao-2');
+    else if (estado.arquivos.length) escolherOpcao('opcao-1');
     if (estado.dados) mostrarPdf('Memorial salvo. Você pode alterá-lo e salvar de novo.');
   } catch (e) {
     showFeedback('<p class="feedback__title">Falha de conexão</p><p>Recarregue a página.</p>', 'error');

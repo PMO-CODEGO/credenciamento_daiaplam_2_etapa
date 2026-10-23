@@ -28,9 +28,6 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None) -> dict:
         if sol.ocupacao_percentual:
             s["area_construida"] = formatar_numero_br(round(area * sol.ocupacao_percentual / 100, 2))
             s["ocupacao_percentual"] = sol.ocupacao_percentual
-        if sol.obra_inicio and sol.obra_fim:
-            s["inicio_obras"] = sol.obra_inicio
-            s["termino_obras"] = sol.obra_fim
     return s
 
 

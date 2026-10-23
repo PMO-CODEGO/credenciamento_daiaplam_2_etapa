@@ -1,4 +1,4 @@
-"""PDF do Memorial de Caracterização do Empreendimento (Inciso XIII), no modelo oficial (Rev. 2).
+"""PDF do Memorial de Caracterização do Empreendimento (Anexo VII), no modelo oficial (Rev. 2).
 
 Como o do cronograma, o PDF é gerado na hora do download a partir dos dados salvos.
 """

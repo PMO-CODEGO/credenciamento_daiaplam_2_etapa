@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.database import get_db
-from app.models.orm import Documento, Evtf, Solicitacao, Usuario
+from app.models.orm import Cronograma, Documento, Evtf, Solicitacao, Usuario
 from app.routers.auth import usuario_atual
 from app.schemas.documentos import DocumentoOut
 from app.schemas.evtf import EvtfIn
@@ -19,8 +19,9 @@ router = APIRouter()
 TIPO_ARQUIVO = "evtf"
 
 
-def _sugestao(usuario: Usuario, sol: Solicitacao | None) -> dict:
-    """Valores iniciais do formulário, para a empresa não digitar de novo."""
+def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | None) -> dict:
+    """Valores iniciais do formulário, para a empresa não digitar de novo.
+    Os prazos da obra vêm do Cronograma Físico de Obras (Anexo VI), se já preenchido."""
     s = {
         "razao_social": usuario.nome_empresarial,
         "cnpj": usuario.cnpj,
@@ -40,8 +41,6 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None) -> dict:
             ramo_atividade_cnae=formatar_cnae(sol.cnae_codigo),
             ramo_atividade_especificacao=sol.cnae_descricao,
             area_terreno_m2=formatar_numero_br(float(sol.area_m2)),
-            prazo_implantacao_inicio=sol.obra_inicio or "",
-            prazo_implantacao_termino=sol.obra_fim or "",
         )
         # O representante da declaração vale mais que o do cadastro (pode ter mudado).
         if sol.representante_nome:
@@ -52,6 +51,9 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None) -> dict:
             s["eng_area_construida_implantacao"] = formatar_numero_br(
                 round(float(sol.area_m2) * sol.ocupacao_percentual / 100, 2)
             )
+    if crono is not None:
+        s["prazo_implantacao_inicio"] = crono.dados.get("inicio_obras", "")
+        s["prazo_implantacao_termino"] = crono.dados.get("termino_obras", "")
     return s
 
 
@@ -71,7 +73,7 @@ def _montar_estado(db: Session, usuario: Usuario) -> EvtfEstado:
     return EvtfEstado(
         dados=reg.dados if reg else None,
         atualizado_em=reg.data_atualizacao if reg else None,
-        sugestao=_sugestao(usuario, sol),
+        sugestao=_sugestao(usuario, sol, db.query(Cronograma).filter(Cronograma.usuario_id == usuario.id).first()),
         arquivos=[DocumentoOut.model_validate(a) for a in arquivos],
         max_arquivos=docs.MAX_ARQUIVOS_POR_TIPO,
         max_mb=settings.upload_max_mb,

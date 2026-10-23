@@ -44,7 +44,7 @@ dados, documentos, PDFs dos incisos e comprovantes. Usuários criados com `pytho
 ## Formulário de solicitação de área (tela após o login)
 - `frontend/home.html` + `js/solicitacao.js`: Anexos I (mapa) e II (lista de documentos) em painéis com imagem e PDF (`frontend/assets/anexo-i-*`, `anexo-ii-*`), área em m² (2 casas), dados da empresa, do administrador e CNAE.
 - `GET /api/cnae/{codigo}`, `GET /api/cnae?q=` · `GET/PUT /api/solicitacoes/minha` (uma solicitação por empresa, editável).
-- CNAE validado contra a tabela `cnaes`. A carga inicial vem de `backend/app/data/cnaes.csv` (formato `codigo;descricao`) e hoje tem só **códigos de exemplo**: substituir pela Tabela de CNAEs do Anexo X.
+- CNAE validado contra a tabela `cnaes`, que é sincronizada a cada início com `backend/app/data/cnaes.csv` (formato `codigo;descricao;setor_ocde;pontuacao`): as 433 subclasses da Tabela de CNAEs do Anexo X. Quando o Anexo X lista uma classe inteira, entram todas as subclasses dela.
 
 ## Segurança
 - `.env` nunca vai para o Git; em produção `APP_ENV=production` (docs fechadas) e `APP_SECRET_KEY` próprio.
@@ -55,5 +55,5 @@ dados, documentos, PDFs dos incisos e comprovantes. Usuários criados com `pytho
 ## Roadmap
 1. Base do projeto ✅
 2. Tela de login (CNPJ + senha, reCAPTCHA) e cadastro de usuário ✅
-3. Formulário de solicitação de área (Anexo IV) ✅ — falta carregar a tabela de CNAEs do Anexo X e os links dos anexos
+3. Formulário de solicitação de área (Anexo IV) ✅
 4. Próximas telas (envio de documentos)

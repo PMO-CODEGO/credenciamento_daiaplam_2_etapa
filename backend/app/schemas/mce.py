@@ -1,4 +1,4 @@
-"""Inciso XIII — Memorial de Caracterização do Empreendimento (MCE, Anexo VII)."""
+"""Anexo VII — Memorial de Caracterização do Empreendimento (MCE)."""
 import re
 from datetime import date
 from typing import Literal

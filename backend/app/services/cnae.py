@@ -1,15 +1,16 @@
-"""CNAE: normalização, validação contra a tabela do banco e carga inicial."""
+"""CNAE: normalização, validação contra a tabela do banco e carga a partir do Anexo X."""
 import csv
 import logging
 import os
 
 from sqlalchemy.orm import Session
 
-from app.models.orm import Cnae
+from app.models.orm import Cnae, Solicitacao
 from app.schemas.validacoes import somente_digitos
 
 logger = logging.getLogger("codego.cnae")
 
+# Tabela de CNAEs do Anexo X do edital (subclasses), gerada a partir do PDF do anexo.
 ARQUIVO_PADRAO = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "cnaes.csv")
 
 
@@ -31,7 +32,7 @@ def buscar(db: Session, valor: str) -> Cnae | None:
 
 
 def importar_csv(db: Session, caminho: str = ARQUIVO_PADRAO, substituir: bool = False) -> int:
-    """Carrega 'codigo;descricao' (UTF-8). Retorna quantos CNAEs foram gravados."""
+    """Carrega 'codigo;descricao' (UTF-8; colunas extras são ignoradas). Retorna quantos CNAEs foram gravados."""
     if not os.path.isfile(caminho):
         return 0
     if substituir:
@@ -55,7 +56,19 @@ def importar_csv(db: Session, caminho: str = ARQUIVO_PADRAO, substituir: bool = 
     return total
 
 
-def carga_inicial(db: Session) -> None:
-    if db.query(Cnae).count() == 0:
-        n = importar_csv(db)
-        logger.info("Tabela de CNAEs vazia: %s código(s) carregados do arquivo padrão.", n)
+def sincronizar(db: Session) -> None:
+    """Deixa a tabela igual ao arquivo padrão: grava/atualiza os CNAEs dele e remove os
+    que saíram, exceto os que alguma solicitação já usa (a chave estrangeira exige)."""
+    n = importar_csv(db)
+    if not n:
+        return
+    no_arquivo = set()
+    with open(ARQUIVO_PADRAO, encoding="utf-8-sig", newline="") as f:
+        for linha in csv.DictReader(f, delimiter=";"):
+            no_arquivo.add(normalizar(linha.get("codigo", "")))
+    usados = {c for (c,) in db.query(Solicitacao.cnae_codigo).distinct().all()}
+    sobras = [c for (c,) in db.query(Cnae.codigo).all() if c not in no_arquivo and c not in usados]
+    if sobras:
+        db.query(Cnae).filter(Cnae.codigo.in_(sobras)).delete(synchronize_session=False)
+        db.commit()
+    logger.info("CNAEs: %s do arquivo padrão; %s fora dele removido(s).", n, len(sobras))

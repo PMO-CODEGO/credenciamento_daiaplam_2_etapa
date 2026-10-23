@@ -75,8 +75,8 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
     else:
         for campo, nome in (
             ("declaracao_aceita_em", "Anexo VI (taxa de ocupação)"),
-            ("conhecimento_objeto_aceito_em", "Inciso XIV (pleno conhecimento do objeto, Anexo IX)"),
-            ("liquidacao_aceita_em", "Inciso XV (liquidação, Anexo XIII)"),
+            ("conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento do objeto)"),
+            ("liquidacao_aceita_em", "Anexo XII (liquidação)"),
         ):
             if getattr(sol, campo) is None:
                 falta.append(f"Assine a declaração do {nome}.")
@@ -91,9 +91,9 @@ def pendencias(db: Session, usuario: Usuario) -> list[str]:
     if not (crono or por_tipo.get("inciso12")):
         falta.append("Anexo VI (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
     if not ((mce and mce.dados) or por_tipo.get("inciso13")):
-        falta.append("Inciso XIII (MCE): preencha o formulário ou envie o arquivo.")
+        falta.append("Anexo VII (MCE): preencha o formulário ou envie o arquivo.")
     if not mce or mce.ciencia_rede != "aceito":
-        falta.append("Inciso XIII: responda \"Aceito\" na ciência da rede de água e esgoto.")
+        falta.append("Anexo VII: responda \"Aceito\" na ciência da rede de água e esgoto.")
     return falta
 
 
@@ -139,7 +139,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
     for chave, rotulo, reg in (
         ("evtf", "Anexo V — Estudo de Viabilidade Técnica e Financeira — EVTF", evtf),
         ("inciso12", "Anexo VI — Cronograma Físico de Obras", crono),
-        ("inciso13", "Inciso XIII — Memorial de Caracterização do Empreendimento — MCE (Anexo VII)", mce if mce and mce.dados else None),
+        ("inciso13", "Anexo VII — Memorial de Caracterização do Empreendimento — MCE", mce if mce and mce.dados else None),
     ):
         itens = _itens(arquivos, chave)
         incisos.append({
@@ -150,14 +150,14 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
         })
     declaracoes = [
         {"rotulo": "Declaração de compromisso com a Taxa de Ocupação de Área (Anexo VI)",
-         "detalhe": f"Ocupação de {sol.ocupacao_percentual}% da área; obra de {sol.obra_inicio} a {sol.obra_fim}.",
+         "detalhe": f"Ocupação de {sol.ocupacao_percentual}% da área.",
          "assinada_em": _iso(sol.declaracao_aceita_em)},
-        {"rotulo": "Inciso XIV — Declaração de Pleno Conhecimento do Objeto (Anexo IX)", "detalhe": "",
+        {"rotulo": "Anexo IX — Declaração de Pleno Conhecimento do Objeto", "detalhe": "",
          "assinada_em": _iso(sol.conhecimento_objeto_aceito_em)},
-        {"rotulo": "Inciso XV — Declaração Liquidação Alienação de Áreas (Anexo XIII)",
+        {"rotulo": "Anexo XII — Declaração Liquidação Alienação de Áreas",
          "detalhe": f"Prazo de liquidação declarado: {sol.liquidacao_prazo_meses} meses.",
          "assinada_em": _iso(sol.liquidacao_aceita_em)},
-        {"rotulo": "Ciência da rede de água e esgoto fornecida pela CODEGO (Inciso XIII)",
+        {"rotulo": "Ciência da rede de água e esgoto fornecida pela CODEGO (Anexo VII)",
          "detalhe": "Resposta: Aceito.", "assinada_em": _iso(mce.ciencia_em) if mce else None},
     ]
     return {

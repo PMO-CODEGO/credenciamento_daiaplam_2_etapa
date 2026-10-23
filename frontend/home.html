@@ -57,7 +57,7 @@
             <span class="doc-list__title">Critérios de pontuação para definição do subsídio locacional</span>
           </button>
           <div class="inciso-painel" hidden>
-            <a href="assets/anexo-iii-criterios-pontuacao.pdf" target="_blank" rel="noopener" title="Abrir o Anexo III em PDF">
+            <a href="assets/anexo-iii-criterios-pontuacao.pdf" target="_blank" rel="noopener" title="Abrir o Anexo III em PDF" data-anexo-paginas>
               <img class="anexo-imagem" src="assets/anexo-iii-criterios-pontuacao-p1.jpg" width="1192" height="1543" loading="lazy"
                 alt="Anexo III, página 1 — critérios de pontuação: área, empregos, dimensão financeira (itens 4 a 8) e operacional (itens 9 a 12).">
               <img class="anexo-imagem" src="assets/anexo-iii-criterios-pontuacao-p2.jpg" width="1192" height="1543" loading="lazy"
@@ -135,7 +135,8 @@
           </div>
         </section>
 
-        <p class="section-desc section-desc--separada">Envie em PDF, JPG ou PNG, até 20 MB por arquivo. Cada arquivo fica salvo assim que é enviado, e você pode enviar mais de um arquivo por item (ex.: contrato social e alterações).</p>
+        <h3 class="section-title">Documentos de apresentação integral e obrigatória</h3>
+        <p class="section-desc">Envie em PDF, JPG ou PNG, até 20 MB por arquivo. Cada arquivo fica salvo assim que é enviado, e você pode enviar mais de um arquivo por item (ex.: contrato social e alterações).</p>
         <div id="documentos" class="doc-uploads">
           <p class="field__hint">Carregando documentos…</p>
         </div>
@@ -180,19 +181,6 @@
             </div>
             <p class="field__hint" id="ocupacao-dica">Mínimo de 33% e máximo de 80%.</p>
             <p class="field__error" data-error-for="ocupacao_percentual"></p>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="obra_inicio">Início previsto da obra (mês/ano)</label>
-              <input type="month" id="obra_inicio" name="obra_inicio">
-              <p class="field__error" data-error-for="obra_inicio"></p>
-            </div>
-            <div class="field">
-              <label for="obra_fim">Fim previsto da obra (mês/ano)</label>
-              <input type="month" id="obra_fim" name="obra_fim" aria-describedby="obra-dica">
-              <p class="field__hint" id="obra-dica">Até 2 anos: no máximo 24 meses, contando o mês de início e o de fim.</p>
-              <p class="field__error" data-error-for="obra_fim"></p>
-            </div>
           </div>
           <div class="field-row field-row--cidade-uf">
             <div class="field">
@@ -255,15 +243,29 @@
 
         <div class="inciso-link inciso-link--separado">
           <button type="button" class="doc-list__link inciso-link__botao" aria-expanded="false" data-pagina="mce.html" data-estado="/api/mce/minha">
-            <span class="doc-list__tag">Inciso XIII</span>
-            <span class="doc-list__title">Memorial de Caracterização do Empreendimento — MCE (Anexo VII)</span>
+            <span class="doc-list__tag">Anexo VII</span>
+            <span class="doc-list__title">Memorial de Caracterização do Empreendimento — MCE</span>
             <span class="inciso-link__status"></span>
           </button>
           <div class="inciso-painel" hidden></div>
         </div>
 
+        <div class="inciso-link">
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+            <span class="doc-list__tag">Anexo VIII</span>
+            <span class="doc-list__title">Fator para cálculo do subsídio do valor da área</span>
+          </button>
+          <div class="inciso-painel" hidden>
+            <a href="assets/anexo-viii-fator-subsidio.pdf" target="_blank" rel="noopener" title="Abrir o Anexo VIII em PDF">
+              <img class="anexo-imagem" src="assets/anexo-viii-fator-subsidio.jpg" width="1192" height="1122" loading="lazy"
+                alt="Anexo VIII — tabela do fator de desconto: pontuação inferior a 20 não tem desconto; de 20 a 25 pontos, 15%; o desconto sobe 5 pontos percentuais a cada faixa de 5 pontos, até 75% para pontuação superior a 80.">
+            </a>
+            <p class="anexo-imagem__fonte"><a href="assets/anexo-viii-fator-subsidio.pdf" target="_blank" rel="noopener">Abrir o Anexo VIII em PDF</a></p>
+          </div>
+        </div>
+
         <div class="declaracao" id="conhecimento-objeto">
-          <h3 class="section-title">Inciso XIV - Declaração de Pleno Conhecimento do Objeto (ANEXO IX)</h3>
+          <h3 class="section-title">Anexo IX - Declaração de Pleno Conhecimento do Objeto</h3>
           <p class="section-desc">Usa os dados da empresa, o representante legal e a cidade informados acima.</p>
 
           <article class="declaracao__texto" aria-label="Declaração de Pleno Conhecimento do Objeto">
@@ -281,8 +283,76 @@
           </div>
         </div>
 
+        <div class="inciso-link">
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+            <span class="doc-list__tag">Anexo X</span>
+            <span class="doc-list__title">Tabelas de pontuação e CNAEs</span>
+          </button>
+          <div class="inciso-painel" hidden>
+            <a href="assets/anexo-x-tabelas-pontuacao-cnaes.pdf" target="_blank" rel="noopener" title="Abrir o Anexo X em PDF" data-anexo-paginas>
+              <img class="anexo-imagem" src="assets/anexo-x-p01.jpg" width="1192" height="1685" loading="lazy"
+                alt="Anexo X, página 1 — tabelas de pontuação: cronograma de obra, IRR, compliance, tempo de constituição, liquidez, faturamento, P&amp;D e balanço contábil.">
+              <img class="anexo-imagem" src="assets/anexo-x-p02.jpg" width="1192" height="860" loading="lazy"
+                alt="Anexo X, página 2 — tabelas de pontuação: ESG, faixas de emprego, liquidação de alienação de área (LAA), investimento e destinação da área.">
+              <img class="anexo-imagem" src="assets/anexo-x-p03.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 3 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p04.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 4 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p05.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 5 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p06.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 6 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p07.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 7 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p08.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 8 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p09.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 9 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p10.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 10 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p11.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 11 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p12.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 12 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p13.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 13 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p14.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 14 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p15.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 15 — tabela de CNAEs com setores OCDE e pontuação.">
+              <img class="anexo-imagem" src="assets/anexo-x-p16.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo X, página 16 — tabela de CNAEs com setores OCDE e pontuação.">
+            </a>
+            <p class="anexo-imagem__fonte"><a href="assets/anexo-x-tabelas-pontuacao-cnaes.pdf" target="_blank" rel="noopener">Abrir o Anexo X em PDF</a></p>
+          </div>
+        </div>
+
+        <div class="inciso-link">
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+            <span class="doc-list__tag">Anexo XI</span>
+            <span class="doc-list__title">Minuta de contrato CDRU</span>
+          </button>
+          <div class="inciso-painel" hidden>
+            <a href="assets/anexo-xi-minuta-contrato-cdru.pdf" target="_blank" rel="noopener" title="Abrir o Anexo XI em PDF" data-anexo-paginas>
+              <img class="anexo-imagem" src="assets/anexo-xi-p01.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo XI, página 1 — minuta de contrato de Concessão de Direito Real de Uso (CDRU).">
+              <img class="anexo-imagem" src="assets/anexo-xi-p02.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo XI, página 2 — minuta de contrato de Concessão de Direito Real de Uso (CDRU).">
+              <img class="anexo-imagem" src="assets/anexo-xi-p03.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo XI, página 3 — minuta de contrato de Concessão de Direito Real de Uso (CDRU).">
+              <img class="anexo-imagem" src="assets/anexo-xi-p04.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo XI, página 4 — minuta de contrato de Concessão de Direito Real de Uso (CDRU).">
+              <img class="anexo-imagem" src="assets/anexo-xi-p05.jpg" width="1192" height="1543" loading="lazy"
+                alt="Anexo XI, página 5 — minuta de contrato de Concessão de Direito Real de Uso (CDRU).">
+              <img class="anexo-imagem" src="assets/anexo-xi-p06.jpg" width="1192" height="624" loading="lazy"
+                alt="Anexo XI, página 6 — minuta de contrato de Concessão de Direito Real de Uso (CDRU).">
+            </a>
+            <p class="anexo-imagem__fonte"><a href="assets/anexo-xi-minuta-contrato-cdru.pdf" target="_blank" rel="noopener">Abrir o Anexo XI em PDF</a></p>
+          </div>
+        </div>
+
         <div class="declaracao" id="liquidacao">
-          <h3 class="section-title">Inciso XV - Declaração Liquidação Alienação de Áreas (ANEXO XIII)</h3>
+          <h3 class="section-title">Anexo XII - Declaração Liquidação Alienação de Áreas</h3>
           <div class="field">
             <label for="sede_endereco">Endereço completo da sede</label>
             <input type="text" id="sede_endereco" name="sede_endereco" maxlength="500" autocomplete="street-address">
@@ -315,6 +385,146 @@
               <span>Li a declaração acima, confirmo que as informações são verdadeiras e a assino eletronicamente, sob as penas da Lei.</span>
             </label>
             <p class="field__error" data-error-for="liquidacao_aceita"></p>
+          </div>
+        </div>
+
+        <div class="inciso-link">
+          <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico>
+            <span class="doc-list__tag">Anexo XIII</span>
+            <span class="doc-list__title">Regulamento para Alienações e Empreendimentos da CODEGO 2026</span>
+          </button>
+          <div class="inciso-painel" hidden>
+            <a href="assets/anexo-xiii-regulamento-alienacoes.pdf" target="_blank" rel="noopener" title="Abrir o Anexo XIII em PDF" data-anexo-paginas>
+              <img class="anexo-imagem" src="assets/anexo-xiii-p01.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 1 — capa do Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p02.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 2 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p03.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 3 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p04.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 4 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p05.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 5 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p06.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 6 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p07.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 7 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p08.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 8 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p09.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 9 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p10.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 10 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p11.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 11 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p12.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 12 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p13.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 13 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p14.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 14 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p15.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 15 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p16.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 16 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p17.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 17 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p18.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 18 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p19.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 19 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p20.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 20 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p21.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 21 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p22.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 22 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p23.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 23 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p24.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 24 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p25.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 25 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p26.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 26 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p27.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 27 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p28.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 28 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p29.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 29 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p30.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 30 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p31.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 31 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p32.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 32 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p33.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 33 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p34.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 34 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p35.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 35 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p36.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 36 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p37.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 37 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p38.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 38 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p39.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 39 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p40.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 40 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p41.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 41 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p42.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 42 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p43.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 43 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p44.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 44 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p45.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 45 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p46.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 46 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p47.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 47 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p48.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 48 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p49.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 49 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p50.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 50 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p51.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 51 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p52.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 52 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p53.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 53 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p54.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 54 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p55.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 55 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p56.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 56 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p57.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 57 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p58.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 58 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p59.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 59 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p60.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 60 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p61.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 61 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p62.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 62 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p63.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 63 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+              <img class="anexo-imagem" src="assets/anexo-xiii-p64.jpg" width="1192" height="843" loading="lazy"
+                alt="Anexo XIII, página 64 — Regulamento para Alienações e Empreendimentos da CODEGO 2026.">
+            </a>
+            <p class="anexo-imagem__fonte"><a href="assets/anexo-xiii-regulamento-alienacoes.pdf" target="_blank" rel="noopener">Abrir o Anexo XIII em PDF</a></p>
           </div>
         </div>
 

@@ -1311,13 +1311,6 @@ input[readonly] {
   }
 }
 
-/* Texto que abre um bloco sem título próprio (ex.: envio dos documentos) */
-.section-desc--separada {
-  margin-top: 32px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-}
-
 /* ------------------------------------------------------------------ */
 /* Declaração de compromisso (aceite no formulário)                    */
 /* ------------------------------------------------------------------ */
@@ -1432,12 +1425,6 @@ input[readonly] {
 
 .declaracao__texto .declaracao__lista {
   text-align: left;
-}
-
-.declaracao__cronograma {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  text-align: left !important;
 }
 
 .declaracao__texto .declaracao__assinatura {
@@ -1629,6 +1616,7 @@ input[readonly] {
 /* Página aberta no painel do formulário (classe posta por js/config.js) */
 .embutida body {
   background: transparent;
+  display: flow-root; /* margens do conteúdo ficam dentro do body, que é o que o painel mede */
 }
 
 .embutida .letterhead,
@@ -1802,6 +1790,29 @@ input[readonly] {
 
 .anexo-imagem + .anexo-imagem {
   margin-top: 12px;
+}
+
+.anexo-imagem[hidden] {
+  display: none;
+}
+
+/* Anterior / Página X de Y / Próxima, embaixo da página do anexo */
+.anexo-paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.anexo-paginacao__indicador {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.anexo-paginacao .btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .anexo-imagem__fonte {

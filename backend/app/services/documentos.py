@@ -43,7 +43,7 @@ FORMATOS_EXTRAS = {
 EXTENSOES_EXTRAS = {".xlsx": "xlsx", ".xls": "xls"}
 TIPOS_EXTRAS = {
     "inciso12": ("Anexo VI — Cronograma Físico de Obras (arquivo próprio)", True),
-    "inciso13": ("Inciso XIII — Memorial de Caracterização do Empreendimento (arquivo próprio)", True),
+    "inciso13": ("Anexo VII — Memorial de Caracterização do Empreendimento (arquivo próprio)", True),
     "evtf": ("Anexo V — Estudo de Viabilidade Técnica e Financeira (arquivo próprio)", True),
 }
 

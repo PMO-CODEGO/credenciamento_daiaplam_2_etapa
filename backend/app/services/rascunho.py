@@ -27,15 +27,13 @@ ROTULOS = {
     "representante_nome": "Nome do representante legal",
     "representante_cargo": "Cargo do representante",
     "ocupacao_percentual": "Percentual de ocupação",
-    "obra_inicio": "Início da obra",
-    "obra_fim": "Fim da obra",
     "declaracao_cidade": "Cidade da assinatura",
     "declaracao_uf": "Estado",
     "declaracao_aceita": "Aceite da declaração do Anexo VI",
-    "conhecimento_objeto_aceito": "Aceite da declaração do Inciso XIV",
+    "conhecimento_objeto_aceito": "Aceite da declaração do Anexo IX",
     "sede_endereco": "Endereço completo da sede",
     "liquidacao_prazo_meses": "Prazo de liquidação",
-    "liquidacao_aceita": "Aceite da declaração do Inciso XV",
+    "liquidacao_aceita": "Aceite da declaração do Anexo XII",
 }
 
 
@@ -94,8 +92,6 @@ def gravar(db: Session, usuario: Usuario, payload: SolicitacaoIn, c: Cnae) -> So
     sol.representante_nome = payload.representante_nome
     sol.representante_cargo = payload.representante_cargo
     sol.ocupacao_percentual = payload.ocupacao_percentual
-    sol.obra_inicio = payload.obra_inicio
-    sol.obra_fim = payload.obra_fim
     sol.declaracao_cidade = payload.declaracao_cidade
     sol.declaracao_uf = payload.declaracao_uf
     # Cada salvamento reassina as declarações com os dados atuais.
