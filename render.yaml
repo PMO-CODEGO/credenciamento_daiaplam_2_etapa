@@ -1,16 +1,21 @@
-# Blueprint do Render (plano grátis). Um serviço só: o backend serve a API e o
-# site (SERVIR_FRONTEND=true). Banco MySQL externo (ex.: Aiven).
+# Blueprint do Render. Um serviço só: o backend serve a API e o site (SERVIR_FRONTEND=true).
+# Banco MySQL externo (ex.: Aiven). Plano "starter" porque os documentos enviados ficam em
+# arquivo e precisam de DISCO PERSISTENTE (no plano grátis o disco é apagado a cada deploy).
 services:
   - type: web
     name: credenciamento-dianot
     runtime: docker
-    plan: free
+    plan: starter
     region: oregon
     dockerfilePath: ./docker/Dockerfile
     dockerContext: .
     dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=*
     healthCheckPath: /health
     autoDeploy: true
+    disk:
+      name: documentos
+      mountPath: /app/storage
+      sizeGB: 5
     envVars:
       - key: PORT
         value: "8000"
@@ -39,4 +44,14 @@ services:
       - key: RECAPTCHA_SITE_KEY
         sync: false
       - key: RECAPTCHA_SECRET_KEY
+        sync: false
+      - key: STORAGE_DIR
+        value: /app/storage
+      - key: EMAIL_PROVIDER
+        value: brevo_api
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        sync: false
+      - key: SITE_URL
         sync: false

@@ -32,6 +32,14 @@ class Settings(BaseSettings):
     # Sessão (JWT)
     token_expira_minutos: int = 60
 
+    # E-mail pela API da Brevo. Vazio = desligado; "brevo_api" = liga.
+    email_provider: str = ""
+    brevo_api_key: str = ""
+    brevo_sender_email: str = ""  # remetente verificado na Brevo
+    brevo_sender_name: str = "Credenciamento DIANOT - CODEGO"
+    # Endereço público do site (aparece no e-mail de cadastro). Opcional.
+    site_url: str = ""
+
     # Documentos enviados (uploads): pasta no disco e tamanho máximo por arquivo.
     storage_dir: str = "/app/storage"
     upload_max_mb: int = 20

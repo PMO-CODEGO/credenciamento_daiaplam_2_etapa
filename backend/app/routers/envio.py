@@ -1,7 +1,9 @@
 """Envio final do credenciamento: gera o protocolo e o comprovante em PDF."""
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+import logging
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -9,6 +11,7 @@ from app.models.orm import Envio, Usuario
 from app.routers.auth import usuario_atual
 from app.schemas.envio import EnvioEstado, EnvioIn
 from app.services import envio as servico
+from app.services.email_service import email_ativo, enviar_comprovante
 
 router = APIRouter()
 
@@ -36,7 +39,7 @@ def estado(usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_
 
 
 @router.post("/envio", response_model=EnvioEstado, status_code=201)
-def finalizar(payload: EnvioIn | None = None, usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_db)):
+def finalizar(tarefas: BackgroundTasks, payload: EnvioIn | None = None, usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_db)):
     """Registra o envio: confere as pendências e o "Li e Concordo", gera o protocolo e guarda o
     retrato do que foi entregue (com o aceite da declaração final de responsabilidade)."""
     falta = servico.pendencias(db, usuario)
@@ -54,7 +57,20 @@ def finalizar(payload: EnvioIn | None = None, usuario: Usuario = Depends(usuario
         resumo=resumo,
     ))
     db.commit()
+    _avisar_por_email(tarefas, db, usuario)
     return _estado(db, usuario)
+
+
+def _avisar_por_email(tarefas: BackgroundTasks, db: Session, usuario: Usuario) -> None:
+    """Comprovante por e-mail (com o PDF). Qualquer falha aqui não desfaz o envio já registrado."""
+    if not email_ativo():
+        return
+    try:
+        ultimo = _ultimo(db, usuario)
+        pdf = servico.gerar_pdf(ultimo)
+        tarefas.add_task(enviar_comprovante, usuario.email, usuario.nome_empresarial, ultimo.protocolo, pdf)
+    except Exception:
+        logging.getLogger("credenciamento.email").exception("Não foi possível preparar o e-mail do comprovante.")
 
 
 @router.get("/envio/minha/pdf")

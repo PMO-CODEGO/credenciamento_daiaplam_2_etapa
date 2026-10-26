@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.orm import Usuario
 from app.schemas.auth import CadastroUsuarioIn, LoginIn, TokenOut, UsuarioOut
+from app.services.email_service import enviar_boas_vindas
 from app.services.recaptcha import verificar_recaptcha
 from app.services.seguranca import (
     LimiteTentativas,
@@ -54,7 +55,7 @@ def usuario_atual(
 
 
 @router.post("/cadastro", response_model=TokenOut, status_code=201)
-def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depends(get_db)):
+def cadastrar(payload: CadastroUsuarioIn, request: Request, tarefas: BackgroundTasks, db: Session = Depends(get_db)):
     """Cria o usuário: o login é o CNPJ; a senha é gerada aleatoriamente e mostrada uma só vez."""
     chave = _ip(request)
     if _cadastros.bloqueado(db, chave):
@@ -86,6 +87,8 @@ def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depend
         db.rollback()
         raise HTTPException(status_code=409, detail="Este CNPJ já possui cadastro. Use a tela de login.")
     db.refresh(usuario)
+    # E-mail de confirmação do cadastro (depois da resposta; se falhar, o cadastro continua valendo).
+    tarefas.add_task(enviar_boas_vindas, usuario.email, usuario.nome_empresarial, usuario.cnpj, senha)
     return TokenOut(
         access_token=criar_token(usuario.id, usuario.cnpj), usuario=_para_out(usuario), senha_gerada=senha
     )
