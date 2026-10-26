@@ -64,7 +64,7 @@ def enviar(
         raise HTTPException(
             status_code=422, detail=f"Limite de {limite} arquivos neste item. Remova um para enviar outro."
         )
-    relativo, content_type, tamanho = docs.salvar(usuario.id, arquivo, aceita_excel=tipo in docs.TIPOS_EXTRAS)
+    relativo, content_type, tamanho = docs.salvar(usuario.id, arquivo, docs.formatos_aceitos(tipo))
     d = Documento(
         usuario_id=usuario.id,
         tipo=tipo,

@@ -65,6 +65,7 @@
     <tr><td class="rotulo">E-mail / Telefone</td><td>{{ empresa.email }} / {{ empresa.telefone }}</td></tr>
     <tr><td class="rotulo">Administrador da sociedade</td><td>{{ empresa.administrador }}</td></tr>
     <tr><td class="rotulo">Representante legal</td><td>{{ empresa.representante }}{% if empresa.cargo %} — {{ empresa.cargo }}{% endif %}</td></tr>
+    {% if empresa.preenchimento %}<tr><td class="rotulo">Responsável pelo preenchimento</td><td>{{ empresa.preenchimento }}</td></tr>{% endif %}
   </table>
 
   <h2>Documentos e formulários ({{ total_arquivos }} arquivo{{ "" if total_arquivos == 1 else "s" }} anexado{{ "" if total_arquivos == 1 else "s" }})</h2>

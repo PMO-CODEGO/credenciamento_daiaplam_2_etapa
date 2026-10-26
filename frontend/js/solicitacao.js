@@ -171,7 +171,6 @@
   let conhecimentoEm = null; // idem, Anexo IX
   let liquidacaoEm = null; // idem, Anexo XII
   let sedeEditada = false;
-  let representanteEditado = false;
   // Campos que mudam o texto da declaração: alterar algum desfaz o aceite.
   const CAMPOS_DECLARACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
     'ocupacao_percentual', 'declaracao_cidade', 'administrador_nome']);
@@ -181,7 +180,7 @@
   // Os que entram no texto do Anexo XII.
   const CAMPOS_LIQUIDACAO = new Set(['nome_empresarial', 'representante_nome', 'representante_cargo',
     'declaracao_cidade', 'declaracao_uf', 'administrador_nome', 'sede_endereco', 'endereco_correspondencia',
-    'liquidacao_prazo_meses']);
+    'liquidacao_prazo_meses', 'liquidacao_forma_a_vista', 'liquidacao_forma_parcelado']);
   const prazoLiquidacao = () => Number(digitos($('liquidacao_prazo_meses').value)) || 0;
   // Tabela de pontuação do Anexo XII.
   function pontosLiquidacao(meses) {
@@ -215,6 +214,9 @@
     const prazo = prazoLiquidacao();
     const prazoOk = prazo >= 1 && prazo <= 36;
     lacuna('prazo', prazoOk ? String(prazo).padStart(2, '0') : '');
+    // Concordância: "01 mês", "12 meses".
+    $('prazo-unidade').textContent = prazo === 1 ? 'mês' : 'meses';
+    $('prazo-sufixo').textContent = prazo === 1 ? 'mês' : 'meses';
     $('liquidacao-pontos').textContent = prazoOk
       ? `Pontuação correspondente: ${pontosLiquidacao(prazo)} pontos.`
       : 'De 1 a 36 meses.';
@@ -230,8 +232,29 @@
   }
 
   $('ocupacao_percentual').addEventListener('input', (e) => (e.target.value = digitos(e.target.value).slice(0, 2)));
-  $('representante_nome').addEventListener('input', () => { representanteEditado = true; });
-  $('liquidacao_prazo_meses').addEventListener('input', (e) => (e.target.value = digitos(e.target.value).slice(0, 2)));
+  // Forma de pagamento: à vista trava o prazo em 1 mês; parcelado libera de 1 a 36.
+  const formaPagamento = () => (document.querySelector('input[name="liquidacao_forma"]:checked') || {}).value || null;
+  function aplicarFormaPagamento() {
+    const prazo = $('liquidacao_prazo_meses');
+    const aVista = formaPagamento() === 'a_vista';
+    if (aVista) prazo.value = '1';
+    else if (prazo.readOnly) prazo.value = '';
+    prazo.readOnly = aVista;
+    $('liquidacao-pontos').textContent = aVista ? 'Pagamento à vista: prazo de 1 mês.' : 'De 1 a 36 meses.';
+    atualizarDeclaracao();
+  }
+  document.querySelectorAll('input[name="liquidacao_forma"]').forEach((r) => r.addEventListener('change', aplicarFormaPagamento));
+
+  // Prazo de liquidação: só aceita de 1 a 36 (o que passar disso nem entra no campo).
+  let prazoValido = '';
+  // O valor pode ter vindo do que já estava salvo: parte dele ao começar a digitar.
+  $('liquidacao_prazo_meses').addEventListener('focus', (e) => { prazoValido = e.target.value; });
+  $('liquidacao_prazo_meses').addEventListener('input', (e) => {
+    const v = digitos(e.target.value).slice(0, 2);
+    const n = Number(v);
+    if (v === '' || (n >= 1 && n <= 36)) prazoValido = v;
+    e.target.value = prazoValido;
+  });
   $('sede_endereco').addEventListener('input', () => { sedeEditada = true; });
   // Enquanto não for alterada, a sede acompanha o endereço para correspondência.
   $('endereco_correspondencia').addEventListener('input', () => {
@@ -239,7 +262,7 @@
   });
   // Enquanto não for alterado, o representante acompanha o administrador.
   $('administrador_nome').addEventListener('input', () => {
-    if (!representanteEditado) $('representante_nome').value = $('administrador_nome').value;
+    $('representante_nome').value = $('administrador_nome').value;
   });
   $('form-solicitacao').addEventListener('input', (ev) => {
     if (CAMPOS_DECLARACAO.has(ev.target.id) && $('declaracao_aceita').checked) {
@@ -258,6 +281,15 @@
   });
   atualizarDeclaracao();
 
+  function marcarFormaPagamento(forma) {
+    const radio = document.querySelector(`input[name="liquidacao_forma"][value="${forma}"]`);
+    if (!radio) return;
+    radio.checked = true;
+    const prazo = $('liquidacao_prazo_meses');
+    prazo.readOnly = forma === 'a_vista';
+    $('liquidacao-pontos').textContent = forma === 'a_vista' ? 'Pagamento à vista: prazo de 1 mês.' : 'De 1 a 36 meses.';
+  }
+
   // ---------- Carregar dados ----------
   function preencher(s) {
     $('area_m2').value = formatarArea(s.area_m2);
@@ -265,12 +297,12 @@
     $('endereco_correspondencia').value = s.endereco_correspondencia;
     $('email').value = s.email;
     $('telefone').value = mascaraTel(s.telefone);
+    $('preenchimento_nome').value = s.preenchimento_nome || '';
     $('administrador_nome').value = s.administrador_nome;
     $('administrador_cpf').value = mascaraCpf(s.administrador_cpf);
     $('cnae').value = mascaraCnae(s.cnae_codigo);
     conferirCnae();
-    $('representante_nome').value = s.representante_nome || s.administrador_nome;
-    representanteEditado = !!s.representante_nome && s.representante_nome !== s.administrador_nome;
+    $('representante_nome').value = s.administrador_nome;
     $('representante_cargo').value = s.representante_cargo || $('representante_cargo').value;
     $('ocupacao_percentual').value = s.ocupacao_percentual || '';
     if (s.declaracao_cidade) $('declaracao_cidade').value = s.declaracao_cidade;
@@ -282,6 +314,7 @@
     $('sede_endereco').value = s.sede_endereco || s.endereco_correspondencia;
     sedeEditada = !!s.sede_endereco && s.sede_endereco !== s.endereco_correspondencia;
     $('liquidacao_prazo_meses').value = s.liquidacao_prazo_meses || '';
+    marcarFormaPagamento(s.liquidacao_forma);
     liquidacaoEm = s.liquidacao_aceita_em ? new Date(s.liquidacao_aceita_em) : null;
     $('liquidacao_aceita').checked = !!liquidacaoEm;
     atualizarDeclaracao();
@@ -298,14 +331,41 @@
       'representante_cargo', 'declaracao_cidade', 'declaracao_uf', 'sede_endereco']
       .forEach((k) => { if (tem(k)) $(k).value = d[k]; });
     if (tem('telefone')) $('telefone').value = mascaraTel(d.telefone);
+    if (tem('preenchimento_nome')) $('preenchimento_nome').value = d.preenchimento_nome;
     if (tem('administrador_cpf')) $('administrador_cpf').value = mascaraCpf(d.administrador_cpf);
     if (tem('ocupacao_percentual')) $('ocupacao_percentual').value = String(d.ocupacao_percentual);
     if (tem('liquidacao_prazo_meses')) $('liquidacao_prazo_meses').value = String(d.liquidacao_prazo_meses);
+    if (tem('liquidacao_forma')) marcarFormaPagamento(d.liquidacao_forma);
     ['declaracao_aceita', 'conhecimento_objeto_aceito', 'liquidacao_aceita']
       .forEach((k) => { if (tem(k)) $(k).checked = !!d[k]; });
     if (tem('cnae')) { $('cnae').value = mascaraCnae(String(d.cnae)); conferirCnae(); }
-    representanteEditado = $('representante_nome').value !== $('administrador_nome').value;
+    $('representante_nome').value = $('administrador_nome').value;
     sedeEditada = $('sede_endereco').value !== $('endereco_correspondencia').value;
+    atualizarDeclaracao();
+  }
+
+  // Dados que vêm do cadastro: preenchidos e bloqueados (o servidor também usa sempre
+  // os do cadastro). Cadastro antigo sem o dado: o campo continua editável.
+  function travarDadosDoCadastro(u) {
+    // O administrador da sociedade é o representante legal do cadastro.
+    [['nome_empresarial', u.nome_empresarial], ['email', u.email],
+      ['administrador_nome', u.representante_nome],
+      ['administrador_cpf', u.representante_cpf && mascaraCpf(u.representante_cpf)],
+      ['representante_cargo', u.representante_cargo]]
+      .forEach(([id, valor]) => {
+        if (!valor) return;
+        const campo = $(id);
+        campo.value = valor;
+        campo.readOnly = true;
+        let dica = campo.parentElement.querySelector('.field__hint');
+        if (!dica) {
+          dica = document.createElement('p');
+          dica.className = 'field__hint';
+          campo.after(dica);
+        }
+        dica.textContent = 'Vem do cadastro e não pode ser alterado aqui.';
+      });
+    $('representante_nome').value = $('administrador_nome').value;
     atualizarDeclaracao();
   }
 
@@ -316,12 +376,13 @@
       $('cnpj').value = u.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
       $('nome_empresarial').value = u.nome_empresarial;
       $('email').value = u.email;
-      // Cargo informado no cadastro: já vem no Anexo VI (a solicitação salva, se houver, vale mais).
+      // Cargo informado no cadastro: já vem no Anexo IV (a solicitação salva, se houver, vale mais).
       if (u.representante_cargo) $('representante_cargo').value = u.representante_cargo;
       const s = await api('/api/solicitacoes/minha');
       if (s) preencher(s); else atualizarDeclaracao();
       const r = await api('/api/solicitacoes/minha/rascunho');
       if (r) aplicarRascunho(r.dados);
+      travarDadosDoCadastro(u);
     } catch (_) {
       mostrar('error', 'Falha de conexão. Recarregue a página.');
     }
@@ -350,27 +411,41 @@
     new ResizeObserver(medir).observe(doc.body);
   }
 
-  // Botão "Fechar" no fim de cada painel: fecha e volta para o card, para a
-  // pessoa não ficar perdida no meio da página depois de um painel comprido.
-  function adicionarFechar(botao) {
+  // Botão "Próximo" no fim de cada painel: fecha este anexo e leva ao seguinte, na
+  // ordem da página (outro card de anexo, que já abre, ou uma seção do formulário).
+  const PARADAS = '[data-painel-estatico], .inciso-link__botao[data-pagina], #anexo4-titulo, '
+    + '#form-solicitacao h3.section-title, #envio-titulo';
+  function rotuloDaParada(el) {
+    if (el.dataset.rotuloProximo) return el.dataset.rotuloProximo;
+    const tag = el.querySelector('.doc-list__tag');
+    if (tag) return tag.textContent.trim();
+    const anexo = el.textContent.trim().match(/^Anexo [IVX]+/);
+    return anexo ? anexo[0] : el.textContent.trim();
+  }
+  function adicionarProximo(botao) {
     const painel = botao.nextElementSibling;
-    const fechar = document.createElement('button');
-    fechar.type = 'button';
-    fechar.className = 'inciso-painel__fechar';
-    fechar.textContent = 'Fechar ▴';
-    fechar.setAttribute('aria-label', `Fechar: ${botao.querySelector('.doc-list__title').textContent}`);
-    fechar.addEventListener('click', () => {
+    const paradas = [...document.querySelectorAll(PARADAS)];
+    const seguinte = paradas[paradas.indexOf(botao) + 1];
+    if (!seguinte) return;
+    const proximo = document.createElement('button');
+    proximo.type = 'button';
+    proximo.className = 'inciso-painel__proximo';
+    proximo.textContent = `Próximo: ${rotuloDaParada(seguinte)} →`;
+    proximo.addEventListener('click', () => {
       botao.setAttribute('aria-expanded', 'false');
       painel.hidden = true;
-      botao.scrollIntoView({ block: 'nearest' });
-      botao.focus({ preventScroll: true });
+      if (seguinte.matches('[data-painel-estatico], [data-pagina]') && seguinte.getAttribute('aria-expanded') !== 'true') {
+        seguinte.click();
+      }
+      seguinte.scrollIntoView({ block: 'start' });
+      seguinte.focus({ preventScroll: true });
     });
-    painel.appendChild(fechar);
+    painel.appendChild(proximo);
   }
 
   // Painel com conteúdo fixo (ex.: imagem do Anexo II): só abre e fecha.
   document.querySelectorAll('[data-painel-estatico]').forEach((botao) => {
-    adicionarFechar(botao);
+    adicionarProximo(botao);
     botao.addEventListener('click', () => {
       const abrir = botao.getAttribute('aria-expanded') !== 'true';
       botao.setAttribute('aria-expanded', String(abrir));
@@ -407,7 +482,7 @@
     erro.className = 'field__error';
     erro.setAttribute('role', 'alert');
     const painel = botao.nextElementSibling;
-    const fechar = painel.querySelector('.inciso-painel__fechar');
+    const fechar = painel.querySelector('.inciso-painel__proximo');
     painel.insertBefore(rotulo, fechar);
     painel.insertBefore(erro, fechar);
     caixasCiencia[anexo] = { caixa, status };
@@ -442,10 +517,14 @@
     if (paginas.length < 2) return;
     const nav = document.createElement('div');
     nav.className = 'anexo-paginacao';
+    // Setas pequenas (e não "Anterior/Próxima"), para não confundir com o botão
+    // "Próximo" do fim do painel, que leva ao anexo seguinte.
     const anterior = document.createElement('button');
-    anterior.type = 'button'; anterior.className = 'btn-secondary'; anterior.textContent = '‹ Anterior';
+    anterior.type = 'button'; anterior.className = 'anexo-paginacao__seta'; anterior.textContent = '‹';
+    anterior.setAttribute('aria-label', 'Página anterior');
     const proxima = document.createElement('button');
-    proxima.type = 'button'; proxima.className = 'btn-secondary'; proxima.textContent = 'Próxima ›';
+    proxima.type = 'button'; proxima.className = 'anexo-paginacao__seta'; proxima.textContent = '›';
+    proxima.setAttribute('aria-label', 'Próxima página');
     const indicador = document.createElement('label');
     indicador.className = 'anexo-paginacao__indicador';
     const numero = document.createElement('input');
@@ -491,7 +570,7 @@
   botoesInciso.forEach((botao) => {
     const painel = botao.nextElementSibling;
     atualizarSituacao(botao);
-    adicionarFechar(botao);
+    adicionarProximo(botao);
     botao.addEventListener('click', () => {
       const abrir = botao.getAttribute('aria-expanded') !== 'true';
       botao.setAttribute('aria-expanded', String(abrir));
@@ -501,7 +580,7 @@
         iframe.title = botao.querySelector('.doc-list__title').textContent;
         iframe.src = botao.dataset.pagina;
         iframe.addEventListener('load', () => ajustarAltura(iframe));
-        painel.insertBefore(iframe, painel.querySelector('.inciso-painel__fechar'));
+        painel.insertBefore(iframe, painel.querySelector('.inciso-painel__proximo'));
       }
     });
   });
@@ -536,6 +615,7 @@
       administrador_nome: $('administrador_nome').value.trim(),
       administrador_cpf: digitos($('administrador_cpf').value),
       cnae: digitos($('cnae').value),
+      preenchimento_nome: $('preenchimento_nome').value.trim(),
       representante_nome: $('representante_nome').value.trim(),
       representante_cargo: $('representante_cargo').value.trim(),
       ocupacao_percentual: percentual() || null,
@@ -544,6 +624,7 @@
       declaracao_aceita: $('declaracao_aceita').checked,
       conhecimento_objeto_aceito: $('conhecimento_objeto_aceito').checked,
       sede_endereco: $('sede_endereco').value.trim(),
+      liquidacao_forma: formaPagamento(),
       liquidacao_prazo_meses: prazoLiquidacao() || null,
       liquidacao_aceita: $('liquidacao_aceita').checked,
     };

@@ -1,4 +1,4 @@
-// Anexo VI — Cronograma Físico de Obras: formulário (serviços x meses), PDF e
+// Anexo VI A — CFO, Cronograma Físico de Obras: formulário (serviços x meses), PDF e
 // envio de arquivo próprio. O estado do cronograma fica em memória; a tabela só
 // é redesenhada quando a estrutura muda, para não perder o foco ao digitar.
 (function () {
@@ -390,5 +390,32 @@
     if (erros.length) $('erro-upload').textContent = erros.join(' ');
   }
 
+  // ---------- Modelo oficial do Anexo VI A para baixar (Opção 1) ----------
+  // Basta colocar o arquivo em frontend/assets/ com um destes nomes: o bloco
+  // "Baixe o modelo" aparece sozinho, sem mudar código.
+  const MODELOS = [
+    ['assets/anexo-vi-cronograma-modelo.xlsx', 'Excel'],
+    ['assets/anexo-vi-cronograma-modelo.xls', 'Excel'],
+    ['assets/anexo-vi-cronograma-modelo.docx', 'Word'],
+    ['assets/anexo-vi-cronograma-modelo.pdf', 'PDF'],
+  ];
+  async function mostrarModelo() {
+    for (const [caminho, formato] of MODELOS) {
+      try {
+        const r = await fetch(caminho, { method: 'HEAD', cache: 'no-store' });
+        if (!r.ok) continue;
+      } catch (_) { continue; }
+      const link = $('link-modelo-cronograma');
+      link.href = caminho;
+      link.setAttribute('download', `Anexo VI A - CFO - Cronograma Físico de Obras (modelo)${caminho.slice(caminho.lastIndexOf('.'))}`);
+      link.textContent = `Baixar o modelo do Anexo VI A (${formato})`;
+      $('modelo-cronograma').hidden = false;
+      $('passo-envio-cronograma').hidden = false;
+      $('desc-opcao-1').textContent = `Ao escolher a opção, baixe o modelo oficial do Anexo VI A em ${formato}, preencha e envie (ou envie o seu cronograma já pronto, em PDF, imagem ou Excel).`;
+      return;
+    }
+  }
+
   carregar();
+  mostrarModelo();
 })();

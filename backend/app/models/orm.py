@@ -53,23 +53,25 @@ class Solicitacao(Base):
 
     cnae_codigo = Column(String(7), ForeignKey("cnaes.codigo"), nullable=False)
     cnae_descricao = Column(String(500), nullable=False)
+    preenchimento_nome = Column(String(255))  # responsável pelo preenchimento (pode ser outra pessoa, ex.: contador)
 
     # Declaração de compromisso (Anexo V do Regulamento), aceita no formulário.
     # Colunas aceitam nulo só por causa das solicitações salvas antes dela.
     representante_nome = Column(String(255))
     representante_cargo = Column(String(100))
     ocupacao_percentual = Column(Integer)  # 33 a 80
-    # Datas da obra: não são mais pedidas no Anexo VI (ficam no Cronograma); colunas mantidas pelos dados antigos.
+    # Datas da obra: não são mais pedidas no Anexo VI - POA (ficam no Cronograma, Anexo VI A); colunas mantidas pelos dados antigos.
     obra_inicio = Column(String(7))  # "AAAA-MM"
     obra_fim = Column(String(7))  # "AAAA-MM"
     declaracao_cidade = Column(String(100))
     declaracao_uf = Column(String(2))  # estado da assinatura (ex.: "GO")
     declaracao_aceita_em = Column(DateTime)  # data da assinatura (aceite) mais recente
-    # Anexo IX — Declaração de Pleno Conhecimento do Objeto (aceite no formulário)
+    # Anexo IX — Declaração de Pleno Conhecimento, Responsabilidade e Aceitação (aceite no formulário)
     conhecimento_objeto_aceito_em = Column(DateTime)
     # Anexo XII — Declaração Liquidação Alienação de Áreas (aceite no formulário)
     sede_endereco = Column(String(500))
     liquidacao_prazo_meses = Column(Integer)  # 1 a 36
+    liquidacao_forma = Column(String(10))  # "a_vista" (prazo de 1 mês) ou "parcelado"
     liquidacao_aceita_em = Column(DateTime)
 
     data_criacao = Column(DateTime, server_default=func.now())
@@ -92,7 +94,7 @@ class Documento(Base):
 
 
 class Cronograma(Base):
-    """Cronograma Físico de Obras (Anexo VI) preenchido no formulário — um por empresa."""
+    """Cronograma Físico de Obras — CFO (Anexo VI A) preenchido no formulário — um por empresa."""
 
     __tablename__ = "cronogramas"
 

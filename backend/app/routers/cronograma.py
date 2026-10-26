@@ -1,4 +1,4 @@
-"""Anexo VI — Cronograma Físico de Obras: formulário (com PDF gerado) ou arquivo próprio."""
+"""Anexo VI A — CFO, Cronograma Físico de Obras: formulário (com PDF gerado) ou arquivo próprio."""
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 

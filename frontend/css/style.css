@@ -1136,6 +1136,26 @@ input[readonly] {
   color: var(--ink);
 }
 
+.doc-upload__situacao {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+.doc-upload__situacao.is-pendente {
+  background: #f6eedc;
+  color: var(--gold-dark);
+}
+
+.doc-upload__situacao.is-ok {
+  background: #e3efe8;
+  color: var(--primary-dark);
+}
+
 .doc-upload__opcional {
   display: inline-block;
   padding: 1px 8px;
@@ -1427,6 +1447,23 @@ input[readonly] {
   text-align: left;
 }
 
+/* Anexo IX: título e itens numerados da declaração */
+.declaracao__texto .declaracao__titulo {
+  font-weight: 700;
+  text-align: center;
+}
+
+.declaracao__itens {
+  margin: 0 0 14px;
+  padding-left: 24px;
+}
+
+.declaracao__itens li {
+  margin-bottom: 8px;
+  text-align: justify;
+  hyphens: auto;
+}
+
 .declaracao__texto .declaracao__assinatura {
   margin: 28px auto 14px;
 }
@@ -1438,6 +1475,16 @@ input[readonly] {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 28px;
+}
+
+/* Título de um grupo de opções (ex.: forma de pagamento), no mesmo estilo dos rótulos */
+.campo-legenda {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
 }
 
 .ciencia__opcao {
@@ -1460,7 +1507,7 @@ input[readonly] {
   margin: 0;
 }
 
-/* Sessão no cabeçalho: empresa logada + Sair */
+/* Sessão no cabeçalho: botão Perfil (empresa logada), com o Sair dentro */
 .letterhead__text {
   min-width: 0; /* o título quebra linha em vez de empurrar o "Sair" para fora */
 }
@@ -1473,6 +1520,7 @@ input[readonly] {
   margin-left: auto;
 }
 
+/* Tela da equipe: nome do membro + "Sair" direto no cabeçalho */
 .letterhead__empresa {
   max-width: 260px;
   overflow: hidden;
@@ -1487,31 +1535,139 @@ input[readonly] {
   padding: 7px 14px;
   border: 1px solid var(--primary);
   border-radius: var(--radius);
+  background: var(--surface);
   color: var(--primary);
+  font: inherit;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  transition: transform 160ms var(--ease-out), background-color 150ms ease;
+  cursor: pointer;
 }
 
-.letterhead__sair:active {
-  transform: scale(0.97);
-}
-
-.letterhead__sair:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .letterhead__sair:hover {
-    background: var(--paper);
-  }
+.letterhead__sair:hover {
+  background: var(--paper);
 }
 
 @media (max-width: 720px) {
   .letterhead__empresa {
     display: none;
+  }
+}
+
+/* Botão "Perfil" (empresa logada) e o menu com os dados do cadastro e o "Sair" */
+.perfil {
+  position: relative;
+}
+
+.perfil__botao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 300px;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+
+.perfil__botao:hover,
+.perfil__botao[aria-expanded="true"] {
+  border-color: var(--primary);
+}
+
+.perfil__botao:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.perfil__avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.perfil__nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.perfil__seta {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.perfil__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  width: 280px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(22, 36, 28, 0.12);
+}
+
+.perfil__dados {
+  margin: 0 0 14px;
+  font-size: 13px;
+}
+
+.perfil__dados dt {
+  color: var(--ink-soft);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.perfil__dados dd {
+  margin: 0 0 8px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.perfil__sair {
+  display: block;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+
+.perfil__sair:hover {
+  background: var(--paper);
+}
+
+.perfil__sair:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .perfil__nome {
+    display: none;
+  }
+
+  .perfil__botao {
+    padding-right: 8px;
   }
 }
 
@@ -1553,11 +1709,6 @@ input[readonly] {
 /* Incisos com tela própria (XI, XII, XIII) dentro do formulário */
 .inciso-link {
   margin: 28px 0 8px;
-}
-
-/* Cronograma logo abaixo do título do Anexo VI, antes dos campos da declaração */
-.inciso-link--topo {
-  margin: 0 0 24px;
 }
 
 .inciso-link--separado {
@@ -1702,11 +1853,47 @@ input[readonly] {
   margin-top: 8px;
 }
 
-/* Checklist do credenciamento (Finalizar credenciamento): lista curta e discreta do que
-   falta; os itens concluídos só aparecem quando a pessoa pede. */
+/* Textos de responsabilidade: no início do formulário e, no fim, com o "Li e Concordo" */
+.termo-responsabilidade {
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  border: 1px solid var(--border-strong);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  background: #fbf8f0;
+}
+
+.termo-responsabilidade p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+  text-align: justify;
+  hyphens: auto;
+}
+
+.termo-responsabilidade__titulo {
+  margin: 0 0 10px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.termo-responsabilidade--final {
+  margin: 8px 0 16px;
+}
+
+.termo-responsabilidade__aceite {
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* Checklist do credenciamento (Finalizar credenciamento): lista completa e discreta,
+   com ✓ no que já foi feito. */
 .checklist {
   list-style: none;
-  margin: 2px 0 6px;
+  margin: 2px 0 14px;
   padding: 0;
   font-size: 13px;
   color: var(--ink-soft);
@@ -1726,20 +1913,29 @@ input[readonly] {
   }
 }
 
-/* Marcador de lista comum (ponto cheio), para não parecer um botão de marcar */
+/* Verde (✓) para o que já foi feito; vermelho (ponto cheio, que não parece botão) para o
+   que ainda falta; cinza para os opcionais ainda não enviados. */
 .checklist__item::before {
   position: absolute;
   left: 5px;
   top: 0.6em;
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   content: "";
-  background: var(--gold-dark);
+  background: var(--danger);
+}
+
+.checklist__item.is-pendente {
+  color: var(--danger);
 }
 
 .checklist__item.is-opcional::before {
-  background: var(--border);
+  background: var(--border-strong);
+}
+
+.checklist__item.is-feito {
+  color: var(--primary);
 }
 
 .checklist__item.is-feito::before {
@@ -1750,31 +1946,18 @@ input[readonly] {
   height: auto;
   border-radius: 0;
   background: none;
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--primary);
-}
-
-.checklist__item.is-feito {
-  opacity: 0.75;
 }
 
 .checklist__detalhe {
   display: block;
   font-size: 12px;
-  color: var(--gold-dark);
+  color: var(--danger);
+  opacity: 0.85;
 }
 
-.checklist-alternar {
-  margin: 0 0 14px;
-  padding: 0;
-  border: none;
-  background: none;
-  font: inherit;
-  font-size: 12px;
-  color: var(--primary-dark);
-  text-decoration: underline;
-  cursor: pointer;
-}
 
 /* Indicador do salvamento automático do formulário principal */
 .autosalvar {
@@ -1901,13 +2084,36 @@ input[readonly] {
   display: none;
 }
 
-/* Anterior / Página X de Y / Próxima, embaixo da página do anexo */
+/* ‹ Página X de Y ›, centralizado embaixo da página do anexo */
 .anexo-paginacao {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: center;
+  gap: 10px;
   margin-top: 12px;
+}
+
+.anexo-paginacao__seta {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.anexo-paginacao__seta:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.anexo-paginacao__seta:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .anexo-paginacao__indicador {
@@ -1924,10 +2130,7 @@ input[readonly] {
   text-align: center;
 }
 
-.anexo-paginacao .btn-secondary:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
+
 
 .anexo-imagem__fonte {
   margin: 10px 0 0;
@@ -1940,14 +2143,15 @@ input[readonly] {
 }
 
 /* "Fechar" no fim de cada painel (Anexo II e incisos XI, XII e XIII) */
-.inciso-painel__fechar {
+/* "Próximo: Anexo X →" no fim de cada painel: leva ao anexo seguinte */
+.inciso-painel__proximo {
   display: block;
   margin: 20px 0 0 auto;
-  padding: 8px 14px;
+  padding: 9px 16px;
   border: 1px solid var(--primary);
   border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--primary);
+  background: var(--primary);
+  color: var(--surface);
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
@@ -1955,23 +2159,23 @@ input[readonly] {
   transition: transform 160ms var(--ease-out), background-color 150ms ease;
 }
 
-.inciso-painel__fechar:active {
+.inciso-painel__proximo:active {
   transform: scale(0.97);
 }
 
-.inciso-painel__fechar:focus-visible {
+.inciso-painel__proximo:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .inciso-painel__fechar:hover {
-    background: var(--paper);
+  .inciso-painel__proximo:hover {
+    background: var(--primary-dark);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inciso-painel__fechar:active {
+  .inciso-painel__proximo:active {
     transform: none;
   }
 }
@@ -2372,17 +2576,18 @@ input[readonly] {
 }
 
 /* Anexo IV no formulário: do distrito de interesse até o CNAE, num bloco próprio */
+/* Mesmo visual dos cards dos anexos (borda, cantos, "ANEXO IV" pequeno acima do título) */
 .anexo-secao {
-  margin-top: 28px;
-  padding: 18px 20px 20px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  margin-top: 10px;
+  padding: 16px 18px 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
 }
 
 .anexo-secao .anexo-secao__titulo {
   margin: 0;
-  padding-top: 0;
-  border-top: none;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .anexo-secao__titulo + .section-title {

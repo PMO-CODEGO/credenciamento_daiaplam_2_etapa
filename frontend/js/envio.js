@@ -11,25 +11,23 @@
   const dataHora = (iso) => new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 
   async function api(caminho, opcoes = {}) {
-    const resp = await fetch(`${API}${caminho}`, { ...opcoes, headers: { Authorization: `Bearer ${token}` } });
+    const resp = await fetch(`${API}${caminho}`, {
+      ...opcoes,
+      headers: { Authorization: `Bearer ${token}`, ...(opcoes.body ? { 'Content-Type': 'application/json' } : {}) },
+    });
     if (resp.status === 401) { window.location.href = 'index.html'; throw new Error('Sessão expirada.'); }
     return resp;
   }
 
-  // Por padrão o checklist mostra só o que falta; os itens concluídos (e os opcionais)
-  // aparecem quando a pessoa pede.
-  let completo = false;
-  let ultimoEstado = null;
-  $('envio-checklist-alternar').addEventListener('click', () => {
-    completo = !completo;
-    if (ultimoEstado) desenhar(ultimoEstado);
-  });
+  // "Finalizar" só libera com tudo concluído e o "Li e Concordo" marcado.
+  let podeFinalizar = false;
+  const liberarFinalizar = () => { $('btn-finalizar').disabled = !(podeFinalizar && $('li-e-concordo').checked); };
+  $('li-e-concordo').addEventListener('change', liberarFinalizar);
 
+  // Checklist completo, na ordem do formulário: ✓ no que já foi feito.
   function desenhar(estado) {
-    ultimoEstado = estado;
     const lista = $('envio-checklist');
-    const visiveis = completo ? estado.checklist : estado.checklist.filter((i) => i.obrigatorio && !i.feito);
-    lista.innerHTML = visiveis.map((i) => {
+    lista.innerHTML = estado.checklist.map((i) => {
       const classe = i.feito ? 'is-feito' : (i.obrigatorio ? 'is-pendente' : 'is-opcional');
       const situacao = i.feito ? 'feito' : (i.obrigatorio ? 'pendente' : 'opcional');
       return `<li class="checklist__item ${classe}">
@@ -37,22 +35,18 @@
         ${i.detalhe && !i.feito ? `<span class="checklist__detalhe">${esc(i.detalhe)}</span>` : ''}
       </li>`;
     }).join('');
-    lista.hidden = !visiveis.length;
-    const escondidos = estado.checklist.length - estado.checklist.filter((i) => i.obrigatorio && !i.feito).length;
-    const alternar = $('envio-checklist-alternar');
-    alternar.hidden = !escondidos;
-    alternar.textContent = completo ? 'Mostrar só o que falta' : `Ver o checklist completo (${estado.checklist.length} itens)`;
-    alternar.setAttribute('aria-expanded', String(completo));
+    lista.hidden = false;
     const obrigatorios = estado.checklist.filter((i) => i.obrigatorio);
     const feitos = obrigatorios.filter((i) => i.feito).length;
     if (estado.pendencias.length) {
-      $('envio-situacao').textContent = `${feitos} de ${obrigatorios.length} itens concluídos. Falta${obrigatorios.length - feitos > 1 ? 'm' : ''}:`;
+      $('envio-situacao').textContent = `${feitos} de ${obrigatorios.length} itens obrigatórios concluídos:`;
       $('envio-situacao').className = 'field__hint field__hint--warn';
     } else {
       $('envio-situacao').textContent = `✔ Todos os ${obrigatorios.length} itens concluídos. Você já pode finalizar e gerar o comprovante.`;
       $('envio-situacao').className = 'field__hint field__hint--ok';
     }
-    $('btn-finalizar').disabled = !estado.pode_finalizar;
+    podeFinalizar = estado.pode_finalizar;
+    liberarFinalizar();
     $('btn-finalizar').textContent = estado.protocolo ? 'Finalizar novamente (gera novo protocolo)' : 'Finalizar e gerar comprovante';
 
     const caixa = $('envio-protocolo');
@@ -82,7 +76,7 @@
     $('envio-erro').textContent = '';
     btn.disabled = true;
     try {
-      const resp = await api('/api/envio', { method: 'POST' });
+      const resp = await api('/api/envio', { method: 'POST', body: JSON.stringify({ li_e_concordo: $('li-e-concordo').checked }) });
       const dados = await resp.json().catch(() => null);
       if (!resp.ok) {
         $('envio-erro').textContent = (dados && typeof dados.detail === 'string') ? dados.detail : 'Não foi possível finalizar.';
@@ -93,7 +87,7 @@
       $('envio-protocolo').scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (e) {
       $('envio-erro').textContent = 'Falha de conexão. Tente novamente.';
-      btn.disabled = false;
+      liberarFinalizar();
     }
   });
 

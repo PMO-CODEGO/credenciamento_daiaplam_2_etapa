@@ -73,6 +73,7 @@ class UsuarioOut(BaseModel):
     nome_empresarial: str
     email: str
     representante_nome: str | None = None
+    representante_cpf: str | None = None
     representante_cargo: str | None = None
 
 

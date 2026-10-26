@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 from app.schemas.validacoes import cnpj_valido, cpf_valido, somente_digitos, telefone_valido
 
@@ -17,6 +17,7 @@ class SolicitacaoIn(BaseModel):
     administrador_nome: str = Field(min_length=3, max_length=255)
     administrador_cpf: str
     cnae: str  # código; a descrição vem sempre da tabela de CNAEs
+    preenchimento_nome: str = Field(min_length=3, max_length=255)  # responsável pelo preenchimento
 
     # Declaração de compromisso
     representante_nome: str = Field(min_length=3, max_length=255)
@@ -28,15 +29,17 @@ class SolicitacaoIn(BaseModel):
         "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
     ]
     declaracao_aceita: bool
-    # Anexo IX — Declaração de Pleno Conhecimento do Objeto
+    # Anexo IX — Declaração de Pleno Conhecimento, Responsabilidade e Aceitação das Condições do Edital
     conhecimento_objeto_aceito: bool
     # Anexo XII — Declaração Liquidação Alienação de Áreas
     sede_endereco: str = Field(min_length=5, max_length=500)
+    liquidacao_forma: Literal["a_vista", "parcelado"]  # à vista: o prazo é de 1 mês
     liquidacao_prazo_meses: int = Field(ge=1, le=36)
     liquidacao_aceita: bool
 
     @field_validator("nome_empresarial", "endereco_correspondencia", "administrador_nome",
-                     "representante_nome", "representante_cargo", "declaracao_cidade", "sede_endereco")
+                     "representante_nome", "representante_cargo", "declaracao_cidade", "sede_endereco",
+                     "preenchimento_nome")
     @classmethod
     def _espacos(cls, v):
         return " ".join(v.split())
@@ -65,6 +68,14 @@ class SolicitacaoIn(BaseModel):
             raise ValueError("Telefone inválido (informe DDD + número).")
         return d
 
+    @model_validator(mode="before")
+    @classmethod
+    def _a_vista_em_1_mes(cls, dados):
+        """Pagamento à vista: o prazo de liquidação é sempre de 1 mês."""
+        if isinstance(dados, dict) and dados.get("liquidacao_forma") == "a_vista":
+            dados = {**dados, "liquidacao_prazo_meses": 1}
+        return dados
+
     @field_validator("declaracao_aceita", "conhecimento_objeto_aceito", "liquidacao_aceita")
     @classmethod
     def _aceite(cls, v):
@@ -87,6 +98,7 @@ class SolicitacaoOut(BaseModel):
     administrador_cpf: str
     cnae_codigo: str
     cnae_descricao: str
+    preenchimento_nome: str | None = None
     representante_nome: str | None = None
     representante_cargo: str | None = None
     ocupacao_percentual: int | None = None
@@ -95,6 +107,7 @@ class SolicitacaoOut(BaseModel):
     declaracao_aceita_em: datetime | None = None
     conhecimento_objeto_aceito_em: datetime | None = None
     sede_endereco: str | None = None
+    liquidacao_forma: str | None = None
     liquidacao_prazo_meses: int | None = None
     liquidacao_aceita_em: datetime | None = None
     data_atualizacao: datetime | None = None

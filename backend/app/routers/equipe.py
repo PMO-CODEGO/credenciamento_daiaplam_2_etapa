@@ -159,8 +159,9 @@ def empresa(empresa_id: int, _m: Equipe = Depends(membro_atual), db: Session = D
         "rascunho_em": rasc.data_atualizacao if rasc else None,
         "documentos": [*docs_empresa["tipos"], docs_empresa["complementar"]],
         "incisos": {
-            "evtf": inciso(evtf, "Anexo V — Estudo de Viabilidade Técnica e Financeira (EVTF)"),
-            "cronograma": inciso(crono, "Anexo VI — Cronograma Físico de Obras"),
+            "evtf": {**inciso(evtf, "Anexo V — Estudo de Viabilidade Técnica e Financeira (EVTF)"),
+                     "arquivos": [a.model_dump() for a in [*evtf.arquivos, *evtf.arquivos_excel]]},
+            "cronograma": inciso(crono, "Anexo VI A — CFO (Cronograma Físico de Obras)"),
             "mce": {**inciso(mce, "Anexo VII — Memorial de Caracterização do Empreendimento (MCE)"),
                     "ciencia": mce.ciencia, "ciencia_em": mce.ciencia_em},
         },

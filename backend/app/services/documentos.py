@@ -52,10 +52,26 @@ FORMATOS_EXTRAS = {
 }
 EXTENSOES_EXTRAS = {".xlsx": "xlsx", ".xls": "xls"}
 TIPOS_EXTRAS = {
-    "inciso12": ("Anexo VI — Cronograma Físico de Obras (arquivo próprio)", True),
+    "inciso12": ("Anexo VI A — CFO, Cronograma Físico de Obras (arquivo próprio)", True),
     "inciso13": ("Anexo VII — Memorial de Caracterização do Empreendimento (arquivo próprio)", True),
     "evtf": ("Anexo V — Estudo de Viabilidade Técnica e Financeira (arquivo próprio)", True),
+    "evtf_excel": ("Anexo V — Estudo de Viabilidade Técnica e Financeira em Excel editável", True),
 }
+# Formatos aceitos por tipo, quando diferem do padrão (PDF/JPG/PNG; Excel nos TIPOS_EXTRAS):
+# o EVTF assinado vai em PDF ou imagem e a cópia editável, só em Excel.
+FORMATOS_DO_TIPO = {
+    "evtf": {"pdf", "jpg", "png"},
+    "evtf_excel": {"xlsx", "xls"},
+}
+
+
+def formatos_aceitos(tipo: str) -> set[str]:
+    if tipo in FORMATOS_DO_TIPO:
+        return FORMATOS_DO_TIPO[tipo]
+    return set(FORMATOS) | (set(FORMATOS_EXTRAS) if tipo in TIPOS_EXTRAS else set())
+
+
+_NOMES_FORMATO = {"pdf": "PDF", "jpg": "JPG", "png": "PNG", "excel": "Excel (.xlsx ou .xls)"}
 
 
 def _pasta() -> str:
@@ -66,21 +82,18 @@ def caminho_absoluto(relativo: str) -> str:
     return os.path.join(_pasta(), relativo)
 
 
-def salvar(usuario_id: int, arquivo: UploadFile, aceita_excel: bool = False) -> tuple[str, str, int]:
-    """Valida e grava o arquivo. Devolve (caminho relativo, content_type, tamanho)."""
+def salvar(usuario_id: int, arquivo: UploadFile, aceitos: set[str]) -> tuple[str, str, int]:
+    """Valida e grava o arquivo (só os formatos em `aceitos`). Devolve (caminho relativo, content_type, tamanho)."""
     nome = arquivo.filename or ""
     extensao = os.path.splitext(nome)[1].lower()
-    formatos = dict(FORMATOS)
-    extensoes = dict(EXTENSOES)
-    if aceita_excel:
-        formatos.update(FORMATOS_EXTRAS)
-        extensoes.update(EXTENSOES_EXTRAS)
-    formato = extensoes.get(extensao)
-    if formato is None:
-        raise HTTPException(
-            status_code=422,
-            detail="Formato não aceito. Envie PDF, JPG, PNG ou Excel." if aceita_excel else "Formato não aceito. Envie PDF, JPG ou PNG.",
-        )
+    formatos = {k: v for k, v in {**FORMATOS, **FORMATOS_EXTRAS}.items() if k in aceitos}
+    formato = {**EXTENSOES, **EXTENSOES_EXTRAS}.get(extensao)
+    if formato not in formatos:
+        nomes = [_NOMES_FORMATO[f] for f in ("pdf", "jpg", "png") if f in aceitos]
+        if aceitos & {"xlsx", "xls"}:
+            nomes.append(_NOMES_FORMATO["excel"])
+        lista = ", ".join(nomes[:-1]) + " ou " + nomes[-1] if len(nomes) > 1 else nomes[0]
+        raise HTTPException(status_code=422, detail=f"Formato não aceito. Envie {lista}.")
 
     limite = settings.upload_max_mb * 1024 * 1024
     conteudo = arquivo.file.read(limite + 1)

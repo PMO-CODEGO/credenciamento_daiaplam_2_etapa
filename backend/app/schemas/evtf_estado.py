@@ -9,7 +9,8 @@ class EvtfEstado(BaseModel):
     dados: dict | None  # EVTF salvo pelo formulário
     atualizado_em: datetime | None
     sugestao: dict | None  # valores iniciais, vindos do cadastro e da solicitação
-    arquivos: list[DocumentoOut]  # EVTF próprio, enviado em arquivo
+    arquivos: list[DocumentoOut]  # EVTF próprio assinado (PDF ou imagem)
+    arquivos_excel: list[DocumentoOut]  # o mesmo EVTF em Excel editável
     max_arquivos: int
     max_mb: int
-    concluido: bool  # tem EVTF (formulário ou arquivo)
+    concluido: bool  # preencheu o formulário, ou enviou o assinado e o Excel

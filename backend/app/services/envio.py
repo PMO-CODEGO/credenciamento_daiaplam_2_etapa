@@ -120,20 +120,26 @@ def checklist(db: Session, usuario: Usuario) -> list[dict]:
     for chave, rotulo, obrigatorio in docs.TIPOS:
         item(NOMES_CURTOS.get(chave, rotulo), por_tipo.get(chave),
              rotulo.split(" — ")[0] + ": envie o documento." if obrigatorio else None, obrigatorio=obrigatorio)
-    item("Anexo V — EVTF",
-         evtf or por_tipo.get("evtf"), "Anexo V (EVTF): preencha o formulário ou envie o arquivo.")
-    item("Anexo VI — Cronograma Físico de Obras",
+    # Opção 1 do EVTF: o arquivo assinado e o mesmo formulário em Excel editável.
+    evtf_falta = [nome for chave, nome in (("evtf", "o EVTF assinado"), ("evtf_excel", "o EVTF em Excel"))
+                  if not por_tipo.get(chave)]
+    so_metade = not evtf and len(evtf_falta) == 1
+    item("Anexo V — EVTF", evtf or not evtf_falta,
+         f"Anexo V (EVTF): envie também {evtf_falta[0]}." if so_metade
+         else "Anexo V (EVTF): preencha o formulário ou envie o arquivo assinado e o Excel.",
+         detalhe=f"Falta {evtf_falta[0]}." if so_metade else None)
+    declaracao("Anexo VI — POA (declaração da taxa de ocupação)",
+               "declaracao_aceita_em", "Anexo VI - POA (taxa de ocupação)")
+    item("Anexo VI A — CFO",
          crono or por_tipo.get("inciso12"),
-         "Anexo VI (Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
-    declaracao("Anexo VI — Declaração da taxa de ocupação",
-               "declaracao_aceita_em", "Anexo VI (taxa de ocupação)")
+         "Anexo VI A (CFO, Cronograma Físico de Obras): preencha o formulário ou envie o arquivo.")
     item("Anexo VII — MCE",
          (mce and mce.dados) or por_tipo.get("inciso13"), "Anexo VII (MCE): preencha o formulário ou envie o arquivo.")
     item("Anexo VII — Ciência da rede de água e esgoto",
          mce and mce.ciencia_rede == "aceito", "Anexo VII: responda \"Aceito\" na ciência da rede de água e esgoto.")
     ciencia("VIII")
-    declaracao("Anexo IX — Declaração de pleno conhecimento",
-               "conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento do objeto)")
+    declaracao("Anexo IX — Declaração de pleno conhecimento e responsabilidade",
+               "conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento, responsabilidade e aceitação)")
     ciencia("X")
     ciencia("XI")
     declaracao("Anexo XII — Declaração de liquidação",
@@ -197,12 +203,12 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
         "obrigatorio": False,
         "arquivos": complementares,
     })
-    for chave, rotulo, reg in (
-        ("evtf", "Anexo V — Estudo de Viabilidade Técnica e Financeira — EVTF", evtf),
-        ("inciso12", "Anexo VI — Cronograma Físico de Obras", crono),
-        ("inciso13", "Anexo VII — Memorial de Caracterização do Empreendimento — MCE", mce if mce and mce.dados else None),
+    for chaves, rotulo, reg in (
+        (("evtf", "evtf_excel"), "Anexo V — Estudo de Viabilidade Técnica e Financeira — EVTF", evtf),
+        (("inciso12",), "Anexo VI A — CFO, Cronograma Físico de Obras", crono),
+        (("inciso13",), "Anexo VII — Memorial de Caracterização do Empreendimento — MCE", mce if mce and mce.dados else None),
     ):
-        itens = _itens(arquivos, chave)
+        itens = [i for chave in chaves for i in _itens(arquivos, chave)]
         incisos.append({
             "rotulo": rotulo,
             "situacao": "ambos" if (itens and reg) else "arquivos" if itens else "formulario",
@@ -210,13 +216,15 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
             "arquivos": itens,
         })
     declaracoes = [
-        {"rotulo": "Declaração de compromisso com a Taxa de Ocupação de Área (Anexo VI)",
+        {"rotulo": "Anexo VI - POA — Declaração de compromisso com a Taxa de Ocupação de Área",
          "detalhe": f"Ocupação de {sol.ocupacao_percentual}% da área.",
          "assinada_em": _iso(sol.declaracao_aceita_em)},
-        {"rotulo": "Anexo IX — Declaração de Pleno Conhecimento do Objeto", "detalhe": "",
+        {"rotulo": "Anexo IX — Declaração de Pleno Conhecimento, Responsabilidade e Aceitação das Condições do Edital", "detalhe": "",
          "assinada_em": _iso(sol.conhecimento_objeto_aceito_em)},
         {"rotulo": "Anexo XII — Declaração Liquidação Alienação de Áreas",
-         "detalhe": f"Prazo de liquidação declarado: {sol.liquidacao_prazo_meses} meses.",
+         "detalhe": ("Pagamento à vista (prazo de liquidação de 1 mês)." if sol.liquidacao_forma == "a_vista"
+                     else f"Pagamento parcelado; prazo de liquidação declarado: {sol.liquidacao_prazo_meses} "
+                          f"{'mês' if sol.liquidacao_prazo_meses == 1 else 'meses'}."),
          "assinada_em": _iso(sol.liquidacao_aceita_em)},
         {"rotulo": "Ciência da rede de água e esgoto fornecida pela CODEGO (Anexo VII)",
          "detalhe": "Resposta: Aceito.", "assinada_em": _iso(mce.ciencia_em) if mce else None},
@@ -238,9 +246,21 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
             "administrador": f"{sol.administrador_nome} (CPF {_cpf_mascarado(sol.administrador_cpf)})",
             "representante": sol.representante_nome or "",
             "cargo": sol.representante_cargo or "",
+            "preenchimento": sol.preenchimento_nome or "",
         },
         "incisos": incisos,
         "declaracoes": declaracoes,
+    }
+
+
+def declaracao_final(db: Session, usuario: Usuario, aceita_em: datetime) -> dict:
+    """Linha do comprovante para o "Li e Concordo" da declaração final de responsabilidade."""
+    sol = db.query(Solicitacao).filter(Solicitacao.usuario_id == usuario.id).first()
+    quem = sol.preenchimento_nome if sol and sol.preenchimento_nome else ""
+    return {
+        "rotulo": 'Declaração de responsabilidade pelo preenchimento ("Li e Concordo")',
+        "detalhe": f"Responsável pelo preenchimento: {quem}." if quem else "",
+        "assinada_em": _iso(aceita_em),
     }
 
 

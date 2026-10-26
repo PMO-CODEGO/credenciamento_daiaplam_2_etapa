@@ -16,12 +16,13 @@ from app.services.evtf_pdf import gerar_pdf
 
 router = APIRouter()
 
-TIPO_ARQUIVO = "evtf"
+TIPO_ARQUIVO = "evtf"  # EVTF próprio assinado (PDF ou imagem)
+TIPO_EXCEL = "evtf_excel"  # o mesmo EVTF em Excel editável, pedido pelo modelo do Anexo V
 
 
 def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | None) -> dict:
     """Valores iniciais do formulário, para a empresa não digitar de novo.
-    Os prazos da obra vêm do Cronograma Físico de Obras (Anexo VI), se já preenchido."""
+    Os prazos da obra vêm do Cronograma Físico de Obras (Anexo VI A), se já preenchido."""
     s = {
         "razao_social": usuario.nome_empresarial,
         "cnpj": usuario.cnpj,
@@ -65,20 +66,23 @@ def _registro(db: Session, usuario: Usuario) -> Evtf | None:
 def _montar_estado(db: Session, usuario: Usuario) -> EvtfEstado:
     reg = _registro(db, usuario)
     sol = db.query(Solicitacao).filter(Solicitacao.usuario_id == usuario.id).first()
-    arquivos = (
+    enviados = (
         db.query(Documento)
-        .filter(Documento.usuario_id == usuario.id, Documento.tipo == TIPO_ARQUIVO)
+        .filter(Documento.usuario_id == usuario.id, Documento.tipo.in_([TIPO_ARQUIVO, TIPO_EXCEL]))
         .order_by(Documento.data_envio, Documento.id)
         .all()
     )
+    arquivos = [d for d in enviados if d.tipo == TIPO_ARQUIVO]
+    excel = [d for d in enviados if d.tipo == TIPO_EXCEL]
     return EvtfEstado(
         dados=reg.dados if reg else None,
         atualizado_em=reg.data_atualizacao if reg else None,
         sugestao=_sugestao(usuario, sol, db.query(Cronograma).filter(Cronograma.usuario_id == usuario.id).first()),
         arquivos=[DocumentoOut.model_validate(a) for a in arquivos],
+        arquivos_excel=[DocumentoOut.model_validate(a) for a in excel],
         max_arquivos=docs.MAX_ARQUIVOS_POR_TIPO,
         max_mb=settings.upload_max_mb,
-        concluido=bool(reg or arquivos),
+        concluido=bool(reg or (arquivos and excel)),
     )
 
 

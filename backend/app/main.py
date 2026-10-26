@@ -16,9 +16,11 @@ from app.database import SessionLocal
 from app.services.cnae import sincronizar as sincronizar_cnaes
 from app.services import migracoes
 
-# A imagem do servidor não traz a tabela de tipos do sistema: sem isto, o modelo do
-# Anexo V (.xlsx) sairia como texto.
+# A imagem do servidor não traz a tabela de tipos do sistema: sem isto, os modelos dos
+# anexos para baixar (.xlsx, .xls, .docx) sairiam como texto.
 mimetypes.add_type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx")
+mimetypes.add_type("application/vnd.ms-excel", ".xls")
+mimetypes.add_type("application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx")
 
 logging.basicConfig(
     level=logging.INFO,

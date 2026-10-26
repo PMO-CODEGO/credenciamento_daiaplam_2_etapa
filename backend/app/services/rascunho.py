@@ -26,12 +26,14 @@ ROTULOS = {
     "cnae": "CNAE",
     "representante_nome": "Nome do representante legal",
     "representante_cargo": "Cargo do representante",
+    "preenchimento_nome": "Responsável pelo preenchimento",
     "ocupacao_percentual": "Percentual de ocupação",
     "declaracao_cidade": "Cidade da assinatura",
     "declaracao_uf": "Estado",
-    "declaracao_aceita": "Aceite da declaração do Anexo VI",
+    "declaracao_aceita": "Aceite da declaração do Anexo VI - POA",
     "conhecimento_objeto_aceito": "Aceite da declaração do Anexo IX",
     "sede_endereco": "Endereço completo da sede",
+    "liquidacao_forma": "Forma de pagamento (à vista ou parcelado)",
     "liquidacao_prazo_meses": "Prazo de liquidação",
     "liquidacao_aceita": "Aceite da declaração do Anexo XII",
 }
@@ -48,6 +50,22 @@ def limpar(dados: dict) -> dict:
             valor = None
         limpo[campo] = valor
     return limpo
+
+
+def com_dados_do_cadastro(dados: dict, usuario: Usuario) -> dict:
+    """Os campos que vêm do cadastro valem sempre os do cadastro (na tela ficam bloqueados).
+    O administrador da sociedade é o representante legal do cadastro, e quem assina as
+    declarações é ele. Cadastro antigo sem o dado: vale o que veio no formulário."""
+    fixos = {
+        "nome_empresarial": usuario.nome_empresarial,
+        "email": usuario.email,
+        "administrador_nome": usuario.representante_nome,
+        "administrador_cpf": usuario.representante_cpf,
+        "representante_cargo": usuario.representante_cargo,
+    }
+    dados = {**dados, **{campo: valor for campo, valor in fixos.items() if valor}}
+    dados["representante_nome"] = dados.get("administrador_nome")
+    return dados
 
 
 def conferir(db: Session, usuario: Usuario, dados: dict) -> tuple[SolicitacaoIn | None, Cnae | None, list[str]]:
@@ -89,6 +107,7 @@ def gravar(db: Session, usuario: Usuario, payload: SolicitacaoIn, c: Cnae) -> So
     sol.administrador_cpf = payload.administrador_cpf
     sol.cnae_codigo = c.codigo
     sol.cnae_descricao = c.descricao
+    sol.preenchimento_nome = payload.preenchimento_nome
     sol.representante_nome = payload.representante_nome
     sol.representante_cargo = payload.representante_cargo
     sol.ocupacao_percentual = payload.ocupacao_percentual
@@ -98,6 +117,7 @@ def gravar(db: Session, usuario: Usuario, payload: SolicitacaoIn, c: Cnae) -> So
     sol.declaracao_aceita_em = datetime.now()
     sol.conhecimento_objeto_aceito_em = sol.declaracao_aceita_em
     sol.sede_endereco = payload.sede_endereco
+    sol.liquidacao_forma = payload.liquidacao_forma
     sol.liquidacao_prazo_meses = payload.liquidacao_prazo_meses
     sol.liquidacao_aceita_em = sol.declaracao_aceita_em
     db.query(Rascunho).filter(Rascunho.usuario_id == usuario.id).delete()

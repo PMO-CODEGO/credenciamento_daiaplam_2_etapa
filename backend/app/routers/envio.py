@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.orm import Envio, Usuario
 from app.routers.auth import usuario_atual
-from app.schemas.envio import EnvioEstado
+from app.schemas.envio import EnvioEstado, EnvioIn
 from app.services import envio as servico
 
 router = APIRouter()
@@ -36,16 +36,22 @@ def estado(usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_
 
 
 @router.post("/envio", response_model=EnvioEstado, status_code=201)
-def finalizar(usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_db)):
-    """Registra o envio: confere as pendências, gera o protocolo e guarda o retrato do que foi entregue."""
+def finalizar(payload: EnvioIn | None = None, usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_db)):
+    """Registra o envio: confere as pendências e o "Li e Concordo", gera o protocolo e guarda o
+    retrato do que foi entregue (com o aceite da declaração final de responsabilidade)."""
     falta = servico.pendencias(db, usuario)
     if falta:
         raise HTTPException(status_code=422, detail="Ainda há pendências: " + " ".join(falta))
+    if not (payload and payload.li_e_concordo):
+        raise HTTPException(status_code=422, detail='Marque "Li e Concordo" na declaração de responsabilidade para finalizar.')
+    agora = datetime.now()
+    resumo = servico.montar_resumo(db, usuario)
+    resumo["declaracoes"].append(servico.declaracao_final(db, usuario, agora))
     db.add(Envio(
         usuario_id=usuario.id,
         protocolo=servico.gerar_protocolo(db),
-        enviado_em=datetime.now(),
-        resumo=servico.montar_resumo(db, usuario),
+        enviado_em=agora,
+        resumo=resumo,
     ))
     db.commit()
     return _estado(db, usuario)

@@ -24,6 +24,14 @@
         <p class="card__desc" id="usuario-logado"></p>
       </div>
 
+      <section class="termo-responsabilidade" aria-labelledby="termo-inicio-titulo">
+        <h3 class="termo-responsabilidade__titulo" id="termo-inicio-titulo">Responsabilidade pelo preenchimento</h3>
+        <p>O preenchimento deste formulário é de inteira e exclusiva responsabilidade da empresa interessada, de seu responsável pelo preenchimento e de seu(s) representante(s) legal(is). Antes de prosseguir, recomenda-se a leitura integral do Edital de Credenciamento Permanente DIANOT 2ª Etapa, seus anexos, o Regulamento para Alienações e Empreendimentos da CODEGO e demais documentos aplicáveis.</p>
+        <p>Ao preencher este cadastro, a empresa declara estar ciente de que todas as informações, documentos, declarações, índices, projeções, fatores, valores e demais dados informados serão utilizados para fins de análise técnica, classificação, pontuação e demais procedimentos previstos no Edital.</p>
+        <p>A CODEGO não se responsabiliza por erros de preenchimento, omissões, informações incorretas, dados inconsistentes, anexação inadequada de documentos, enquadramentos equivocados ou quaisquer divergências decorrentes das informações fornecidas pela própria empresa.</p>
+        <p>A prestação de informações falsas, inexatas ou divergentes da realidade poderá resultar na desclassificação da empresa, no cancelamento do credenciamento, na revisão dos atos praticados e na aplicação das medidas administrativas, civis e penais cabíveis.</p>
+      </section>
+
       <ul class="doc-list">
         <li class="doc-list__item inciso-link inciso-link--lista">
           <button type="button" class="doc-list__link inciso-link__botao inciso-link__botao--ver" aria-expanded="false" data-painel-estatico data-ciencia="I">
@@ -70,10 +78,10 @@
 
       <form id="form-solicitacao" novalidate>
         <section class="anexo-secao" aria-labelledby="anexo4-titulo">
-          <h3 class="section-title opcao-titulo anexo-secao__titulo" id="anexo4-titulo"><span class="opcao-titulo__tag">Anexo IV</span> Requerimento para solicitação de áreas</h3>
+          <h3 class="anexo-secao__titulo" id="anexo4-titulo" tabindex="-1"><span class="doc-list__tag">Anexo IV</span><span class="doc-list__title">Requerimento para solicitação de áreas</span></h3>
           <h4 class="section-title">Distrito de interesse: DIANOT 2ª ETAPA</h4>
           <div class="field">
-            <label for="area_m2">Área solicitada/demandada (em m²)</label>
+            <label for="area_m2">Área solicitada/demandada (indicar o tamanho da área em m²)</label>
             <input type="text" id="area_m2" name="area_m2" inputmode="decimal" placeholder="Ex.: 1.000,00" autocomplete="off">
             <p class="field__hint">Informe em metros quadrados, com duas casas depois da vírgula.</p>
             <p class="field__error" data-error-for="area_m2"></p>
@@ -108,16 +116,32 @@
             </div>
           </div>
 
-          <h4 class="section-title">Dados cadastrais do administrador da sociedade</h4>
+          <!-- O administrador da sociedade é o representante legal (o mesmo do cadastro): é ele
+               quem assina as declarações. representante_nome acompanha o nome do administrador. -->
+          <h4 class="section-title">Dados cadastrais do administrador da sociedade (representante legal)</h4>
           <div class="field">
             <label for="administrador_nome">Nome</label>
-            <input type="text" id="administrador_nome" name="administrador_nome" maxlength="255">
+            <input type="text" id="administrador_nome" name="administrador_nome" maxlength="255" autocomplete="name">
             <p class="field__error" data-error-for="administrador_nome"></p>
           </div>
+          <input type="hidden" id="representante_nome" name="representante_nome">
+          <div class="field-row">
+            <div class="field">
+              <label for="administrador_cpf">CPF</label>
+              <input type="text" id="administrador_cpf" name="administrador_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
+              <p class="field__error" data-error-for="administrador_cpf"></p>
+            </div>
+            <div class="field">
+              <label for="representante_cargo">Cargo</label>
+              <input type="text" id="representante_cargo" name="representante_cargo" maxlength="100" placeholder="Ex.: Sócio-administrador" autocomplete="organization-title">
+              <p class="field__error" data-error-for="representante_cargo"></p>
+            </div>
+          </div>
           <div class="field">
-            <label for="administrador_cpf">CPF</label>
-            <input type="text" id="administrador_cpf" name="administrador_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
-            <p class="field__error" data-error-for="administrador_cpf"></p>
+            <label for="preenchimento_nome">Responsável pelo preenchimento</label>
+            <input type="text" id="preenchimento_nome" name="preenchimento_nome" maxlength="255" autocomplete="off">
+            <p class="field__hint">Nome de quem está preenchendo este formulário (pode ser outra pessoa, como o contador).</p>
+            <p class="field__error" data-error-for="preenchimento_nome"></p>
           </div>
 
           <h4 class="section-title">Nº do CNAE / Descrição da atividade</h4>
@@ -135,7 +159,7 @@
           </div>
         </section>
 
-        <h3 class="section-title">Documentos de apresentação integral e obrigatória</h3>
+        <h3 class="section-title" tabindex="-1" data-rotulo-proximo="Itens 1 a 9">Documentos de apresentação integral e obrigatória</h3>
         <p class="section-desc">Envie em PDF, JPG ou PNG, até 20 MB por arquivo. Cada arquivo fica salvo assim que é enviado, e você pode enviar mais de um arquivo por item (ex.: contrato social e alterações).</p>
         <div id="documentos" class="doc-uploads">
           <p class="field__hint">Carregando documentos…</p>
@@ -151,28 +175,8 @@
         </div>
 
         <div class="declaracao" id="declaracao">
-          <h3 class="section-title">Anexo VI - Modelo de Declaração de Compromisso com a Taxa de Ocupação de Área e Cronograma de Obras a serem contemplados no Projeto de Ocupação de Área (POA)</h3>
-          <div class="inciso-link inciso-link--topo">
-            <button type="button" class="doc-list__link inciso-link__botao" aria-expanded="false" data-pagina="cronograma.html" data-estado="/api/cronograma/minha">
-              <span class="doc-list__tag">Anexo VI</span>
-              <span class="doc-list__title">Cronograma Físico de Obras</span>
-              <span class="inciso-link__status"></span>
-            </button>
-            <div class="inciso-painel" hidden></div>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="representante_nome">Nome do representante legal</label>
-              <input type="text" id="representante_nome" name="representante_nome" maxlength="255" autocomplete="name">
-              <p class="field__hint">Preenchido com o administrador; altere se quem assina for outra pessoa (ex.: procurador).</p>
-              <p class="field__error" data-error-for="representante_nome"></p>
-            </div>
-            <div class="field">
-              <label for="representante_cargo">Cargo</label>
-              <input type="text" id="representante_cargo" name="representante_cargo" maxlength="100" placeholder="Ex.: Sócio-administrador" autocomplete="organization-title">
-              <p class="field__error" data-error-for="representante_cargo"></p>
-            </div>
-          </div>
+          <h3 class="section-title" tabindex="-1" data-rotulo-proximo="Anexo VI - POA">Anexo VI - POA</h3>
+          <p class="section-desc">Modelo de Declaração de Compromisso com a Taxa de Ocupação de Área e Cronograma de Obras a serem contemplados no Projeto de Ocupação de Área (POA).</p>
           <div class="field">
             <label for="ocupacao_percentual">Percentual da área pleiteada que será ocupado</label>
             <div class="field__sufixo">
@@ -242,6 +246,15 @@
         </div>
 
         <div class="inciso-link inciso-link--separado">
+          <button type="button" class="doc-list__link inciso-link__botao" aria-expanded="false" data-pagina="cronograma.html" data-estado="/api/cronograma/minha">
+            <span class="doc-list__tag">Anexo VI A</span>
+            <span class="doc-list__title">CFO — Cronograma Físico de Obras</span>
+            <span class="inciso-link__status"></span>
+          </button>
+          <div class="inciso-painel" hidden></div>
+        </div>
+
+        <div class="inciso-link inciso-link--separado">
           <button type="button" class="doc-list__link inciso-link__botao" aria-expanded="false" data-pagina="mce.html" data-estado="/api/mce/minha">
             <span class="doc-list__tag">Anexo VII</span>
             <span class="doc-list__title">Memorial de Caracterização do Empreendimento — MCE</span>
@@ -265,11 +278,21 @@
         </div>
 
         <div class="declaracao" id="conhecimento-objeto">
-          <h3 class="section-title">Anexo IX - Declaração de Pleno Conhecimento do Objeto</h3>
+          <h3 class="section-title" tabindex="-1">Anexo IX - Declaração de Pleno Conhecimento, Responsabilidade e Aceitação das Condições do Edital</h3>
           <p class="section-desc">Usa os dados da empresa, o representante legal e a cidade informados acima.</p>
 
-          <article class="declaracao__texto" aria-label="Declaração de Pleno Conhecimento do Objeto">
-            <p><strong data-decl="razao"></strong> (razão social da empresa), inscrita no CNPJ sob o nº <strong data-decl="cnpj"></strong> representada pelo (a) Sr.(a) <strong data-decl="responsavel"></strong>, DECLARA, sob as penas da Lei, que possui pleno conhecimento do objeto deste edital, tendo conhecimento das condições e peculiaridades inerentes à natureza do objeto, bem como das condições necessárias à participação do procedimento e de execução do empreendimento, concorda com todas as exigências contidas no Edital Nº 02/2026 e seus anexos.</p>
+          <article class="declaracao__texto" aria-label="Declaração de Pleno Conhecimento, Responsabilidade e Aceitação das Condições do Edital">
+            <p class="declaracao__titulo">ANEXO IX - DECLARAÇÃO DE PLENO CONHECIMENTO, RESPONSABILIDADE E ACEITAÇÃO DAS CONDIÇÕES DO EDITAL.</p>
+            <ol class="declaracao__itens">
+              <li>Possui pleno conhecimento do objeto do Edital de Credenciamento Permanente nº 02/2026 – DIANOT 2ª Etapa, de seus anexos, Regulamento para Alienação e Empreendimentos da CODEGO, normas complementares e demais documentos relacionados ao procedimento.</li>
+              <li>Tem conhecimento das condições, exigências, obrigações, restrições, critérios de avaliação, metodologia de pontuação e regras para concessão e aferição do subsídio locacional previstas no Edital.</li>
+              <li>Todas as informações, documentos, declarações, demonstrativos, estudos, formulários, índices, projeções, fatores e dados apresentados à CODEGO foram elaborados sob sua exclusiva responsabilidade e refletem fielmente a realidade da empresa e do empreendimento proposto.</li>
+              <li>Está ciente de que a CODEGO não se responsabiliza por erros de preenchimento, omissões, inconsistências, informações incompletas, enquadramentos equivocados, interpretações incorretas ou quaisquer outros vícios decorrentes dos dados fornecidos pela empresa no sistema eletrônico, formulários ou documentos apresentados. E reconhece que erros decorrentes de preenchimento inadequado, equívocos operacionais ou informações prestadas incorretamente não constituem fundamento para revisão da classificação, da pontuação obtida, dos fatores utilizados na análise, do percentual de subsídio locacional ou dos demais resultados decorrentes do credenciamento, ressalvadas exclusivamente as hipóteses expressamente previstas no Edital e nos Regulamentos da CODEGO.</li>
+              <li>Assume integral responsabilidade civil, administrativa e criminal pela veracidade, exatidão e legitimidade das informações e documentos apresentados no âmbito do processo de credenciamento.</li>
+              <li>Concorda integralmente com os critérios de avaliação, metodologia de pontuação, procedimentos de fiscalização e mecanismos de aferição posterior previstos no Edital e nos Regulamentos da CODEGO.</li>
+              <li>Tem ciência de que a constatação de falsidade, fraude, omissão relevante ou divergência material nas informações prestadas poderá ensejar na revisão dos atos praticados, revisão dos fatores de desconto, além da aplicação das medidas administrativas, contratuais, civis e penais cabíveis.</li>
+              <li>Declara aceitar integralmente as condições estabelecidas no Edital nº 02/2026, em seus anexos, no Regulamento para Alienação e Empreendimentos da CODEGO, e demais normas, comprometendo-se a cumprir todas as obrigações deles decorrentes.</li>
+            </ol>
             <p class="declaracao__local"><span data-decl="cidade"></span>, em <span data-decl="data9"></span></p>
             <p class="declaracao__assinatura"><strong data-decl="responsavel"></strong><br>Responsável da empresa<br><span class="declaracao__assinado" data-decl="assinado9"></span></p>
           </article>
@@ -352,25 +375,31 @@
         </div>
 
         <div class="declaracao" id="liquidacao">
-          <h3 class="section-title">Anexo XII - Declaração Liquidação Alienação de Áreas</h3>
+          <h3 class="section-title" tabindex="-1">Anexo XII - Declaração Liquidação Alienação de Áreas</h3>
           <div class="field">
             <label for="sede_endereco">Endereço completo da sede</label>
             <input type="text" id="sede_endereco" name="sede_endereco" maxlength="500" autocomplete="street-address">
             <p class="field__hint">Preenchido com o endereço para correspondência; altere se a sede for em outro endereço.</p>
             <p class="field__error" data-error-for="sede_endereco"></p>
           </div>
+          <fieldset class="field ciencia" id="liquidacao_forma">
+            <legend class="campo-legenda">Forma de pagamento da área</legend>
+            <label class="ciencia__opcao"><input type="radio" name="liquidacao_forma" id="liquidacao_forma_a_vista" value="a_vista"> <span>À vista</span></label>
+            <label class="ciencia__opcao"><input type="radio" name="liquidacao_forma" id="liquidacao_forma_parcelado" value="parcelado"> <span>Parcelado</span></label>
+            <p class="field__error" data-error-for="liquidacao_forma"></p>
+          </fieldset>
           <div class="field">
             <label for="liquidacao_prazo_meses">Prazo para liquidação (pagamento) da área, em meses</label>
             <div class="field__sufixo">
               <input type="text" id="liquidacao_prazo_meses" name="liquidacao_prazo_meses" inputmode="numeric" maxlength="2" autocomplete="off" aria-describedby="liquidacao-pontos">
-              <span aria-hidden="true">meses</span>
+              <span aria-hidden="true" id="prazo-sufixo">meses</span>
             </div>
             <p class="field__hint" id="liquidacao-pontos" aria-live="polite">De 1 a 36 meses.</p>
             <p class="field__error" data-error-for="liquidacao_prazo_meses"></p>
           </div>
 
           <article class="declaracao__texto" aria-label="Declaração Liquidação Alienação de Áreas">
-            <p><strong data-decl="razao"></strong>, inscrita no CNPJ sob o nº <strong data-decl="cnpj"></strong>, com sede na <strong data-decl="sede"></strong>, por meio deste documento, DECLARA que o prazo para liquidação da alienação da área em questão será de <strong data-decl="prazo"></strong> meses, não ultrapassando o prazo máximo de 36 (trinta e seis) meses para pagamento, conforme previsto no edital.</p>
+            <p><strong data-decl="razao"></strong>, inscrita no CNPJ sob o nº <strong data-decl="cnpj"></strong>, com sede na <strong data-decl="sede"></strong>, por meio deste documento, DECLARA que o prazo para liquidação da alienação da área em questão será de <strong data-decl="prazo"></strong> <span id="prazo-unidade">meses</span>, não ultrapassando o prazo máximo de 36 (trinta e seis) meses para pagamento, conforme previsto no edital.</p>
             <p>Conforme os critérios estabelecidos, a pontuação atribuída a esse item será calculada da seguinte forma:</p>
             <p class="declaracao__lista">- De 01 a 06 meses: 100 pontos;<br>- De 07 a 12 meses: 75 pontos;<br>- De 13 a 18 meses: 50 pontos;<br>- De 19 a 24 meses: 25 pontos;<br>- De 25 a 36 meses: 0 pontos.</p>
             <p>A empresa assume o compromisso de cumprir integralmente o prazo declarado, sob as penalidades cabíveis em caso de descumprimento.</p>
@@ -528,7 +557,7 @@
           </div>
         </div>
 
-        <h3 class="section-title">Documentação complementar <span class="doc-upload__opcional">Opcional</span></h3>
+        <h3 class="section-title" tabindex="-1" data-rotulo-proximo="Documentação complementar">Documentação complementar <span class="doc-upload__opcional">Opcional</span></h3>
         <p class="section-desc">Envie aqui outros documentos que queira apresentar, além dos pedidos acima. PDF, JPG ou PNG, até 20 MB por arquivo e até 4 arquivos. Cada arquivo fica salvo assim que é enviado.</p>
         <div id="documentos-complementar" class="doc-uploads"></div>
 
@@ -538,11 +567,22 @@
       </form>
 
       <section class="envio-final" id="envio-final" aria-labelledby="envio-titulo">
-        <h3 class="section-title" id="envio-titulo">Finalizar credenciamento</h3>
+        <h3 class="section-title" id="envio-titulo" tabindex="-1" data-rotulo-proximo="Finalizar credenciamento">Finalizar credenciamento</h3>
         <p class="section-desc">Quando tudo estiver preenchido e anexado, finalize para gerar o <strong>número de protocolo</strong> e o <strong>comprovante em PDF</strong> com a lista de todos os documentos entregues.</p>
         <p class="field__hint" id="envio-situacao" aria-live="polite">Conferindo…</p>
         <ul class="checklist" id="envio-checklist" aria-label="Checklist do credenciamento" hidden></ul>
-        <button type="button" class="checklist-alternar" id="envio-checklist-alternar" aria-controls="envio-checklist" hidden></button>
+        <section class="termo-responsabilidade termo-responsabilidade--final" aria-labelledby="termo-final-titulo">
+          <h4 class="termo-responsabilidade__titulo" id="termo-final-titulo">Declaração de responsabilidade</h4>
+          <p>Ao concluir o preenchimento e enviar este formulário, a empresa e seu responsável pelo preenchimento, declaram que todas as informações e documentos apresentados são verdadeiros, completos e correspondem à realidade de suas atividades e do empreendimento proposto.</p>
+          <p>Reconhecem que o conteúdo informado foi inserido sob sua exclusiva responsabilidade, assumindo integral responsabilidade civil, administrativa e criminal pela exatidão, autenticidade e legitimidade dos dados apresentados.</p>
+          <p>Declaram possuir pleno conhecimento e aceitar integralmente as disposições do Edital de Credenciamento Permanente DIANOT 2ª Etapa, seus anexos, Regulamento para Alienações e Empreendimentos da CODEGO, normas complementares e demais condições estabelecidas pela CODEGO.</p>
+          <p>Declaram, ainda, estar ciente de que erros de preenchimento, omissões, informações inexatas ou equívocos na inserção dos dados não gerarão direito à revisão da pontuação, classificação, fatores de desconto, subsídio locacional ou demais resultados decorrentes do processo de credenciamento, ressalvadas exclusivamente as hipóteses expressamente previstas na regulamentação aplicável.</p>
+          <p>Ao selecionar a opção "Li e Concordo" e concluir o envio deste formulário, o responsável pelo preenchimento declara sua concordância com todas as condições acima, produzindo os mesmos efeitos de uma assinatura eletrônica para fins do processo de credenciamento.</p>
+          <label class="checkbox-item termo-responsabilidade__aceite" for="li-e-concordo">
+            <input type="checkbox" id="li-e-concordo">
+            <span>Li e Concordo</span>
+          </label>
+        </section>
         <div class="feedback feedback--success" id="envio-protocolo" aria-live="polite" hidden></div>
         <p class="field__error" id="envio-erro" role="alert"></p>
         <div class="card__footer">

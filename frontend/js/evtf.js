@@ -131,10 +131,17 @@
   function situacao(estado) {
     const partes = [];
     if (estado.dados) partes.push('EVTF preenchido pelo formulário');
-    if (estado.arquivos.length) partes.push(`${estado.arquivos.length} arquivo(s) enviado(s)`);
+    if (estado.arquivos.length) partes.push(`EVTF assinado enviado (${estado.arquivos.length})`);
+    if (estado.arquivos_excel.length) partes.push(`Excel enviado (${estado.arquivos_excel.length})`);
     const el = $('situacao');
-    el.textContent = partes.length ? `✔ Situação deste anexo: ${partes.join(' e ')}.` : 'Situação deste anexo: pendente — preencha o formulário ou envie um arquivo.';
-    el.className = `field__hint field__hint--${partes.length ? 'ok' : 'warn'}`;
+    if (estado.concluido) {
+      el.textContent = `✔ Situação deste anexo: ${partes.join(' e ')}.`;
+    } else if (estado.arquivos.length || estado.arquivos_excel.length) {
+      el.textContent = `Situação deste anexo: pendente — falta enviar ${estado.arquivos.length ? 'o EVTF em Excel' : 'o EVTF assinado'}.`;
+    } else {
+      el.textContent = 'Situação deste anexo: pendente — preencha o formulário ou envie o EVTF assinado e em Excel.';
+    }
+    el.className = `field__hint field__hint--${estado.concluido ? 'ok' : 'warn'}`;
   }
 
   // ---------- Escolha entre a Opção 1 (arquivo pronto) e a Opção 2 (formulário) ----------
@@ -158,7 +165,7 @@
       situacao(estado);
       desenharArquivos(estado);
       if (estado.dados) escolherOpcao('opcao-2');
-      else if (estado.arquivos.length) escolherOpcao('opcao-1');
+      else if (estado.arquivos.length || estado.arquivos_excel.length) escolherOpcao('opcao-1');
       if (estado.dados) mostrarPdf('EVTF salvo. Você pode alterá-lo e salvar de novo.');
     } catch (e) {
       mostrar('error', esc(e.message || 'Falha de conexão. Recarregue a página.'));
@@ -254,17 +261,28 @@
   const tamanho = (b) => (b < 1048576 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1048576).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
   let limites = { max_arquivos: 5, max_mb: 20 };
 
+  // Dois envios na Opção 1: o EVTF assinado (PDF ou imagem) e o mesmo formulário em
+  // Excel editável, como pede o modelo do Anexo V.
+  const ENVIOS = [
+    { tipo: 'evtf', raiz: 'upload-evtf', chave: 'arquivos', aceita: '.pdf,.jpg,.jpeg,.png' },
+    { tipo: 'evtf_excel', raiz: 'upload-evtf-excel', chave: 'arquivos_excel', aceita: '.xlsx,.xls' },
+  ];
+
   function desenharArquivos(estado) {
     limites = { max_arquivos: estado.max_arquivos, max_mb: estado.max_mb };
-    $('texto-upload').textContent = `PDF, JPG, PNG ou Excel (.xls/.xlsx), até ${estado.max_mb} MB por arquivo e até ${estado.max_arquivos} arquivos. Cada arquivo fica salvo assim que é enviado.`;
-    const raiz = $('upload-evtf');
+    $('texto-upload').textContent = `Até ${estado.max_mb} MB por arquivo e até ${estado.max_arquivos} arquivos em cada campo. Cada arquivo fica salvo assim que é enviado.`;
+    ENVIOS.forEach((envio) => desenharCampo(envio, estado[envio.chave], estado.max_arquivos));
+  }
+
+  function desenharCampo(envio, arquivos, maximo) {
+    const raiz = $(envio.raiz);
     raiz.innerHTML = '';
     const campo = document.createElement('div');
     campo.className = 'field doc-upload';
-    if (estado.arquivos.length) {
+    if (arquivos.length) {
       const ul = document.createElement('ul');
       ul.className = 'doc-upload__arquivos';
-      estado.arquivos.forEach((a) => {
+      arquivos.forEach((a) => {
         const li = document.createElement('li');
         li.className = 'doc-upload__arquivo';
         const ver = document.createElement('button');
@@ -290,18 +308,18 @@
     }
     const zona = document.createElement('label');
     zona.className = 'doc-upload__zona';
-    zona.hidden = estado.arquivos.length >= estado.max_arquivos;
+    zona.hidden = arquivos.length >= maximo;
     const input = document.createElement('input');
     input.type = 'file'; input.multiple = true; input.className = 'visualmente-oculto';
-    input.accept = '.pdf,.jpg,.jpeg,.png,.xls,.xlsx';
+    input.accept = envio.aceita;
     const acao = document.createElement('span');
     acao.className = 'doc-upload__acao';
-    acao.textContent = estado.arquivos.length ? 'Adicionar outro arquivo' : 'Escolher arquivo';
+    acao.textContent = arquivos.length ? 'Adicionar outro arquivo' : 'Escolher arquivo';
     zona.append(input, acao);
-    input.addEventListener('change', () => enviarArquivos(Array.from(input.files)));
+    input.addEventListener('change', () => enviarArquivos(envio.tipo, Array.from(input.files)));
     campo.appendChild(zona);
     const msg = document.createElement('p');
-    msg.className = 'field__error'; msg.id = 'erro-upload'; msg.setAttribute('role', 'alert');
+    msg.className = 'field__error'; msg.id = `erro-upload-${envio.tipo}`; msg.setAttribute('role', 'alert');
     campo.appendChild(msg);
     raiz.appendChild(campo);
   }
@@ -312,19 +330,19 @@
     desenharArquivos(estado);
   }
 
-  async function enviarArquivos(arquivos) {
+  async function enviarArquivos(tipo, arquivos) {
     const erros = [];
     for (const arq of arquivos) {
       if (arq.size > limites.max_mb * 1048576) { erros.push(`${arq.name}: maior que ${limites.max_mb} MB.`); continue; }
       const fd = new FormData();
       fd.append('arquivo', arq);
       try {
-        const r = await api('/api/documentos/evtf', { method: 'POST', body: fd });
+        const r = await api(`/api/documentos/${tipo}`, { method: 'POST', body: fd });
         if (!r.ok) erros.push(`${arq.name}: ${mensagemDe(await r.json().catch(() => null), 'não foi possível enviar.')}`);
       } catch (e) { erros.push(`${arq.name}: falha de conexão.`); }
     }
     await recarregarEstado();
-    if (erros.length) $('erro-upload').textContent = erros.join(' ');
+    if (erros.length) $(`erro-upload-${tipo}`).textContent = erros.join(' ');
   }
 
   carregar();

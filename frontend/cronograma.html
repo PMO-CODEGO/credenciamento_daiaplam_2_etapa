@@ -20,7 +20,7 @@
 
     <main class="card">
       <div class="card__intro">
-        <h2 class="card__title">Anexo VI — Cronograma Físico de Obras</h2>
+        <h2 class="card__title">Anexo VI A — CFO, Cronograma Físico de Obras</h2>
         <p class="card__desc">
           Há <strong>duas opções</strong> para entregar o cronograma: enviar o seu arquivo pronto
           <strong>ou</strong> preencher o formulário para gerar o PDF. Basta uma delas, mas você pode usar as duas.
@@ -32,7 +32,7 @@
         <button type="button" class="escolha-opcao__botao" data-opcao="opcao-1" aria-pressed="false" aria-controls="opcao-1">
           <span class="opcao-titulo__tag">Opção 1</span>
           <span class="escolha-opcao__nome">Enviar o cronograma pronto</span>
-          <span class="escolha-opcao__desc">Para quem já tem o cronograma feito: é só enviar o arquivo (PDF, imagem ou planilha Excel).</span>
+          <span class="escolha-opcao__desc" id="desc-opcao-1">Para quem já tem o cronograma feito: é só enviar o arquivo (PDF, imagem ou planilha Excel).</span>
         </button>
         <button type="button" class="escolha-opcao__botao" data-opcao="opcao-2" aria-pressed="false" aria-controls="opcao-2">
           <span class="opcao-titulo__tag">Opção 2</span>
@@ -43,6 +43,13 @@
 
       <section id="opcao-1" class="opcao-conteudo" hidden>
         <h3 class="section-title opcao-titulo"><span class="opcao-titulo__tag">Opção 1</span> Enviar o cronograma pronto</h3>
+        <!-- Modelo oficial do Anexo VI A: aparece sozinho quando o arquivo for colocado em
+             frontend/assets/ com um destes nomes (ver js/cronograma.js). -->
+        <div class="modelo-download" id="modelo-cronograma" hidden>
+          <p><strong>1.</strong> Baixe o modelo do Anexo VI A, preencha e salve.</p>
+          <a class="btn-secondary" id="link-modelo-cronograma" href="#" download>Baixar o modelo do Anexo VI A</a>
+        </div>
+        <p class="section-desc" id="passo-envio-cronograma" hidden><strong>2.</strong> Envie o cronograma preenchido.</p>
         <p class="section-desc" id="texto-upload"></p>
         <div id="upload-cronograma" class="doc-uploads"></div>
       </section>

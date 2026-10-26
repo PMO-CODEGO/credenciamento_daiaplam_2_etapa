@@ -58,6 +58,12 @@ const DianotDocumentos = (function () {
       opc.className = 'doc-upload__opcional';
       opc.textContent = 'Opcional';
       rotulo.append(' ', opc);
+    } else {
+      // Obrigatório: "Pendente" até ter arquivo (sem ele não dá para finalizar), depois "Enviado".
+      const sit = document.createElement('span');
+      sit.className = `doc-upload__situacao ${t.arquivos.length ? 'is-ok' : 'is-pendente'}`;
+      sit.textContent = t.arquivos.length ? 'Enviado' : 'Pendente';
+      rotulo.append(' ', sit);
     }
     campo.appendChild(rotulo);
 
@@ -153,6 +159,9 @@ const DianotDocumentos = (function () {
     render();
   }
 
+  // "Finalizar credenciamento" confere as pendências de novo (envio.js escuta este aviso).
+  const avisarMudanca = () => window.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
+
   function campoDe(tipo) { return document.querySelector(`.doc-upload[data-tipo="${tipo}"]`); }
 
   function enviarUm(tipo, arquivo, aoProgredir) {
@@ -207,6 +216,7 @@ const DianotDocumentos = (function () {
       }
     }
     try { await carregar(); } catch (_) {}
+    avisarMudanca();
     if (erroMsg) CodegoForm.erro(`doc-${tipo}`, erroMsg);
   }
 
@@ -236,6 +246,7 @@ const DianotDocumentos = (function () {
       if (resp.status === 401) return sessaoExpirada();
       if (!resp.ok && resp.status !== 404) throw new Error();
       await carregar();
+      avisarMudanca();
     } catch (_) {
       botao.disabled = false;
       CodegoForm.erro(`doc-${a.tipo}`, 'Não foi possível remover. Tente novamente.');

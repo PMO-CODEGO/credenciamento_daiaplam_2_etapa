@@ -23,7 +23,7 @@ TIPO_ARQUIVO = "inciso13"
 
 def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | None) -> dict:
     """Valores iniciais do formulário, para a empresa não digitar de novo.
-    A previsão de funcionamento é o término da obra no Cronograma (Anexo VI), se já preenchido."""
+    A previsão de funcionamento é o término da obra no Cronograma (Anexo VI A), se já preenchido."""
     s = {"razao_social": usuario.nome_empresarial, "cnpj": usuario.cnpj,
          "responsavel_nome": usuario.representante_nome or "", "responsavel_cargo": usuario.representante_cargo or ""}
     if sol is not None:

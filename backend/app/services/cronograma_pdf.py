@@ -1,4 +1,4 @@
-"""PDF do Cronograma Físico de Obras (Anexo VI), no modelo do Regulamento.
+"""PDF do Cronograma Físico de Obras (Anexo VI A), no modelo do Regulamento.
 
 O PDF não fica guardado no disco: é gerado na hora do download a partir dos
 dados salvos no banco (no Render grátis o disco é apagado a cada reinício).

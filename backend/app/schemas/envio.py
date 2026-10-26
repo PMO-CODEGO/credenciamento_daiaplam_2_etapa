@@ -10,6 +10,10 @@ class ItemChecklist(BaseModel):
     detalhe: str | None = None
 
 
+class EnvioIn(BaseModel):
+    li_e_concordo: bool = False  # "Li e Concordo" da declaração final de responsabilidade
+
+
 class EnvioEstado(BaseModel):
     checklist: list[ItemChecklist]  # tudo o que a empresa precisa fazer, na ordem do formulário
     pendencias: list[str]  # o que falta para poder finalizar

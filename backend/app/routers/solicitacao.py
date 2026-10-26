@@ -55,6 +55,7 @@ def salvar_solicitacao(
     Os documentos obrigatórios são cobrados no envio final, não aqui."""
     if payload.cnpj != usuario.cnpj:
         raise HTTPException(status_code=422, detail="O CNPJ do formulário deve ser o mesmo do seu login.")
+    payload = SolicitacaoIn.model_validate(rascunhos.com_dados_do_cadastro(payload.model_dump(), usuario))
     c = cnae_service.buscar(db, payload.cnae)
     if c is None:
         raise HTTPException(status_code=422, detail="CNAE inválido: não consta na tabela de CNAEs aceitos.")
@@ -73,7 +74,7 @@ def salvar_automatico(
 ):
     """Salvamento automático: completo e válido vira a solicitação oficial;
     senão fica como rascunho e devolve o que falta."""
-    dados = rascunhos.limpar(dados)
+    dados = rascunhos.com_dados_do_cadastro(rascunhos.limpar(dados), usuario)
     payload, c, faltando = rascunhos.conferir(db, usuario, dados)
     if payload is not None:
         sol = rascunhos.gravar(db, usuario, payload, c)
