@@ -151,6 +151,7 @@ def empresa(empresa_id: int, _m: Equipe = Depends(membro_atual), db: Session = D
         "cadastro": {
             "cnpj": e.cnpj, "nome_empresarial": e.nome_empresarial, "email": e.email,
             "representante_nome": e.representante_nome, "representante_cpf": e.representante_cpf,
+            "representante_cargo": e.representante_cargo,
             "cadastrado_em": e.data_criacao,
             "privacidade_ciente_em": e.privacidade_ciente_em,
         },

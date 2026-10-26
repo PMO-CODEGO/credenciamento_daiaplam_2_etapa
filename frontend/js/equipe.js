@@ -178,7 +178,7 @@
       ${linhaDado('CNPJ', esc(cnpj(c.cnpj)))}
       ${linhaDado('Razão social', esc(c.nome_empresarial))}
       ${linhaDado('E-mail', esc(c.email))}
-      ${linhaDado('Representante legal', `${esc(c.representante_nome || '—')}${c.representante_cpf ? ` — CPF ${esc(cpf(c.representante_cpf))}` : ''}`)}
+      ${linhaDado('Representante legal', `${esc(c.representante_nome || '—')}${c.representante_cargo ? ` (${esc(c.representante_cargo)})` : ''}${c.representante_cpf ? ` — CPF ${esc(cpf(c.representante_cpf))}` : ''}`)}
       ${linhaDado('Cadastrado em', dataHora(c.cadastrado_em))}
       ${linhaDado('Ciência do Aviso de Privacidade (LGPD)', c.privacidade_ciente_em ? dataHora(c.privacidade_ciente_em) : 'não registrada (cadastro anterior ao aviso)')}
     </dl></section>`);

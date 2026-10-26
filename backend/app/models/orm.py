@@ -14,6 +14,7 @@ class Usuario(Base):
     email = Column(String(255), nullable=False)
     representante_nome = Column(String(255))  # Representante Legal (nulo nos cadastros antigos)
     representante_cpf = Column(String(11))
+    representante_cargo = Column(String(100))  # informado no cadastro (nulo nos cadastros antigos)
     privacidade_ciente_em = Column(DateTime)  # ciência do Aviso de Privacidade (LGPD) no cadastro
     senha_hash = Column(String(255), nullable=False)
     ativo = Column(Boolean, nullable=False, default=True)

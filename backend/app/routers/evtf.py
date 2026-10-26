@@ -28,6 +28,7 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | Non
         "email": usuario.email,
         "responsavel_nome": usuario.representante_nome or "",
         "responsavel_cpf": usuario.representante_cpf or "",
+        "responsavel_cargo": usuario.representante_cargo or "",
         "distrito_industrial": "DIANOT 2ª etapa",
     }
     if sol is not None:
@@ -35,7 +36,7 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | Non
             endereco=sol.sede_endereco or sol.endereco_correspondencia,
             telefone=sol.telefone,
             email=sol.email,
-            responsavel_cargo=sol.representante_cargo or "",
+            responsavel_cargo=sol.representante_cargo or usuario.representante_cargo or "",
             responsavel_email=sol.email,
             responsavel_contato=sol.telefone,
             ramo_atividade_cnae=formatar_cnae(sol.cnae_codigo),

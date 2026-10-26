@@ -271,7 +271,7 @@
     conferirCnae();
     $('representante_nome').value = s.representante_nome || s.administrador_nome;
     representanteEditado = !!s.representante_nome && s.representante_nome !== s.administrador_nome;
-    $('representante_cargo').value = s.representante_cargo || '';
+    $('representante_cargo').value = s.representante_cargo || $('representante_cargo').value;
     $('ocupacao_percentual').value = s.ocupacao_percentual || '';
     if (s.declaracao_cidade) $('declaracao_cidade').value = s.declaracao_cidade;
     if (s.declaracao_uf) $('declaracao_uf').value = s.declaracao_uf;
@@ -316,6 +316,8 @@
       $('cnpj').value = u.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
       $('nome_empresarial').value = u.nome_empresarial;
       $('email').value = u.email;
+      // Cargo informado no cadastro: já vem no Anexo VI (a solicitação salva, se houver, vale mais).
+      if (u.representante_cargo) $('representante_cargo').value = u.representante_cargo;
       const s = await api('/api/solicitacoes/minha');
       if (s) preencher(s); else atualizarDeclaracao();
       const r = await api('/api/solicitacoes/minha/rascunho');

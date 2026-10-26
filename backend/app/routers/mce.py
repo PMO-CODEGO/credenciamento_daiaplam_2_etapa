@@ -24,14 +24,15 @@ TIPO_ARQUIVO = "inciso13"
 def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | None) -> dict:
     """Valores iniciais do formulário, para a empresa não digitar de novo.
     A previsão de funcionamento é o término da obra no Cronograma (Anexo VI), se já preenchido."""
-    s = {"razao_social": usuario.nome_empresarial, "cnpj": usuario.cnpj}
+    s = {"razao_social": usuario.nome_empresarial, "cnpj": usuario.cnpj,
+         "responsavel_nome": usuario.representante_nome or "", "responsavel_cargo": usuario.representante_cargo or ""}
     if sol is not None:
         s.update(
             endereco=sol.endereco_correspondencia,
             telefone=sol.telefone,
             email=sol.email,
             responsavel_nome=sol.representante_nome or sol.administrador_nome,
-            responsavel_cargo=sol.representante_cargo or "",
+            responsavel_cargo=sol.representante_cargo or usuario.representante_cargo or "",
             cnae_principal=sol.cnae_codigo,
             atividade_principal=sol.cnae_descricao,
             area_total_terreno=formatar_numero_br(float(sol.area_m2)),

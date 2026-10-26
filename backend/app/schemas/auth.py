@@ -18,6 +18,7 @@ class CadastroUsuarioIn(BaseModel):
     email: EmailStr
     representante_nome: str = Field(min_length=3, max_length=255)
     representante_cpf: str
+    representante_cargo: str = Field(min_length=2, max_length=100)
     # Ciência do Aviso de Privacidade (LGPD); validado mesmo quando não vem no pedido.
     privacidade_ciente: bool = Field(default=False, validate_default=True)
     g_recaptcha_response: str = ""
@@ -34,7 +35,7 @@ class CadastroUsuarioIn(BaseModel):
             raise ValueError("É preciso declarar ciência do Aviso de Privacidade.")
         return v
 
-    @field_validator("nome_empresarial", "representante_nome")
+    @field_validator("nome_empresarial", "representante_nome", "representante_cargo")
     @classmethod
     def _v_nome(cls, v):
         return " ".join(v.split())
@@ -71,6 +72,8 @@ class UsuarioOut(BaseModel):
     cnpj: str
     nome_empresarial: str
     email: str
+    representante_nome: str | None = None
+    representante_cargo: str | None = None
 
 
 class TokenOut(BaseModel):

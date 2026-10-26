@@ -16,6 +16,7 @@ COLUNAS = {
     "usuarios": [
         ("representante_nome", "VARCHAR(255) NULL"),
         ("representante_cpf", "VARCHAR(11) NULL"),
+        ("representante_cargo", "VARCHAR(100) NULL"),
         ("privacidade_ciente_em", "DATETIME NULL"),
     ],
     "solicitacoes": [

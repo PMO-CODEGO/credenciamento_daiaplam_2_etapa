@@ -33,7 +33,8 @@ def _ip(request: Request) -> str:
 
 
 def _para_out(u: Usuario) -> UsuarioOut:
-    return UsuarioOut(id=u.id, cnpj=u.cnpj, nome_empresarial=u.nome_empresarial, email=u.email)
+    return UsuarioOut(id=u.id, cnpj=u.cnpj, nome_empresarial=u.nome_empresarial, email=u.email,
+                      representante_nome=u.representante_nome, representante_cargo=u.representante_cargo)
 
 
 def usuario_atual(
@@ -73,6 +74,7 @@ def cadastrar(payload: CadastroUsuarioIn, request: Request, db: Session = Depend
         email=payload.email,
         representante_nome=payload.representante_nome,
         representante_cpf=payload.representante_cpf,
+        representante_cargo=payload.representante_cargo,
         privacidade_ciente_em=datetime.now(),
         senha_hash=gerar_hash_senha(senha),
     )
