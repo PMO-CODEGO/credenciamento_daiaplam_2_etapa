@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from weasyprint import HTML
 
 from app.models.orm import Cronograma, Documento, Envio, Evtf, Mce, Solicitacao, Usuario
+from app.services import assinatura as selo
 from app.services import ciencias
 from app.services import documentos as docs
 from app.services import rascunho as rascunhos
@@ -285,8 +286,13 @@ def gerar_pdf(envio: Envio) -> bytes:
     emp["cnpj"] = _cnpj(emp["cnpj"])
     emp["telefone"] = _tel(emp["telefone"])
     total_arquivos = sum(len(i["arquivos"]) for i in resumo["incisos"])
+    with open(os.path.join(TEMPLATES_DIR, "assets", "assinatura_codego.png"), "rb") as f:
+        fundo_assinatura = "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
+    assinatura = selo.calcular(envio.id, envio.protocolo, resumo["empresa"]["cnpj"], envio.enviado_em, resumo)
     html = _env.get_template("comprovante.html").render(
         logo=logo,
+        assinatura=assinatura,
+        fundo_assinatura=fundo_assinatura,
         protocolo=envio.protocolo,
         enviado_em=data_hora(envio.enviado_em),
         empresa=emp,

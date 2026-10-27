@@ -36,6 +36,12 @@
     ul.arquivos li { margin: 0 0 3px; font-size: 8.8pt; }
     .hash { font-family: "Liberation Mono", monospace; font-size: 7.5pt; color: #666; }
 
+    .assinatura { position: relative; width: 100%; height: 4.03cm; margin-top: 16px; page-break-inside: avoid;
+      background-size: 100% 100%; background-repeat: no-repeat; }
+    .assinatura__texto { position: absolute; left: 34%; right: 13%; top: 0.3cm; bottom: 0.25cm; font-size: 7.4pt; line-height: 1.35; color: #1a1a1a; }
+    .assinatura__titulo { font-size: 7pt; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #123f28; margin-bottom: 2px; }
+    .assinatura__empresa { font-size: 8.4pt; font-weight: bold; text-transform: uppercase; line-height: 1.2; }
+    .assinatura__codigos { margin-top: 3px; font-family: "Liberation Mono", monospace; font-size: 6.9pt; color: #123f28; word-break: break-all; }
     .aviso { margin-top: 16px; font-size: 8.8pt; color: #333; border-top: 1pt solid #ccc; padding-top: 8px; line-height: 1.5; }
   </style>
 </head>
@@ -114,5 +120,15 @@
     O código SHA-256 permite conferir que cada arquivo analisado é o mesmo que foi enviado. A análise dos documentos
     ocorrerá conforme o Regulamento de Alienações de Áreas e o Edital.
   </p>
+
+  <div class="assinatura" style="background-image: url('{{ fundo_assinatura }}');">
+    <div class="assinatura__texto">
+      <div class="assinatura__titulo">Assinado digitalmente por CODEGO</div>
+      <div class="assinatura__empresa">{{ empresa.razao_social }}</div>
+      <div>CNPJ {{ empresa.cnpj }} · CNAE {{ empresa.cnae }}</div>
+      <div>Data da assinatura: {{ assinatura.data }} · Horário: {{ assinatura.hora }} (Brasília)</div>
+      <div class="assinatura__codigos">ID: {{ assinatura.id }}<br>Token: {{ assinatura.token }}</div>
+    </div>
+  </div>
 </body>
 </html>
