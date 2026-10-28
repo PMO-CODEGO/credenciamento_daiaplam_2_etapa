@@ -46,10 +46,11 @@
         <!-- Modelo oficial do Anexo VI A: aparece sozinho quando o arquivo for colocado em
              frontend/assets/ com um destes nomes (ver js/cronograma.js). -->
         <div class="modelo-download" id="modelo-cronograma" hidden>
-          <p><strong>1.</strong> Baixe o modelo do Anexo VI A, preencha e salve.</p>
+          <p><strong>1.</strong> <span id="texto-modelo-cronograma"></span></p>
           <a class="btn-secondary" id="link-modelo-cronograma" href="#" download>Baixar o modelo do Anexo VI A</a>
+          <p class="field__hint" id="nota-modelo-cronograma" hidden>Este anexo também pode ser feito separadamente no sistema cadastral da CODEGO e enviado aqui já pronto.</p>
         </div>
-        <p class="section-desc" id="passo-envio-cronograma" hidden><strong>2.</strong> Envie o cronograma preenchido.</p>
+        <p class="section-desc" id="passo-envio-cronograma" hidden><strong>2.</strong> <span id="texto-passo-envio-cronograma"></span></p>
         <p class="section-desc" id="texto-upload"></p>
         <div id="upload-cronograma" class="doc-uploads"></div>
       </section>

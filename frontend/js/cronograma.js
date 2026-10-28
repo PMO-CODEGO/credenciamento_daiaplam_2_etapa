@@ -392,15 +392,16 @@
 
   // ---------- Modelo oficial do Anexo VI A para baixar (Opção 1) ----------
   // Basta colocar o arquivo em frontend/assets/ com um destes nomes: o bloco
-  // "Baixe o modelo" aparece sozinho, sem mudar código.
+  // "Baixe o modelo" aparece sozinho, sem mudar código. Excel e Word dá para preencher;
+  // o PDF é só referência (a empresa monta o cronograma dela no mesmo formato).
   const MODELOS = [
-    ['assets/anexo-vi-cronograma-modelo.xlsx', 'Excel'],
-    ['assets/anexo-vi-cronograma-modelo.xls', 'Excel'],
-    ['assets/anexo-vi-cronograma-modelo.docx', 'Word'],
-    ['assets/anexo-vi-cronograma-modelo.pdf', 'PDF'],
+    ['assets/anexo-vi-cronograma-modelo.xlsx', 'Excel', true],
+    ['assets/anexo-vi-cronograma-modelo.xls', 'Excel', true],
+    ['assets/anexo-vi-cronograma-modelo.docx', 'Word', true],
+    ['assets/anexo-vi-cronograma-modelo.pdf', 'PDF', false],
   ];
   async function mostrarModelo() {
-    for (const [caminho, formato] of MODELOS) {
+    for (const [caminho, formato, preenchivel] of MODELOS) {
       try {
         const r = await fetch(caminho, { method: 'HEAD', cache: 'no-store' });
         if (!r.ok) continue;
@@ -409,9 +410,18 @@
       link.href = caminho;
       link.setAttribute('download', `Anexo VI A - CFO - Cronograma Físico de Obras (modelo)${caminho.slice(caminho.lastIndexOf('.'))}`);
       link.textContent = `Baixar o modelo do Anexo VI A (${formato})`;
+      if (preenchivel) {
+        $('texto-modelo-cronograma').textContent = 'Baixe o modelo do Anexo VI A, preencha e salve.';
+        $('texto-passo-envio-cronograma').textContent = 'Envie o cronograma preenchido.';
+        $('desc-opcao-1').textContent = `Ao escolher a opção, baixe o modelo oficial do Anexo VI A em ${formato}, preencha e envie (ou envie o seu cronograma já pronto, em PDF, imagem ou Excel).`;
+      } else {
+        $('texto-modelo-cronograma').textContent = 'Veja o modelo do Anexo VI A e monte o seu cronograma no mesmo formato.';
+        $('nota-modelo-cronograma').hidden = false;
+        $('texto-passo-envio-cronograma').textContent = 'Envie o seu cronograma (PDF, imagem ou Excel).';
+        $('desc-opcao-1').textContent = 'Para quem já tem o cronograma feito, ou vai montá-lo seguindo o modelo oficial do Anexo VI A: é só enviar o arquivo (PDF, imagem ou planilha Excel).';
+      }
       $('modelo-cronograma').hidden = false;
       $('passo-envio-cronograma').hidden = false;
-      $('desc-opcao-1').textContent = `Ao escolher a opção, baixe o modelo oficial do Anexo VI A em ${formato}, preencha e envie (ou envie o seu cronograma já pronto, em PDF, imagem ou Excel).`;
       return;
     }
   }
