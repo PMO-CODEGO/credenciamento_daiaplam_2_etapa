@@ -1,12 +1,17 @@
-"""Ciência nos anexos que a empresa só visualiza (sem formulário nem envio de arquivo)."""
+"""Ciência nos anexos que a empresa só visualiza (sem formulário nem envio de arquivo) e no
+texto de responsabilidade pelo preenchimento, no início do formulário."""
 from datetime import datetime
 
 from sqlalchemy.orm import Session
 
 from app.models.orm import CienciaAnexo, Usuario
 
+# Texto de responsabilidade pelo preenchimento (início do formulário): guardado como os anexos.
+RESPONSABILIDADE = "RESP"
+
 # (anexo, título), na ordem em que aparecem no formulário.
 ANEXOS = [
+    (RESPONSABILIDADE, "Responsabilidade pelo preenchimento"),
     ("I", "Mapa das áreas disponíveis"),
     ("II", "Documentos de apresentação integral e obrigatória"),
     ("III", "Critérios de pontuação para definição do subsídio locacional"),
@@ -24,7 +29,17 @@ def listar(db: Session, usuario: Usuario) -> list[dict]:
         c.anexo: c.ciente_em
         for c in db.query(CienciaAnexo).filter(CienciaAnexo.usuario_id == usuario.id).all()
     }
-    return [{"anexo": a, "titulo": t, "ciente_em": feitas.get(a)} for a, t in ANEXOS]
+    return [{"anexo": a, "titulo": t, "rotulo": rotulo(a), "ciente_em": feitas.get(a)} for a, t in ANEXOS]
+
+
+def rotulo(anexo: str) -> str:
+    """'Responsabilidade pelo preenchimento' ou 'Anexo I — Mapa das áreas disponíveis'."""
+    return TITULOS[anexo] if anexo == RESPONSABILIDADE else f"Anexo {anexo} — {TITULOS[anexo]}"
+
+
+def nome_da_ciencia(anexo: str) -> str:
+    """Nome curto para o checklist."""
+    return "Ciência da responsabilidade pelo preenchimento" if anexo == RESPONSABILIDADE else f"Ciência do Anexo {anexo}"
 
 
 def registrar(db: Session, usuario: Usuario, anexo: str, ciente: bool) -> None:

@@ -58,6 +58,15 @@ def enviar(
 ):
     if tipo not in docs.TIPOS_POR_CHAVE and tipo not in docs.TIPOS_EXTRAS and tipo != docs.TIPO_COMPLEMENTAR:
         raise HTTPException(status_code=404, detail="Tipo de documento desconhecido.")
+    # Itens 1 a 9 em ordem: só aceita depois dos itens obrigatórios anteriores (como na tela).
+    if tipo in docs.TIPOS_POR_CHAVE:
+        for chave, rotulo, obrigatorio in docs.TIPOS:
+            if chave == tipo:
+                break
+            if obrigatorio and not db.query(Documento).filter(
+                Documento.usuario_id == usuario.id, Documento.tipo == chave
+            ).count():
+                raise HTTPException(status_code=422, detail=f"Envie primeiro o {rotulo.split(' — ')[0]}.")
     ja_enviados = db.query(Documento).filter(Documento.usuario_id == usuario.id, Documento.tipo == tipo).count()
     limite = docs.limite_de_arquivos(tipo)
     if ja_enviados >= limite:

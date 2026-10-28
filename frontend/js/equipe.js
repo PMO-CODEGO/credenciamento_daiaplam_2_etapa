@@ -224,8 +224,8 @@
       ${blocoInciso('evtf', inc.evtf)}${blocoInciso('cronograma', inc.cronograma)}${blocoInciso('mce', inc.mce)}
     </ul></section>`);
 
-    partes.push(`<section class="det-secao"><h4>Ciência nos anexos</h4><dl>${d.ciencias.map((c) =>
-      linhaDado(`Anexo ${c.anexo} — ${c.titulo}`, c.ciente_em ? `ciente em ${dataHora(c.ciente_em)}` : '<span class="painel-alerta">pendente</span>')).join('')}
+    partes.push(`<section class="det-secao"><h4>Ciências (responsabilidade e anexos)</h4><dl>${d.ciencias.map((c) =>
+      linhaDado(c.rotulo, c.ciente_em ? `ciente em ${dataHora(c.ciente_em)}` : '<span class="painel-alerta">pendente</span>')).join('')}
     </dl></section>`);
 
     partes.push(`<section class="det-secao"><h4>Envios (protocolos)</h4>${d.envios.length ? `<ul class="det-docs">${d.envios.map((v, k) => `

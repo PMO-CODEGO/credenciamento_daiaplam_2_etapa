@@ -20,8 +20,11 @@
 
     <main class="card">
       <div class="card__intro">
-        <h2 class="card__title">Formulário</h2>
-        <p class="card__desc" id="usuario-logado"></p>
+        <h2 class="card__title card__title--edital">CREDENCIAMENTO PERMANENTE DE EMPRESAS INTERESSADAS NO ASSENTAMENTO NO DISTRITO AGROINDUSTRIAL NORBERTO TEIXEIRA – DIANOT – 2ª ETAPA</h2>
+        <dl class="empresa-logada" id="usuario-logado" hidden>
+          <div><dt>Nome da empresa:</dt> <dd id="usuario-nome"></dd></div>
+          <div><dt>CNPJ:</dt> <dd id="usuario-cnpj"></dd></div>
+        </dl>
       </div>
 
       <section class="termo-responsabilidade" aria-labelledby="termo-inicio-titulo">
@@ -30,6 +33,11 @@
         <p>Ao preencher este cadastro, a empresa declara estar ciente de que todas as informações, documentos, declarações, índices, projeções, fatores, valores e demais dados informados serão utilizados para fins de análise técnica, classificação, pontuação e demais procedimentos previstos no Edital.</p>
         <p>A CODEGO não se responsabiliza por erros de preenchimento, omissões, informações incorretas, dados inconsistentes, anexação inadequada de documentos, enquadramentos equivocados ou quaisquer divergências decorrentes das informações fornecidas pela própria empresa.</p>
         <p>A prestação de informações falsas, inexatas ou divergentes da realidade poderá resultar na desclassificação da empresa, no cancelamento do credenciamento, na revisão dos atos praticados e na aplicação das medidas administrativas, civis e penais cabíveis.</p>
+        <label class="checkbox-item termo-responsabilidade__aceite" for="ciencia-responsabilidade">
+          <input type="checkbox" id="ciencia-responsabilidade" data-ciencia-caixa="RESP" data-erro="erro-ciencia-responsabilidade">
+          <span>Declaro que li e tenho ciência das condições acima.</span>
+        </label>
+        <p class="field__error" id="erro-ciencia-responsabilidade" role="alert"></p>
       </section>
 
       <ul class="doc-list">
@@ -175,8 +183,7 @@
         </div>
 
         <div class="declaracao" id="declaracao">
-          <h3 class="section-title" tabindex="-1" data-rotulo-proximo="Anexo VI - POA">Anexo VI - POA</h3>
-          <p class="section-desc">Modelo de Declaração de Compromisso com a Taxa de Ocupação de Área e Cronograma de Obras a serem contemplados no Projeto de Ocupação de Área (POA).</p>
+          <h3 class="anexo-titulo" tabindex="-1" data-rotulo-proximo="Anexo VI - POA"><span class="doc-list__tag">Anexo VI - POA</span><span class="doc-list__title">Declaração de Compromisso com a Taxa de Ocupação de Área e Cronograma de Obras a serem contemplados no Projeto de Ocupação de Área (POA)</span></h3>
           <div class="field">
             <label for="ocupacao_percentual">Percentual da área pleiteada que será ocupado</label>
             <div class="field__sufixo">
@@ -278,7 +285,7 @@
         </div>
 
         <div class="declaracao" id="conhecimento-objeto">
-          <h3 class="section-title" tabindex="-1">Anexo IX - Declaração de Pleno Conhecimento, Responsabilidade e Aceitação das Condições do Edital</h3>
+          <h3 class="anexo-titulo" tabindex="-1"><span class="doc-list__tag">Anexo IX</span><span class="doc-list__title">Declaração de Pleno Conhecimento, Responsabilidade e Aceitação das Condições do Edital</span></h3>
           <p class="section-desc">Usa os dados da empresa, o representante legal e a cidade informados acima.</p>
 
           <article class="declaracao__texto" aria-label="Declaração de Pleno Conhecimento, Responsabilidade e Aceitação das Condições do Edital">
@@ -375,7 +382,7 @@
         </div>
 
         <div class="declaracao" id="liquidacao">
-          <h3 class="section-title" tabindex="-1">Anexo XII - Declaração Liquidação Alienação de Áreas</h3>
+          <h3 class="anexo-titulo" tabindex="-1"><span class="doc-list__tag">Anexo XII</span><span class="doc-list__title">Declaração Liquidação Alienação de Áreas</span></h3>
           <div class="field">
             <label for="sede_endereco">Endereço completo da sede</label>
             <input type="text" id="sede_endereco" name="sede_endereco" maxlength="500" autocomplete="street-address">

@@ -10,6 +10,7 @@ class CienciaAnexoIn(BaseModel):
 class CienciaAnexoOut(BaseModel):
     anexo: str
     titulo: str
+    rotulo: str
     ciente_em: datetime | None
 
 

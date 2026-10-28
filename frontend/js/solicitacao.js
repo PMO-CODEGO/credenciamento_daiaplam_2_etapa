@@ -372,7 +372,9 @@
   (async function iniciar() {
     try {
       const u = await api('/api/auth/me');
-      $('usuario-logado').textContent = `${u.nome_empresarial} — login (CNPJ): ${u.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')}`;
+      $('usuario-nome').textContent = u.nome_empresarial;
+      $('usuario-cnpj').textContent = u.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+      $('usuario-logado').hidden = false;
       $('cnpj').value = u.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
       $('nome_empresarial').value = u.nome_empresarial;
       $('email').value = u.email;
@@ -414,7 +416,7 @@
   // Botão "Próximo" no fim de cada painel: fecha este anexo e leva ao seguinte, na
   // ordem da página (outro card de anexo, que já abre, ou uma seção do formulário).
   const PARADAS = '[data-painel-estatico], .inciso-link__botao[data-pagina], #anexo4-titulo, '
-    + '#form-solicitacao h3.section-title, #envio-titulo';
+    + '#form-solicitacao h3.section-title, #form-solicitacao h3.anexo-titulo, #envio-titulo';
   function rotuloDaParada(el) {
     if (el.dataset.rotuloProximo) return el.dataset.rotuloProximo;
     const tag = el.querySelector('.doc-list__tag');
@@ -422,26 +424,85 @@
     const anexo = el.textContent.trim().match(/^Anexo [IVX]+/);
     return anexo ? anexo[0] : el.textContent.trim();
   }
-  function adicionarProximo(botao) {
-    const painel = botao.nextElementSibling;
+  // Rolagem suave e mais lenta que a do navegador (que não deixa escolher a velocidade):
+  // dura de 0,7 s a 1,4 s conforme a distância. Quem pediu menos movimento no sistema vai
+  // direto; se a pessoa rolar a página no meio do caminho, a animação para.
+  function rolarAte(el) {
+    const destino = Math.max(0, window.scrollY + el.getBoundingClientRect().top - 16);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo(0, destino);
+      return;
+    }
+    const inicio = window.scrollY;
+    const distancia = destino - inicio;
+    const duracao = Math.min(1400, Math.max(700, Math.abs(distancia) * 0.4));
+    const suavizar = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    let parado = false;
+    const parar = () => { parado = true; };
+    const eventos = ['wheel', 'touchstart', 'keydown'];
+    eventos.forEach((ev) => window.addEventListener(ev, parar, { once: true, passive: true }));
+    const t0 = performance.now();
+    const passo = (agora) => {
+      if (parado) return;
+      const t = Math.min(1, (agora - t0) / duracao);
+      window.scrollTo(0, inicio + distancia * suavizar(t));
+      if (t < 1) requestAnimationFrame(passo);
+      else eventos.forEach((ev) => window.removeEventListener(ev, parar));
+    };
+    requestAnimationFrame(passo);
+  }
+
+  function botaoProximo(parada, aoClicar) {
     const paradas = [...document.querySelectorAll(PARADAS)];
-    const seguinte = paradas[paradas.indexOf(botao) + 1];
-    if (!seguinte) return;
+    const seguinte = paradas[paradas.indexOf(parada) + 1];
+    if (!seguinte) return null;
     const proximo = document.createElement('button');
     proximo.type = 'button';
     proximo.className = 'inciso-painel__proximo';
     proximo.textContent = `Próximo: ${rotuloDaParada(seguinte)} →`;
     proximo.addEventListener('click', () => {
-      botao.setAttribute('aria-expanded', 'false');
-      painel.hidden = true;
+      // Fechar o painel faz o que vem depois subir de uma vez (às vezes para fora da tela,
+      // e a rolagem iria para cima). Corrige a posição na hora para o anexo seguinte ficar
+      // onde estava, e a rolagem suave parte dali, sempre para a frente.
+      const antes = seguinte.getBoundingClientRect().top;
+      if (aoClicar) aoClicar();
+      const depois = seguinte.getBoundingClientRect().top;
+      if (depois !== antes) window.scrollTo(0, window.scrollY + depois - antes);
       if (seguinte.matches('[data-painel-estatico], [data-pagina]') && seguinte.getAttribute('aria-expanded') !== 'true') {
         seguinte.click();
       }
-      seguinte.scrollIntoView({ block: 'start' });
+      rolarAte(seguinte);
       seguinte.focus({ preventScroll: true });
     });
-    painel.appendChild(proximo);
+    return proximo;
   }
+  function adicionarProximo(botao) {
+    const painel = botao.nextElementSibling;
+    const proximo = botaoProximo(botao, () => {
+      botao.setAttribute('aria-expanded', 'false');
+      painel.classList.add('sem-animacao'); // fecha na hora (ver .sem-animacao no CSS)
+      painel.hidden = true;
+      requestAnimationFrame(() => painel.classList.remove('sem-animacao'));
+    });
+    if (proximo) painel.appendChild(proximo);
+  }
+
+  // Seções que ficam abertas no formulário (Anexo IV, itens 1 a 9, Anexos VI, IX e XII e
+  // documentação complementar): o "Próximo" vai no fim da seção.
+  document.querySelectorAll('#anexo4-titulo, #form-solicitacao h3.section-title, #form-solicitacao h3.anexo-titulo')
+    .forEach((titulo) => {
+      const proximo = botaoProximo(titulo);
+      if (!proximo) return;
+      // Anexo IV e declarações têm um bloco próprio; os outros títulos ficam soltos no
+      // formulário e a seção vai até a próxima parada (ou o fim dos campos).
+      const bloco = titulo.closest('.anexo-secao, .declaracao');
+      if (bloco) { bloco.appendChild(proximo); return; }
+      let fim = titulo.nextElementSibling;
+      while (fim && !fim.matches(`${PARADAS}, .feedback, .autosalvar`) && !fim.querySelector(PARADAS)) {
+        fim = fim.nextElementSibling;
+      }
+      titulo.parentNode.insertBefore(proximo, fim);
+    });
 
   // Painel com conteúdo fixo (ex.: imagem do Anexo II): só abre e fecha.
   document.querySelectorAll('[data-painel-estatico]').forEach((botao) => {
@@ -461,6 +522,7 @@
       const item = caixasCiencia[c.anexo];
       if (!item) return;
       item.caixa.checked = Boolean(c.ciente_em);
+      if (!item.status) return; // o texto de responsabilidade não tem selo de situação
       item.status.textContent = c.ciente_em ? 'Ciente' : 'Pendente';
       item.status.classList.toggle('is-ok', Boolean(c.ciente_em));
       item.status.classList.toggle('is-pendente', !c.ciente_em);
@@ -485,6 +547,14 @@
     const fechar = painel.querySelector('.inciso-painel__proximo');
     painel.insertBefore(rotulo, fechar);
     painel.insertBefore(erro, fechar);
+    ligarCiencia(anexo, caixa, erro, status);
+  });
+  // Caixas já no HTML (ex.: ciência do texto de responsabilidade, no início do formulário).
+  document.querySelectorAll('[data-ciencia-caixa]').forEach((caixa) => {
+    ligarCiencia(caixa.dataset.cienciaCaixa, caixa, document.getElementById(caixa.dataset.erro), null);
+  });
+
+  function ligarCiencia(anexo, caixa, erro, status) {
     caixasCiencia[anexo] = { caixa, status };
     // Alguns anexos ficam dentro do formulário: a marcação não dispara o salvamento automático.
     caixa.addEventListener('input', (e) => e.stopPropagation());
@@ -504,7 +574,7 @@
         caixa.disabled = false;
       }
     });
-  });
+  }
   if (Object.keys(caixasCiencia).length) {
     api('/api/anexos/ciencias').then((r) => mostrarCiencias(r.anexos)).catch(() => {});
   }
@@ -542,10 +612,11 @@
       anterior.disabled = atual === 0;
       proxima.disabled = atual === paginas.length - 1;
     };
-    // A navegação fica embaixo: ao trocar, volta para o começo da nova página.
+    // A navegação fica embaixo: ao trocar, volta rolando suavemente para o começo da nova
+    // página (a página nova aparece com um leve fade, ver CSS).
     const ir = (i) => {
       mostrar(i);
-      if (grupo.getBoundingClientRect().top < 0) grupo.scrollIntoView({ block: 'start' });
+      if (grupo.getBoundingClientRect().top < 0) rolarAte(grupo);
     };
     anterior.addEventListener('click', () => ir(atual - 1));
     proxima.addEventListener('click', () => ir(atual + 1));

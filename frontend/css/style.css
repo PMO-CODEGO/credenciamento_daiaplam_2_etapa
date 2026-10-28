@@ -156,6 +156,37 @@ body {
   color: var(--ink);
 }
 
+/* Título do formulário: nome oficial do edital, longo e em caixa alta */
+.card__title--edital {
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+
+/* Empresa logada, logo abaixo do título do formulário */
+.empresa-logada {
+  margin: 12px 0 28px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.empresa-logada[hidden] {
+  display: none;
+}
+
+.empresa-logada dt {
+  display: inline;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.empresa-logada dd {
+  display: inline;
+  margin: 0;
+}
+
 .card__desc {
   margin: 0 0 28px;
   color: var(--ink-soft);
@@ -1249,6 +1280,20 @@ input[readonly] {
   display: none;
 }
 
+/* Item ainda bloqueado: só libera depois do envio dos itens obrigatórios anteriores */
+.doc-upload__zona.is-bloqueado {
+  border-style: solid;
+  border-color: var(--border);
+  background: #f4f4f1;
+  cursor: not-allowed;
+}
+
+.doc-upload__zona.is-bloqueado .doc-upload__acao {
+  border-color: var(--border-strong);
+  background: transparent;
+  color: var(--ink-soft);
+}
+
 .doc-upload__acao {
   padding: 7px 12px;
   border: 1px solid var(--primary);
@@ -1267,6 +1312,20 @@ input[readonly] {
 .doc-upload__dica {
   color: var(--ink-soft);
   font-size: 12px;
+}
+
+/* Aviso de que os itens seguintes aparecem depois do envio do item pendente */
+.doc-upload:has(+ .doc-upload__nota) {
+  margin-bottom: 0;
+}
+
+.doc-upload__nota {
+  margin: -10px 0 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--border-strong);
+  background: #f4f4f1;
+  color: var(--ink-soft);
+  font-size: 13px;
 }
 
 .doc-upload__zona:focus-within {
@@ -1338,6 +1397,16 @@ input[readonly] {
 /* O título (.section-title) já traz a linha que separa do bloco anterior */
 .declaracao .section-title {
   margin-bottom: 16px;
+}
+
+/* Título das declarações dos anexos no mesmo padrão dos cards: "ANEXO IX" pequeno acima do
+   título; a linha de cima separa da seção anterior. */
+.anexo-titulo {
+  margin: 32px 0 16px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .field__sufixo {
@@ -1564,7 +1633,7 @@ input[readonly] {
   align-items: center;
   gap: 8px;
   max-width: 300px;
-  padding: 5px 10px 5px 5px;
+  padding: 8px 12px 8px 14px;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
   background: var(--surface);
@@ -1583,19 +1652,6 @@ input[readonly] {
 .perfil__botao:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
-}
-
-.perfil__avatar {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: var(--surface);
-  font-size: 11px;
-  font-weight: 700;
 }
 
 .perfil__nome {
@@ -1826,6 +1882,45 @@ input[readonly] {
 
 .inciso-painel[hidden] {
   display: none;
+  opacity: 0;
+  transform: translateY(-8px) scaleY(0.98);
+}
+
+/* Ao abrir, o conteúdo do anexo desce suavemente a partir do card; ao fechar, faz o
+   caminho de volta antes de sumir (allow-discrete segura o display: none até o fim). */
+.inciso-painel {
+  transform-origin: top;
+  transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out),
+    display 280ms allow-discrete;
+}
+
+/* "Próximo" fecha o painel sem animação: a página já vai rolar até o anexo seguinte, e o
+   painel sumindo no meio do caminho mudaria o ponto de chegada. */
+.inciso-painel.sem-animacao {
+  transition: none;
+}
+
+@starting-style {
+  .inciso-painel {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inciso-painel {
+    transition: opacity 200ms ease, display 200ms allow-discrete;
+  }
+
+  .inciso-painel[hidden] {
+    transform: none;
+  }
+
+  @starting-style {
+    .inciso-painel {
+      transform: none;
+    }
+  }
 }
 
 .inciso-painel iframe {
@@ -2082,6 +2177,17 @@ input[readonly] {
 
 .anexo-imagem[hidden] {
   display: none;
+}
+
+/* Troca de página nos anexos com várias páginas: a nova surge com um fade rápido */
+[data-anexo-paginas] .anexo-imagem {
+  transition: opacity 240ms var(--ease-out);
+}
+
+@starting-style {
+  [data-anexo-paginas] .anexo-imagem {
+    opacity: 0;
+  }
 }
 
 /* ‹ Página X de Y ›, centralizado embaixo da página do anexo */

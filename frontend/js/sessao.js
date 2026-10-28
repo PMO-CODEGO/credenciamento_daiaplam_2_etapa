@@ -16,9 +16,6 @@
   botao.setAttribute('aria-haspopup', 'true');
   botao.setAttribute('aria-expanded', 'false');
   botao.setAttribute('aria-controls', 'perfil-menu');
-  const avatar = document.createElement('span');
-  avatar.className = 'perfil__avatar';
-  avatar.setAttribute('aria-hidden', 'true');
   const nome = document.createElement('span');
   nome.className = 'perfil__nome';
   nome.textContent = 'Perfil';
@@ -26,7 +23,7 @@
   seta.className = 'perfil__seta';
   seta.setAttribute('aria-hidden', 'true');
   seta.textContent = '▾';
-  botao.append(avatar, nome, seta);
+  botao.append(nome, seta);
 
   const menu = document.createElement('div');
   menu.className = 'perfil__menu';
@@ -54,8 +51,6 @@
   });
 
   const cnpj = (d) => d.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
-  const iniciais = (t) => t.split(/\s+/).filter((p) => p.length > 2 || /^[A-Z]/.test(p)).slice(0, 2)
-    .map((p) => p[0]).join('').toUpperCase() || '?';
   function linha(rotulo, valor) {
     if (!valor) return;
     const dt = document.createElement('dt');
@@ -74,7 +69,6 @@
       if (!u) return;
       nome.textContent = u.nome_empresarial;
       botao.title = `Perfil: ${u.nome_empresarial}`;
-      avatar.textContent = iniciais(u.nome_empresarial);
       linha('Empresa', u.nome_empresarial);
       linha('CNPJ (login)', cnpj(u.cnpj));
       linha('Representante legal', [u.representante_nome, u.representante_cargo].filter(Boolean).join(' — '));

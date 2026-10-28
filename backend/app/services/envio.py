@@ -99,14 +99,17 @@ def checklist(db: Session, usuario: Usuario) -> list[dict]:
 
     def ciencia(anexo: str):
         c = cientes[anexo]
-        item(f"Ciência do Anexo {anexo}", c["ciente_em"],
-             f"Anexo {anexo}: declare ciência (abra o anexo e marque a ciência).")
+        item(ciencias.nome_da_ciencia(anexo), c["ciente_em"],
+             "Declare ciência do texto de responsabilidade pelo preenchimento, no início do formulário."
+             if anexo == ciencias.RESPONSABILIDADE
+             else f"Anexo {anexo}: declare ciência (abra o anexo e marque a ciência).")
 
     def declaracao(rotulo: str, campo: str, nome: str):
         # Com o formulário incompleto, quem avisa é o item do Anexo IV.
         item(rotulo, form_ok and getattr(sol, campo) is not None,
              f"Assine a declaração do {nome}." if form_ok else None)
 
+    ciencia(ciencias.RESPONSABILIDADE)
     for anexo in ("I", "II", "III"):
         ciencia(anexo)
     if rasc is not None:
@@ -230,7 +233,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
         {"rotulo": "Ciência da rede de água e esgoto fornecida pela CODEGO (Anexo VII)",
          "detalhe": "Resposta: Aceito.", "assinada_em": _iso(mce.ciencia_em) if mce else None},
     ] + [
-        {"rotulo": f"Ciência do Anexo {c['anexo']} — {c['titulo']}", "detalhe": "",
+        {"rotulo": f"Ciência: {c['rotulo']}", "detalhe": "",
          "assinada_em": _iso(c["ciente_em"])}
         for c in ciencias.listar(db, usuario)
     ]

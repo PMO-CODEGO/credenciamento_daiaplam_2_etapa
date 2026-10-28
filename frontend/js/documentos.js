@@ -34,7 +34,23 @@ const DianotDocumentos = (function () {
   function render() {
     const raiz = $('documentos');
     raiz.innerHTML = '';
-    config.tipos.forEach((t) => raiz.appendChild(item(t)));
+    // Os itens vão sendo liberados em ordem: cada campo só abre depois que todos os itens
+    // obrigatórios anteriores tiverem arquivo (o opcional não segura o seguinte). Os itens
+    // ainda bloqueados ficam escondidos, a não ser que já tenham arquivo (ex.: o Item 1 foi
+    // removido depois), para os arquivos enviados continuarem visíveis.
+    let faltando = null; // primeiro obrigatório ainda sem arquivo
+    let escondidos = 0;
+    config.tipos.forEach((t) => {
+      if (faltando && !t.arquivos.length) { escondidos += 1; return; }
+      raiz.appendChild(item(t, { bloqueadoPor: faltando }));
+      if (!faltando && t.obrigatorio && !t.arquivos.length) faltando = t;
+    });
+    if (escondidos) {
+      const nota = document.createElement('p');
+      nota.className = 'doc-upload__nota';
+      nota.textContent = `Os demais campos de envio aparecem aqui depois que você enviar o ${faltando.rotulo.split(' — ')[0]}.`;
+      raiz.appendChild(nota);
+    }
     // A documentação complementar já tem título na página: o rótulo do campo fica só para leitores de tela.
     const complementar = $('documentos-complementar');
     if (complementar && config.complementar) {
@@ -43,7 +59,7 @@ const DianotDocumentos = (function () {
     }
   }
 
-  function item(t, { rotuloOculto = false } = {}) {
+  function item(t, { rotuloOculto = false, bloqueadoPor = null } = {}) {
     const campo = document.createElement('div');
     campo.className = 'field doc-upload';
     campo.dataset.tipo = t.tipo;
@@ -78,6 +94,7 @@ const DianotDocumentos = (function () {
     const zona = document.createElement('label');
     zona.className = 'doc-upload__zona';
     zona.hidden = cheio;
+    if (bloqueadoPor) zona.classList.add('is-bloqueado');
     const input = document.createElement('input');
     input.type = 'file';
     input.id = `doc-${t.tipo}`;
@@ -85,13 +102,17 @@ const DianotDocumentos = (function () {
     input.multiple = true;
     input.className = 'visualmente-oculto';
     input.setAttribute('aria-labelledby', `${rotulo.id} acao-doc-${t.tipo}`);
+    input.disabled = Boolean(bloqueadoPor);
     const acao = document.createElement('span');
     acao.className = 'doc-upload__acao';
     acao.id = `acao-doc-${t.tipo}`;
     acao.textContent = t.arquivos.length ? 'Adicionar outro arquivo' : 'Escolher arquivo';
     const dica = document.createElement('span');
     dica.className = 'doc-upload__dica';
-    dica.textContent = 'ou arraste aqui';
+    dica.textContent = bloqueadoPor
+      ? `Liberado depois que você enviar o ${bloqueadoPor.rotulo.split(' — ')[0]}.`
+      : 'ou arraste aqui';
+    if (bloqueadoPor) acao.textContent = '🔒 Bloqueado';
     zona.append(input, acao, dica);
     campo.appendChild(zona);
 
@@ -105,6 +126,7 @@ const DianotDocumentos = (function () {
     zona.addEventListener('drop', (ev) => {
       ev.preventDefault();
       zona.classList.remove('is-arrastando');
+      if (bloqueadoPor) return;
       enviarVarios(t.tipo, [...ev.dataTransfer.files]);
     });
 
