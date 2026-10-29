@@ -1,5 +1,5 @@
 """Anexo VII — MCE: formulário com PDF gerado ou arquivo próprio,
-mais a ciência da rede de água e esgoto fornecida pela CODEGO (Aceito/Recuso)."""
+mais a ciência da rede de água e esgoto fornecida pela CODEGO."""
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -106,11 +106,13 @@ def apagar(usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_
 @router.put("/mce/minha/ciencia", response_model=MceEstado)
 def registrar_ciencia(payload: CienciaIn, usuario: Usuario = Depends(usuario_atual), db: Session = Depends(get_db)):
     resposta = payload.resposta.strip().lower()
-    if resposta not in ("aceito", "recuso"):
-        raise HTTPException(status_code=422, detail="Responda Aceito ou Recuso.")
+    # "aceito" = declarou ciência (valor mantido para não mexer no que já está salvo);
+    # "pendente" = desmarcou a ciência.
+    if resposta not in ("aceito", "pendente"):
+        raise HTTPException(status_code=422, detail="Resposta inválida.")
     reg = _obter_ou_criar(db, usuario)
-    reg.ciencia_rede = resposta
-    reg.ciencia_em = datetime.now()
+    reg.ciencia_rede = resposta if resposta == "aceito" else None
+    reg.ciencia_em = datetime.now() if resposta == "aceito" else None
     db.commit()
     return _montar_estado(db, usuario)
 

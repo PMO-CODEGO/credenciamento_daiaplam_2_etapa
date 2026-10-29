@@ -534,37 +534,35 @@ function mostrarSituacao(estado) {
   if (estado.arquivos.length) partes.push(`${estado.arquivos.length} arquivo(s) enviado(s)`);
   const pendencias = [];
   if (!partes.length) pendencias.push('preencha o formulário ou envie um arquivo');
-  if (estado.ciencia === 'recuso') pendencias.push('a ciência da rede de água e esgoto está como "Recuso"');
-  else if (!estado.ciencia) pendencias.push('responda a ciência da rede de água e esgoto');
+  if (estado.ciencia !== 'aceito') pendencias.push('declare ciência da rede de água e esgoto');
   const el = document.getElementById('situacao');
   const ok = estado.concluido;
   el.textContent = ok
-    ? `✔ Situação deste anexo: ${partes.join(' e ')}; ciência aceita.`
+    ? `✔ Situação deste anexo: ${partes.join(' e ')}; ciência declarada.`
     : `Situação deste anexo: pendente — ${pendencias.join('; ')}.${partes.length ? ` (já há: ${partes.join(' e ')}.)` : ''}`;
   el.className = `field__hint field__hint--${ok ? 'ok' : 'warn'}`;
 
-  const radio = document.querySelector(`input[name="ciencia_rede"][value="${estado.ciencia}"]`);
-  if (radio) radio.checked = true;
+  document.getElementById('ciencia_rede').checked = estado.ciencia === 'aceito';
   const status = document.getElementById('ciencia-status');
-  if (estado.ciencia && estado.ciencia_em) {
-    status.textContent = `Resposta registrada em ${new Date(estado.ciencia_em).toLocaleString('pt-BR')}. Você pode alterá-la.`;
+  if (estado.ciencia === 'aceito' && estado.ciencia_em) {
+    status.textContent = `Ciência registrada em ${new Date(estado.ciencia_em).toLocaleString('pt-BR')}.`;
   } else {
     status.textContent = '';
   }
 }
 
-document.querySelectorAll('input[name="ciencia_rede"]').forEach((radio) => {
-  radio.addEventListener('change', async () => {
-    document.getElementById('erro-ciencia').textContent = '';
-    try {
-      const resp = await api('/api/mce/minha/ciencia', { method: 'PUT', json: { resposta: radio.value } });
-      const dados = await resp.json().catch(() => null);
-      if (!resp.ok) { document.getElementById('erro-ciencia').textContent = extrairMensagemErro(dados); return; }
-      mostrarSituacao(dados);
-    } catch (e) {
-      document.getElementById('erro-ciencia').textContent = 'Falha de conexão. Tente novamente.';
-    }
-  });
+document.getElementById('ciencia_rede').addEventListener('change', async (ev) => {
+  const caixa = ev.target;
+  document.getElementById('erro-ciencia').textContent = '';
+  try {
+    const resp = await api('/api/mce/minha/ciencia', { method: 'PUT', json: { resposta: caixa.checked ? 'aceito' : 'pendente' } });
+    const dados = await resp.json().catch(() => null);
+    if (!resp.ok) { caixa.checked = !caixa.checked; document.getElementById('erro-ciencia').textContent = extrairMensagemErro(dados); return; }
+    mostrarSituacao(dados);
+  } catch (e) {
+    caixa.checked = !caixa.checked;
+    document.getElementById('erro-ciencia').textContent = 'Falha de conexão. Tente novamente.';
+  }
 });
 
 function desenharArquivos(estado) {

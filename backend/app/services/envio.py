@@ -140,7 +140,7 @@ def checklist(db: Session, usuario: Usuario) -> list[dict]:
     item("Anexo VII — MCE",
          (mce and mce.dados) or por_tipo.get("inciso13"), "Anexo VII (MCE): preencha o formulário ou envie o arquivo.")
     item("Anexo VII — Ciência da rede de água e esgoto",
-         mce and mce.ciencia_rede == "aceito", "Anexo VII: responda \"Aceito\" na ciência da rede de água e esgoto.")
+         mce and mce.ciencia_rede == "aceito", "Anexo VII: declare ciência da rede de água e esgoto.")
     ciencia("VIII")
     declaracao("Anexo IX — Declaração de pleno conhecimento e responsabilidade",
                "conhecimento_objeto_aceito_em", "Anexo IX (pleno conhecimento, responsabilidade e aceitação)")
@@ -231,7 +231,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
                           f"{'mês' if sol.liquidacao_prazo_meses == 1 else 'meses'}."),
          "assinada_em": _iso(sol.liquidacao_aceita_em)},
         {"rotulo": "Ciência da rede de água e esgoto fornecida pela CODEGO (Anexo VII)",
-         "detalhe": "Resposta: Aceito.", "assinada_em": _iso(mce.ciencia_em) if mce else None},
+         "detalhe": "Declarou ciência.", "assinada_em": _iso(mce.ciencia_em) if mce else None},
     ] + [
         {"rotulo": f"Ciência: {c['rotulo']}", "detalhe": "",
          "assinada_em": _iso(c["ciente_em"])}
