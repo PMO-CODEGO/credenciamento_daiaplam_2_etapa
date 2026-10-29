@@ -1,4 +1,5 @@
 import os
+import re
 import tempfile
 import time
 
@@ -9,6 +10,23 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from app.config import settings
 
 
+def _normalizar_pem(texto: str) -> str:
+    """
+    Reconstrói o certificado PEM mesmo que tenha sido colado numa variável de ambiente de uma
+    linha só (quebras viradas em espaço, ou escritas como "\\n"). Refaz as linhas de 64 caracteres.
+    """
+    texto = texto.strip().replace("\\n", "\n")
+    blocos = re.findall(r"-----BEGIN CERTIFICATE-----(.*?)-----END CERTIFICATE-----", texto, flags=re.S)
+    if not blocos:
+        return texto
+    saida = []
+    for corpo in blocos:
+        b64 = re.sub(r"\s+", "", corpo)
+        linhas = [b64[i:i + 64] for i in range(0, len(b64), 64)]
+        saida.append("-----BEGIN CERTIFICATE-----\n" + "\n".join(linhas) + "\n-----END CERTIFICATE-----")
+    return "\n".join(saida)
+
+
 def _argumentos_conexao() -> dict:
     """
     Conexão criptografada (SSL) com o MySQL, para bancos gerenciados fora da
@@ -17,7 +35,7 @@ def _argumentos_conexao() -> dict:
     """
     if not settings.mysql_ssl:
         return {}
-    ca = settings.mysql_ssl_ca.strip().replace("\\n", "\n")
+    ca = _normalizar_pem(settings.mysql_ssl_ca)
     if not ca:
         return {"ssl": {"check_hostname": False}}
     caminho_ca = os.path.join(tempfile.gettempdir(), "mysql-ca.pem")
