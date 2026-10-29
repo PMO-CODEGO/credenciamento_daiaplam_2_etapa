@@ -1479,9 +1479,8 @@ input[readonly] {
 }
 
 .declaracao__assinatura {
-  margin-top: 28px !important;
-  padding-top: 10px;
-  border-top: 1px solid var(--border-strong);
+  /* Sem linha nem espaço de assinatura: só o nome e os dados da empresa. */
+  margin-top: 14px !important;
   max-width: 360px;
   margin-left: auto;
   margin-right: auto;
@@ -1534,7 +1533,7 @@ input[readonly] {
 }
 
 .declaracao__texto .declaracao__assinatura {
-  margin: 28px auto 14px;
+  margin: 14px auto 14px;
 }
 
 .ciencia {
