@@ -2717,3 +2717,35 @@ input[readonly] {
   font-weight: 600;
   letter-spacing: 0.02em;
 }
+
+/* Pop-up da "Responsabilidade pelo preenchimento": aparece ao entrar, com o fundo desfocado,
+   até a empresa declarar ciência e clicar em Continuar. Depois volta a ser um bloco comum. */
+.termo-fundo { display: contents; }
+.termo-fundo .termo-responsabilidade__acoes { display: none; }
+.termo-fundo.is-modal {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(20, 24, 31, 0.45);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.termo-fundo.is-modal .termo-responsabilidade {
+  width: 100%;
+  max-width: 640px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  margin: 0;
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+}
+.termo-fundo.is-modal .termo-responsabilidade__acoes {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+html.termo-aberto, html.termo-aberto body { overflow: hidden; }

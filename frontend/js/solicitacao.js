@@ -575,8 +575,44 @@
       }
     });
   }
+  // Pop-up da responsabilidade pelo preenchimento: abre ao entrar e só fecha depois da ciência.
+  const fundoTermo = document.getElementById('termo-fundo');
+  const botaoContinuar = document.getElementById('termo-continuar');
+  const caixaTermo = document.getElementById('ciencia-responsabilidade');
+  function fecharTermo() {
+    fundoTermo.classList.remove('is-modal');
+    document.documentElement.classList.remove('termo-aberto');
+    fundoTermo.removeAttribute('aria-hidden');
+    const sec = document.getElementById('termo-inicio');
+    sec.removeAttribute('role');
+    sec.removeAttribute('aria-modal');
+  }
+  if (fundoTermo && botaoContinuar && caixaTermo) {
+    const sec = document.getElementById('termo-inicio');
+    sec.setAttribute('role', 'dialog');
+    sec.setAttribute('aria-modal', 'true');
+    document.documentElement.classList.add('termo-aberto');
+    caixaTermo.addEventListener('change', () => { botaoContinuar.disabled = !caixaTermo.checked; });
+    botaoContinuar.addEventListener('click', () => { if (caixaTermo.checked) fecharTermo(); });
+    // Mantém o foco dentro do pop-up enquanto ele estiver aberto.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || !fundoTermo.classList.contains('is-modal')) return;
+      const itens = [...sec.querySelectorAll('input, button')].filter((x) => !x.disabled);
+      if (!itens.length) { e.preventDefault(); return; }
+      const primeiro = itens[0], ultimo = itens[itens.length - 1];
+      if (!sec.contains(document.activeElement)) { e.preventDefault(); primeiro.focus(); }
+      else if (e.shiftKey && document.activeElement === primeiro) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primeiro.focus(); }
+    });
+    caixaTermo.focus();
+  }
   if (Object.keys(caixasCiencia).length) {
-    api('/api/anexos/ciencias').then((r) => mostrarCiencias(r.anexos)).catch(() => {});
+    api('/api/anexos/ciencias').then((r) => {
+      mostrarCiencias(r.anexos);
+      // Quem já declarou ciência antes não precisa ver o pop-up de novo.
+      if (fundoTermo && caixaTermo && caixaTermo.checked) fecharTermo();
+      else if (botaoContinuar) botaoContinuar.disabled = !caixaTermo.checked;
+    }).catch(() => {});
   }
 
   // Anexos com várias páginas (III, X, XI e XIII): uma página por vez, com Anterior/Próxima

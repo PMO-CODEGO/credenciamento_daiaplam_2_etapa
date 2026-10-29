@@ -30,7 +30,8 @@
         </dl>
       </div>
 
-      <section class="termo-responsabilidade" aria-labelledby="termo-inicio-titulo">
+      <div class="termo-fundo is-modal" id="termo-fundo">
+      <section class="termo-responsabilidade" id="termo-inicio" aria-labelledby="termo-inicio-titulo">
         <h3 class="termo-responsabilidade__titulo" id="termo-inicio-titulo">Responsabilidade pelo preenchimento</h3>
         <p>O preenchimento deste formulário é de inteira e exclusiva responsabilidade da empresa interessada, de seu responsável pelo preenchimento e de seu(s) representante(s) legal(is). Antes de prosseguir, recomenda-se a leitura integral do Edital de Credenciamento Permanente DIANOT 2ª Etapa, seus anexos, o Regulamento para Alienações e Empreendimentos da CODEGO e demais documentos aplicáveis.</p>
         <p>Ao preencher este cadastro, a empresa declara estar ciente de que todas as informações, documentos, declarações, índices, projeções, fatores, valores e demais dados informados serão utilizados para fins de análise técnica, classificação, pontuação e demais procedimentos previstos no Edital.</p>
@@ -41,7 +42,11 @@
           <span>Declaro que li e tenho ciência das condições acima.</span>
         </label>
         <p class="field__error" id="erro-ciencia-responsabilidade" role="alert"></p>
+        <div class="termo-responsabilidade__acoes">
+          <button type="button" class="btn-primary" id="termo-continuar" disabled>Continuar</button>
+        </div>
       </section>
+      </div>
 
       <ul class="doc-list">
         <li class="doc-list__item inciso-link inciso-link--lista">
