@@ -480,23 +480,16 @@ function hideFeedback() {
 
 function setLoading(isLoading) {
   submitButton.disabled = isLoading;
-  submitButton.textContent = isLoading ? 'Salvando…' : 'Salvar e gerar PDF';
+  submitButton.textContent = isLoading ? 'Salvando…' : 'Salvar';
 }
 
+// O PDF do memorial não é mais baixado aqui: ele entra no relatório final, ao finalizar o credenciamento.
 function mostrarPdf(texto) {
   showFeedback(
     `<p class="feedback__title">${esc(texto)}</p>
-     <div class="feedback__actions"><button type="button" class="feedback__link" id="btn-pdf">Baixar / abrir PDF</button></div>`,
+     <p>O relatório final (PDF) é gerado quando você finalizar o credenciamento.</p>`,
     'success'
   );
-  document.getElementById('btn-pdf').addEventListener('click', async () => {
-    const resp = await api('/api/mce/minha/pdf');
-    if (!resp.ok) {
-      showFeedback(`<p class="feedback__title">${esc(extrairMensagemErro(await resp.json().catch(() => null), 'Não foi possível gerar o PDF.'))}</p>`, 'error');
-      return;
-    }
-    window.open(URL.createObjectURL(await resp.blob()), '_blank', 'noopener');
-  });
 }
 
 // ---------------------------------------------------------------------------

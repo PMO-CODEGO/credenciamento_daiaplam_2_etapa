@@ -179,22 +179,10 @@
     fb.innerHTML = html;
     fb.hidden = false;
   }
+  // O PDF do EVTF não é mais baixado aqui: ele entra no relatório final, ao finalizar o credenciamento.
   function mostrarPdf(texto) {
     mostrar('success', `<p class="feedback__title">${esc(texto)}</p>
-      <div class="feedback__actions"><button type="button" class="feedback__link" id="btn-pdf">Baixar / abrir PDF</button></div>`);
-    $('btn-pdf').addEventListener('click', abrirPdf);
-  }
-  async function abrirPdf() {
-    // Abre a aba já no clique (senão o navegador bloqueia como pop-up).
-    const aba = window.open('', '_blank');
-    const resp = await api('/api/evtf/minha/pdf');
-    if (!resp.ok) {
-      if (aba) aba.close();
-      mostrar('error', esc(mensagemDe(await resp.json().catch(() => null), 'Não foi possível gerar o PDF.')));
-      return;
-    }
-    const url = URL.createObjectURL(await resp.blob());
-    if (aba) aba.location.href = url; else window.location.href = url;
+      <p>O relatório final (PDF) é gerado quando você finalizar o credenciamento.</p>`);
   }
 
   // ---------- Validação e envio ----------

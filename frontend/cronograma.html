@@ -26,7 +26,7 @@
         <h2 class="card__title">Anexo VI A — CFO, Cronograma Físico de Obras</h2>
         <p class="card__desc">
           Há <strong>duas opções</strong> para entregar o cronograma: enviar o seu arquivo pronto
-          <strong>ou</strong> preencher o formulário para gerar o PDF. Basta uma delas, mas você pode usar as duas.
+          <strong>ou</strong> preencher o formulário (o PDF sai no relatório final). Basta uma delas, mas você pode usar as duas.
         </p>
         <p class="field__hint" id="situacao" aria-live="polite">Carregando…</p>
       </div>
@@ -39,8 +39,8 @@
         </button>
         <button type="button" class="escolha-opcao__botao" data-opcao="opcao-2" aria-pressed="false" aria-controls="opcao-2">
           <span class="opcao-titulo__tag">Opção 2</span>
-          <span class="escolha-opcao__nome">Preencher o formulário e gerar o PDF</span>
-          <span class="escolha-opcao__desc">Você preenche os dados aqui mesmo e o sistema monta o PDF do cronograma, no modelo do Regulamento. O que já foi informado na solicitação vem preenchido.</span>
+          <span class="escolha-opcao__nome">Preencher o formulário</span>
+          <span class="escolha-opcao__desc">Você preenche os dados aqui mesmo e o sistema inclui o cronograma, no modelo do Regulamento, no relatório final do credenciamento. O que já foi informado na solicitação vem preenchido.</span>
         </button>
       </div>
 
@@ -59,8 +59,8 @@
       </section>
 
       <section id="opcao-2" class="opcao-conteudo" hidden>
-        <h3 class="section-title section-title--formulario opcao-titulo"><span class="opcao-titulo__tag">Opção 2</span> Preencher o formulário e gerar o PDF</h3>
-        <p class="section-desc">O PDF sai no modelo do Regulamento.</p>
+        <h3 class="section-title section-title--formulario opcao-titulo"><span class="opcao-titulo__tag">Opção 2</span> Preencher o formulário</h3>
+        <p class="section-desc">O cronograma entra no relatório final (PDF), no modelo do Regulamento.</p>
         <form id="form-cronograma" novalidate>
           <h3 class="section-title">Dados da empresa</h3>
           <div class="field">
@@ -120,7 +120,7 @@
 
           <div class="card__footer">
             <a class="btn-secondary" href="home.html">← Voltar ao formulário</a>
-            <button type="submit" class="btn-primary" id="btn-salvar">Salvar e gerar PDF</button>
+            <button type="submit" class="btn-primary" id="btn-salvar">Salvar</button>
           </div>
         </form>
       </section>

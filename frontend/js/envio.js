@@ -42,19 +42,19 @@
       $('envio-situacao').textContent = `${feitos} de ${obrigatorios.length} itens obrigatórios concluídos:`;
       $('envio-situacao').className = 'field__hint field__hint--warn';
     } else {
-      $('envio-situacao').textContent = `✔ Todos os ${obrigatorios.length} itens concluídos. Você já pode finalizar e gerar o comprovante.`;
+      $('envio-situacao').textContent = `✔ Todos os ${obrigatorios.length} itens concluídos. Você já pode finalizar e gerar o relatório final.`;
       $('envio-situacao').className = 'field__hint field__hint--ok';
     }
     podeFinalizar = estado.pode_finalizar;
     liberarFinalizar();
-    $('btn-finalizar').textContent = estado.protocolo ? 'Finalizar novamente (gera novo protocolo)' : 'Finalizar e gerar comprovante';
+    $('btn-finalizar').textContent = estado.protocolo ? 'Finalizar novamente (gera novo protocolo)' : 'Finalizar e gerar relatório final';
 
     const caixa = $('envio-protocolo');
     if (estado.protocolo) {
       caixa.hidden = false;
       caixa.innerHTML = `<p class="feedback__title">Último envio registrado: <strong>${esc(estado.protocolo)}</strong></p>
-        <p>Em ${esc(dataHora(estado.enviado_em))}. Guarde o número de protocolo e o comprovante.</p>
-        <div class="feedback__actions"><button type="button" class="feedback__link" id="btn-comprovante">Baixar comprovante (PDF)</button></div>`;
+        <p>Em ${esc(dataHora(estado.enviado_em))}. Guarde o número de protocolo e o relatório final.</p>
+        <div class="feedback__actions"><button type="button" class="feedback__link" id="btn-comprovante">Baixar relatório final (PDF)</button></div>`;
       $('btn-comprovante').addEventListener('click', baixarComprovante);
     } else {
       caixa.hidden = true;
@@ -67,7 +67,7 @@
 
   async function baixarComprovante() {
     const resp = await api('/api/envio/minha/pdf');
-    if (!resp.ok) { $('envio-erro').textContent = 'Não foi possível gerar o comprovante.'; return; }
+    if (!resp.ok) { $('envio-erro').textContent = 'Não foi possível gerar o relatório final.'; return; }
     window.open(URL.createObjectURL(await resp.blob()), '_blank', 'noopener');
   }
 

@@ -244,15 +244,10 @@
     fb.innerHTML = html;
     fb.hidden = false;
   }
+  // O PDF do cronograma não é mais baixado aqui: ele entra no relatório final, ao finalizar o credenciamento.
   function mostrarPdf(texto) {
     mostrar('success', `<p class="feedback__title">${esc(texto)}</p>
-      <div class="feedback__actions"><button type="button" class="feedback__link" id="btn-pdf">Baixar / abrir PDF</button></div>`);
-    $('btn-pdf').addEventListener('click', abrirPdf);
-  }
-  async function abrirPdf() {
-    const resp = await api('/api/cronograma/minha/pdf');
-    if (!resp.ok) { mostrar('error', esc(mensagemDe(await resp.json().catch(() => null), 'Não foi possível gerar o PDF.'))); return; }
-    window.open(URL.createObjectURL(await resp.blob()), '_blank', 'noopener');
+      <p>O relatório final (PDF) é gerado quando você finalizar o credenciamento.</p>`);
   }
 
   // ---------- Validação e envio ----------

@@ -1,4 +1,4 @@
-"""Envio final do credenciamento: gera o protocolo e o comprovante em PDF."""
+"""Envio final do credenciamento: gera o protocolo e o relatório final em PDF (comprovante + anexos preenchidos)."""
 from datetime import datetime
 
 import logging
@@ -67,7 +67,7 @@ def _avisar_por_email(tarefas: BackgroundTasks, db: Session, usuario: Usuario) -
         return
     try:
         ultimo = _ultimo(db, usuario)
-        pdf = servico.gerar_pdf(ultimo)
+        pdf = servico.gerar_pdf(ultimo, db)
         tarefas.add_task(enviar_comprovante, usuario.email, usuario.nome_empresarial, ultimo.protocolo, pdf)
     except Exception:
         logging.getLogger("credenciamento.email").exception("Não foi possível preparar o e-mail do comprovante.")
@@ -79,7 +79,7 @@ def comprovante(usuario: Usuario = Depends(usuario_atual), db: Session = Depends
     if ultimo is None:
         raise HTTPException(status_code=404, detail="Você ainda não finalizou o envio.")
     return Response(
-        content=servico.gerar_pdf(ultimo),
+        content=servico.gerar_pdf(ultimo, db),
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="comprovante_{ultimo.protocolo}.pdf"'},
     )

@@ -1,12 +1,15 @@
 """Envio final do credenciamento: pendências, protocolo, retrato do que foi entregue e PDF do comprovante."""
 import base64
 import hashlib
+import io
+import logging
 import os
 import random
 from datetime import datetime
 
 from jinja2 import Environment, FileSystemLoader
 from sqlalchemy.orm import Session
+from pypdf import PdfReader, PdfWriter
 from weasyprint import HTML
 
 from app.models.orm import Cronograma, Documento, Envio, Evtf, Mce, Solicitacao, Usuario
@@ -281,7 +284,9 @@ def _tamanho(b: int) -> str:
     return f"{max(1, round(b / 1024))} KB" if b < 1048576 else f"{b / 1048576:.1f} MB".replace(".", ",")
 
 
-def gerar_pdf(envio: Envio) -> bytes:
+def gerar_pdf(envio: Envio, db: Session | None = None) -> bytes:
+    """Relatório final em PDF: o comprovante e, em seguida, os anexos V, VI A e VII que a empresa
+    preencheu pelo formulário (cada um no seu modelo). Sem `db`, só o comprovante."""
     with open(os.path.join(TEMPLATES_DIR, "assets", "logo_codego_regulamento.png"), "rb") as f:
         logo = "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
     resumo = envio.resumo
@@ -305,4 +310,63 @@ def gerar_pdf(envio: Envio) -> bytes:
         formatar_data=data_hora,
         tamanho=_tamanho,
     )
-    return HTML(string=html, base_url=TEMPLATES_DIR).write_pdf()
+    comprovante = HTML(string=html, base_url=TEMPLATES_DIR).write_pdf()
+    if db is None:
+        return comprovante
+    anexos = _pdfs_dos_anexos(db, envio.usuario_id)
+    return _juntar_pdfs([comprovante, *anexos]) if anexos else comprovante
+
+
+def _pdfs_dos_anexos(db: Session, usuario_id: int) -> list[bytes]:
+    """PDFs dos anexos preenchidos pelo formulário (V, VI A e VII), na ordem do edital. Os que foram
+    entregues só como arquivo próprio não entram (já estão listados no comprovante). Uma falha em
+    um anexo não impede o relatório: ele só fica de fora e o erro vai para o log."""
+    # Importados aqui para o módulo do envio não depender dos geradores na hora de carregar.
+    from app.schemas.cronograma import CronogramaIn
+    from app.schemas.evtf import EvtfIn
+    from app.schemas.mce import MceIn
+    from app.services.cronograma_pdf import gerar_pdf as pdf_cronograma
+    from app.services.evtf_pdf import gerar_pdf as pdf_evtf
+    from app.services.mce_pdf import gerar_pdf as pdf_mce
+
+    log = logging.getLogger("credenciamento.relatorio")
+    usuario = db.get(Usuario, usuario_id)
+    sol = db.query(Solicitacao).filter(Solicitacao.usuario_id == usuario_id).first()
+    pdfs: list[bytes] = []
+
+    reg = db.query(Evtf).filter(Evtf.usuario_id == usuario_id).first()
+    if reg and reg.dados:
+        try:
+            local = "Goiânia"
+            if sol is not None and sol.declaracao_cidade:
+                local = f"{sol.declaracao_cidade}/{sol.declaracao_uf}" if sol.declaracao_uf else sol.declaracao_cidade
+            pdfs.append(pdf_evtf(EvtfIn.model_validate(reg.dados), local))
+        except Exception:
+            log.exception("Anexo V (EVTF) não entrou no relatório final.")
+
+    reg = db.query(Cronograma).filter(Cronograma.usuario_id == usuario_id).first()
+    if reg and reg.dados:
+        try:
+            dados = CronogramaIn.model_validate(reg.dados, context={"regerar_pdf": True})
+            pdfs.append(pdf_cronograma(dados, usuario.cnpj))
+        except Exception:
+            log.exception("Anexo VI A (CFO) não entrou no relatório final.")
+
+    reg = db.query(Mce).filter(Mce.usuario_id == usuario_id).first()
+    if reg and reg.dados:
+        try:
+            dados = MceIn.model_validate(reg.dados, context={"regerar_pdf": True})
+            pdfs.append(pdf_mce(dados, usuario.cnpj))
+        except Exception:
+            log.exception("Anexo VII (MCE) não entrou no relatório final.")
+    return pdfs
+
+
+def _juntar_pdfs(pdfs: list[bytes]) -> bytes:
+    escritor = PdfWriter()
+    for conteudo in pdfs:
+        for pagina in PdfReader(io.BytesIO(conteudo)).pages:
+            escritor.add_page(pagina)
+    saida = io.BytesIO()
+    escritor.write(saida)
+    return saida.getvalue()
