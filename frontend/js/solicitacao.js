@@ -264,9 +264,28 @@
     e.target.value = prazoValido;
   });
   $('sede_endereco').addEventListener('input', () => { sedeEditada = true; });
-  // Enquanto não for alterada, a sede acompanha o endereço para correspondência.
+  // Sede no mesmo endereço da correspondência: não pede de novo, só mostra o já informado.
+  function sincronizarSede() {
+    const igual = $('sede_igual').checked;
+    $('sede-campos').hidden = igual;
+    if (igual) {
+      sedeEditada = false;
+      $('sede_endereco').value = $('endereco_correspondencia').value;
+    }
+    $('sede-resumo').textContent = igual
+      ? ($('endereco_correspondencia').value.trim() || 'Preencha o endereço para correspondência no Anexo IV.')
+      : '';
+  }
+  $('sede_igual').addEventListener('change', () => {
+    sincronizarSede();
+    $('sede_endereco').dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  // Enquanto marcada, a sede acompanha o endereço para correspondência.
   $('endereco_correspondencia').addEventListener('input', () => {
-    if (!sedeEditada) $('sede_endereco').value = $('endereco_correspondencia').value;
+    if ($('sede_igual').checked) {
+      sincronizarSede();
+      $('sede_endereco').dispatchEvent(new Event('input', { bubbles: true }));
+    } else if (!sedeEditada) $('sede_endereco').value = $('endereco_correspondencia').value;
   });
   // Enquanto não for alterado, o representante acompanha o administrador.
   $('administrador_nome').addEventListener('input', () => {
@@ -321,6 +340,8 @@
     $('conhecimento_objeto_aceito').checked = !!conhecimentoEm;
     $('sede_endereco').value = s.sede_endereco || s.endereco_correspondencia;
     sedeEditada = !!s.sede_endereco && s.sede_endereco !== s.endereco_correspondencia;
+    $('sede_igual').checked = !sedeEditada;
+    sincronizarSede();
     $('liquidacao_prazo_meses').value = s.liquidacao_prazo_meses || '';
     marcarFormaPagamento(s.liquidacao_forma);
     liquidacaoEm = s.liquidacao_aceita_em ? new Date(s.liquidacao_aceita_em) : null;
@@ -349,6 +370,8 @@
     if (tem('cnae')) { $('cnae').value = mascaraCnae(String(d.cnae)); conferirCnae(); }
     $('representante_nome').value = $('administrador_nome').value;
     sedeEditada = $('sede_endereco').value !== $('endereco_correspondencia').value;
+    $('sede_igual').checked = !sedeEditada;
+    sincronizarSede();
     atualizarDeclaracao();
   }
 
@@ -468,7 +491,7 @@
     const proximo = document.createElement('button');
     proximo.type = 'button';
     proximo.className = 'inciso-painel__proximo';
-    proximo.textContent = `Próximo: ${rotuloDaParada(seguinte)} →`;
+    proximo.textContent = 'Próximo →';
     proximo.addEventListener('click', () => {
       // Fechar o painel faz o que vem depois subir de uma vez (às vezes para fora da tela,
       // e a rolagem iria para cima). Corrige a posição na hora para o anexo seguinte ficar

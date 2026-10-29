@@ -249,8 +249,7 @@
             <p>A Empresa <strong data-decl="razao"></strong> (razão social), portadora do CNPJ <strong data-decl="cnpj"></strong>, responsável legal <strong data-decl="responsavel"></strong>, através da presente, declara para os devidos fins, que atenderá os requisitos mínimos (a seguir), do Anexo V do Regulamento de Alienações de Áreas, a serem contemplados no Projeto de Ocupação de Área (POA), compromete-se a ocupar <strong data-decl="percentual"></strong> da área pleiteada (sendo a ocupação mínima permitida de 33% (trinta e três por cento) e a máxima de 70% (setenta por cento)), bem como, apresentar o cronograma previsto de obras (não ultrapassando 02 (dois) anos para sua conclusão, indicando a previsão mês/ano do início e fim da obra). Ao mesmo tempo que, compromete-se a entregar à CODEGO, quadrimestralmente, relatório demonstrativo do cumprimento das obrigações sobre a evolução das obras, depois de recebida a autorização de construção.</p>
             <p>E por ser verdade, assina a presente declaração sob as penas da Lei.</p>
             <p class="declaracao__local"><span data-decl="cidade"></span>, em <span data-decl="data"></span></p>
-            <p class="declaracao__assinatura"><strong data-decl="responsavel"></strong><br><span data-decl="cargo"></span><br><span class="declaracao__assinado" data-decl="assinado"></span></p>
-            <p class="declaracao__declarante"><span data-decl="razao"></span><br>CNPJ <span data-decl="cnpj"></span></p>
+            <p class="declaracao__assinatura"><strong data-decl="razao"></strong><br>CNPJ <span data-decl="cnpj"></span><br><span class="declaracao__assinado" data-decl="assinado"></span></p>
           </article>
 
           <div class="field">
@@ -311,7 +310,7 @@
               <li>Declara aceitar integralmente as condições estabelecidas no Edital nº 02/2026, em seus anexos, no Regulamento para Alienação e Empreendimentos da CODEGO, e demais normas, comprometendo-se a cumprir todas as obrigações deles decorrentes.</li>
             </ol>
             <p class="declaracao__local"><span data-decl="cidade"></span>, em <span data-decl="data9"></span></p>
-            <p class="declaracao__assinatura"><strong data-decl="responsavel"></strong><br>Responsável da empresa<br><span class="declaracao__assinado" data-decl="assinado9"></span></p>
+            <p class="declaracao__assinatura"><strong data-decl="razao"></strong><br>CNPJ <span data-decl="cnpj"></span><br><span class="declaracao__assinado" data-decl="assinado9"></span></p>
           </article>
 
           <div class="field">
@@ -393,11 +392,18 @@
 
         <div class="declaracao" id="liquidacao">
           <h3 class="anexo-titulo" tabindex="-1"><span class="doc-list__tag">Anexo XII</span><span class="doc-list__title">Declaração Liquidação Alienação de Áreas</span></h3>
-          <div class="field endereco" data-endereco role="group" aria-labelledby="rotulo-sede-endereco">
-            <p class="endereco__rotulo" id="rotulo-sede-endereco">Endereço completo da sede</p>
-            <p class="field__hint">Preenchido com o endereço para correspondência; altere se a sede for em outro endereço.</p>
-            <input type="hidden" id="sede_endereco" name="sede_endereco">
-            <p class="field__error" data-error-for="sede_endereco"></p>
+          <div class="field" id="sede-bloco">
+            <p class="endereco__rotulo">Endereço completo da sede</p>
+            <label class="checkbox-item" for="sede_igual">
+              <input type="checkbox" id="sede_igual" checked>
+              <span>A sede é no mesmo endereço para correspondência informado no Anexo IV.</span>
+            </label>
+            <p class="field__hint" id="sede-resumo" aria-live="polite"></p>
+            <div class="field endereco" id="sede-campos" data-endereco role="group" aria-labelledby="rotulo-sede-endereco" hidden>
+              <p class="endereco__rotulo" id="rotulo-sede-endereco">Endereço da sede</p>
+              <input type="hidden" id="sede_endereco" name="sede_endereco">
+              <p class="field__error" data-error-for="sede_endereco"></p>
+            </div>
           </div>
           <fieldset class="field ciencia" id="liquidacao_forma">
             <legend class="campo-legenda">Forma de pagamento da área</legend>
@@ -421,8 +427,7 @@
             <p class="declaracao__lista">- De 01 a 06 meses: 100 pontos;<br>- De 07 a 12 meses: 75 pontos;<br>- De 13 a 18 meses: 50 pontos;<br>- De 19 a 24 meses: 25 pontos;<br>- De 25 a 36 meses: 0 pontos.</p>
             <p>A empresa assume o compromisso de cumprir integralmente o prazo declarado, sob as penalidades cabíveis em caso de descumprimento.</p>
             <p class="declaracao__local">Local e data: <span data-decl="cidadeuf"></span>, <span data-decl="data13"></span>.</p>
-            <p class="declaracao__assinatura"><strong data-decl="responsavel"></strong><br><span data-decl="cargo"></span><br><span class="declaracao__assinado" data-decl="assinado13"></span></p>
-            <p class="declaracao__declarante"><span data-decl="razao"></span><br>CNPJ: <span data-decl="cnpj"></span></p>
+            <p class="declaracao__assinatura"><strong data-decl="razao"></strong><br>CNPJ: <span data-decl="cnpj"></span><br><span class="declaracao__assinado" data-decl="assinado13"></span></p>
           </article>
 
           <div class="field">
