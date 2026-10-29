@@ -205,7 +205,7 @@
     lacuna('responsavel', $('representante_nome').value.trim());
     lacuna('cargo', $('representante_cargo').value.trim());
     const p = percentual();
-    lacuna('percentual', p >= 33 && p <= 80 ? `${p}% (${porExtenso(p)} por cento)` : '');
+    lacuna('percentual', p >= 33 && p <= 70 ? `${p}% (${porExtenso(p)} por cento)` : '');
     lacuna('cidade', $('declaracao_cidade').value.trim());
     lacuna('cidadeuf', $('declaracao_cidade').value.trim() && `${$('declaracao_cidade').value.trim()}/${$('declaracao_uf').value}`);
     lacuna('data', dataPorExtenso(aceitaEm || new Date()));
@@ -231,7 +231,15 @@
       : '';
   }
 
-  $('ocupacao_percentual').addEventListener('input', (e) => (e.target.value = digitos(e.target.value).slice(0, 2)));
+  // Percentual de ocupação: só entra de 33 a 70 (o 1º dígito é de 3 a 7; com dois dígitos, o número tem de estar na faixa).
+  let ocupacaoValida = '';
+  $('ocupacao_percentual').addEventListener('focus', (e) => { ocupacaoValida = e.target.value; });
+  $('ocupacao_percentual').addEventListener('input', (e) => {
+    const v = digitos(e.target.value).slice(0, 2);
+    const n = Number(v);
+    if (v === '' || (v.length === 1 && n >= 3 && n <= 7) || (v.length === 2 && n >= 33 && n <= 70)) ocupacaoValida = v;
+    e.target.value = ocupacaoValida;
+  });
   // Forma de pagamento: à vista trava o prazo em 1 mês; parcelado libera de 1 a 36.
   const formaPagamento = () => (document.querySelector('input[name="liquidacao_forma"]:checked') || {}).value || null;
   function aplicarFormaPagamento() {

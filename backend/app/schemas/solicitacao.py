@@ -22,7 +22,7 @@ class SolicitacaoIn(BaseModel):
     # Declaração de compromisso
     representante_nome: str = Field(min_length=3, max_length=255)
     representante_cargo: str = Field(min_length=2, max_length=100)
-    ocupacao_percentual: int = Field(ge=33, le=80)
+    ocupacao_percentual: int = Field(ge=33, le=70)
     declaracao_cidade: str = Field(min_length=2, max_length=100)
     declaracao_uf: Literal[
         "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR",

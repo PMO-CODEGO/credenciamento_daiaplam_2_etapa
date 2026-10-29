@@ -59,7 +59,7 @@ class Solicitacao(Base):
     # Colunas aceitam nulo só por causa das solicitações salvas antes dela.
     representante_nome = Column(String(255))
     representante_cargo = Column(String(100))
-    ocupacao_percentual = Column(Integer)  # 33 a 80
+    ocupacao_percentual = Column(Integer)  # 33 a 70
     # Datas da obra: não são mais pedidas no Anexo VI - POA (ficam no Cronograma, Anexo VI A); colunas mantidas pelos dados antigos.
     obra_inicio = Column(String(7))  # "AAAA-MM"
     obra_fim = Column(String(7))  # "AAAA-MM"
