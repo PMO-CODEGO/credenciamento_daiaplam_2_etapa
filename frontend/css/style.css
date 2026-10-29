@@ -2749,3 +2749,33 @@ input[readonly] {
   margin-top: 8px;
 }
 html.termo-aberto, html.termo-aberto body { overflow: hidden; }
+
+/* Endereço em campos separados (js/endereco.js) */
+.endereco__rotulo {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.endereco .field__hint { margin: 0 0 10px; }
+.endereco__grade {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px 16px;
+}
+.endereco__campo { min-width: 0; }
+.endereco__campo input,
+.endereco__campo select { width: 100%; }
+.endereco__cep { grid-column: span 4; }
+.endereco__log { grid-column: span 8; }
+.endereco__num { grid-column: span 3; }
+.endereco__comp { grid-column: span 9; }
+.endereco__bairro { grid-column: span 5; }
+.endereco__cidade { grid-column: span 5; }
+.endereco__uf { grid-column: span 2; }
+.endereco__cep .field__hint { margin: 4px 0 0; min-height: 0; }
+@media (max-width: 640px) {
+  .endereco__cep, .endereco__log, .endereco__comp, .endereco__bairro, .endereco__cidade { grid-column: span 12; }
+  .endereco__num { grid-column: span 6; }
+  .endereco__uf { grid-column: span 6; }
+}

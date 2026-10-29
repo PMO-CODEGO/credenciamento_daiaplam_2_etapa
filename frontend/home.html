@@ -114,9 +114,10 @@
             <input type="text" id="cnpj" name="cnpj" readonly>
             <p class="field__hint">É o CNPJ do seu login.</p>
           </div>
-          <div class="field">
-            <label for="endereco_correspondencia">Endereço para correspondência</label>
-            <input type="text" id="endereco_correspondencia" name="endereco_correspondencia" maxlength="500" autocomplete="street-address">
+          <div class="field endereco" data-endereco role="group" aria-labelledby="rotulo-endereco-correspondencia">
+            <p class="endereco__rotulo" id="rotulo-endereco-correspondencia">Endereço para correspondência</p>
+            <p class="field__hint">Digite o CEP para preencher o endereço automaticamente.</p>
+            <input type="hidden" id="endereco_correspondencia" name="endereco_correspondencia">
             <p class="field__error" data-error-for="endereco_correspondencia"></p>
           </div>
           <div class="field-row">
@@ -391,10 +392,10 @@
 
         <div class="declaracao" id="liquidacao">
           <h3 class="anexo-titulo" tabindex="-1"><span class="doc-list__tag">Anexo XII</span><span class="doc-list__title">Declaração Liquidação Alienação de Áreas</span></h3>
-          <div class="field">
-            <label for="sede_endereco">Endereço completo da sede</label>
-            <input type="text" id="sede_endereco" name="sede_endereco" maxlength="500" autocomplete="street-address">
+          <div class="field endereco" data-endereco role="group" aria-labelledby="rotulo-sede-endereco">
+            <p class="endereco__rotulo" id="rotulo-sede-endereco">Endereço completo da sede</p>
             <p class="field__hint">Preenchido com o endereço para correspondência; altere se a sede for em outro endereço.</p>
+            <input type="hidden" id="sede_endereco" name="sede_endereco">
             <p class="field__error" data-error-for="sede_endereco"></p>
           </div>
           <fieldset class="field ciencia" id="liquidacao_forma">
@@ -612,6 +613,7 @@
   </div>
   <script src="js/form.js"></script>
   <script src="js/documentos.js"></script>
+  <script src="js/endereco.js"></script>
   <script src="js/solicitacao.js"></script>
   <script src="js/envio.js"></script>
 </body>
