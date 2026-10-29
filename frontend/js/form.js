@@ -30,6 +30,9 @@ const CodegoForm = (function () {
   function focarPrimeiroErro(form) {
     const input = form.querySelector('[aria-invalid="true"]');
     if (!input) return false;
+    // Campo dentro de um anexo fechado: abre o card antes de levar até ele.
+    const painel = input.closest('.inciso-painel');
+    if (painel && painel.hidden && painel.previousElementSibling) painel.previousElementSibling.click();
     input.focus({ preventScroll: true });
     input.scrollIntoView({ block: 'center', behavior: 'smooth' });
     return true;

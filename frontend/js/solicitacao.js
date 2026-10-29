@@ -385,6 +385,7 @@
       const r = await api('/api/solicitacoes/minha/rascunho');
       if (r) aplicarRascunho(r.dados);
       travarDadosDoCadastro(u);
+      atualizarSecoes();
     } catch (_) {
       mostrar('error', 'Falha de conexão. Recarregue a página.');
     }
@@ -415,8 +416,8 @@
 
   // Botão "Próximo" no fim de cada painel: fecha este anexo e leva ao seguinte, na
   // ordem da página (outro card de anexo, que já abre, ou uma seção do formulário).
-  const PARADAS = '[data-painel-estatico], .inciso-link__botao[data-pagina], #anexo4-titulo, '
-    + '#form-solicitacao h3.section-title, #form-solicitacao h3.anexo-titulo, #envio-titulo';
+  const PARADAS = '[data-painel-estatico], .inciso-link__botao[data-pagina], [data-secao], '
+    + '#form-solicitacao h3.section-title, #envio-titulo';
   function rotuloDaParada(el) {
     if (el.dataset.rotuloProximo) return el.dataset.rotuloProximo;
     const tag = el.querySelector('.doc-list__tag');
@@ -468,7 +469,7 @@
       if (aoClicar) aoClicar();
       const depois = seguinte.getBoundingClientRect().top;
       if (depois !== antes) window.scrollTo(0, window.scrollY + depois - antes);
-      if (seguinte.matches('[data-painel-estatico], [data-pagina]') && seguinte.getAttribute('aria-expanded') !== 'true') {
+      if (seguinte.matches('[data-painel-estatico], [data-pagina], [data-secao]') && seguinte.getAttribute('aria-expanded') !== 'true') {
         seguinte.click();
       }
       rolarAte(seguinte);
@@ -487,9 +488,64 @@
     if (proximo) painel.appendChild(proximo);
   }
 
-  // Seções que ficam abertas no formulário (Anexo IV, itens 1 a 9, Anexos VI, IX e XII e
-  // documentação complementar): o "Próximo" vai no fim da seção.
-  document.querySelectorAll('#anexo4-titulo, #form-solicitacao h3.section-title, #form-solicitacao h3.anexo-titulo')
+  // ---------- Anexos de preenchimento fechados (IV, VI - POA, IX e XII) ----------
+  // Cada um vira um card igual ao dos anexos de leitura: fechado, com a situação ao lado
+  // (Pendente até a empresa preencher) e o formulário aparece ao clicar.
+  const preenchido = (id) => $(id).value.trim() !== '';
+  const SECOES = [
+    { titulo: 'anexo4-titulo', bloco: '.anexo-secao', ok: 'Concluído',
+      pronto: () => ['area_m2', 'nome_empresarial', 'cnpj', 'endereco_correspondencia', 'email', 'telefone',
+        'administrador_nome', 'administrador_cpf', 'representante_cargo', 'preenchimento_nome', 'cnae'].every(preenchido) },
+    { bloco: '#declaracao', ok: 'Ciente',
+      pronto: () => ['ocupacao_percentual', 'declaracao_cidade', 'declaracao_uf'].every(preenchido) && $('declaracao_aceita').checked },
+    { bloco: '#conhecimento-objeto', ok: 'Ciente',
+      pronto: () => $('conhecimento_objeto_aceito').checked },
+    { bloco: '#liquidacao', ok: 'Ciente',
+      pronto: () => ['sede_endereco', 'liquidacao_prazo_meses'].every(preenchido) && Boolean(formaPagamento()) && $('liquidacao_aceita').checked },
+  ];
+  SECOES.forEach((s) => {
+    const bloco = s.titulo ? $(s.titulo).closest(s.bloco) : document.querySelector(s.bloco);
+    const titulo = bloco.querySelector('.anexo-secao__titulo, .anexo-titulo');
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'doc-list__link inciso-link__botao';
+    botao.setAttribute('aria-expanded', 'false');
+    botao.setAttribute('data-secao', '');
+    ['.doc-list__tag', '.doc-list__title'].forEach((sel) => botao.appendChild(titulo.querySelector(sel).cloneNode(true)));
+    s.status = document.createElement('span');
+    s.status.className = 'inciso-link__status';
+    botao.appendChild(s.status);
+    const painel = document.createElement('div');
+    painel.className = 'inciso-painel';
+    painel.hidden = true;
+    const cartao = document.createElement('div');
+    cartao.className = 'inciso-link';
+    bloco.parentNode.insertBefore(cartao, bloco);
+    cartao.append(botao, painel);
+    painel.appendChild(bloco);
+    titulo.hidden = true; // o título agora é o do card; a seção continua apontando para ele (aria-labelledby)
+    adicionarProximo(botao);
+    botao.addEventListener('click', () => {
+      const abrir = botao.getAttribute('aria-expanded') !== 'true';
+      botao.setAttribute('aria-expanded', String(abrir));
+      painel.hidden = !abrir;
+    });
+  });
+  function atualizarSecoes() {
+    SECOES.forEach((s) => {
+      const pronto = Boolean(s.pronto());
+      s.status.textContent = pronto ? s.ok : 'Pendente';
+      s.status.classList.toggle('is-ok', pronto);
+      s.status.classList.toggle('is-pendente', !pronto);
+    });
+  }
+  $('form-solicitacao').addEventListener('input', atualizarSecoes);
+  $('form-solicitacao').addEventListener('change', atualizarSecoes);
+  atualizarSecoes();
+
+  // Seções que ficam abertas no formulário (itens 1 a 9 e documentação complementar):
+  // o "Próximo" vai no fim da seção.
+  document.querySelectorAll('#form-solicitacao h3.section-title')
     .forEach((titulo) => {
       const proximo = botaoProximo(titulo);
       if (!proximo) return;
