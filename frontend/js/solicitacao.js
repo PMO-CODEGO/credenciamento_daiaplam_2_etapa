@@ -363,7 +363,7 @@
           dica.className = 'field__hint';
           campo.after(dica);
         }
-        dica.textContent = 'Vem do cadastro e não pode ser alterado aqui.';
+        dica.textContent = 'Já informados no cadastro.';
       });
     $('representante_nome').value = $('administrador_nome').value;
     atualizarDeclaracao();
