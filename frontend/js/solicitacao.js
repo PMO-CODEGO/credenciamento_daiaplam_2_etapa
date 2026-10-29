@@ -500,10 +500,14 @@
   // Cada um vira um card igual ao dos anexos de leitura: fechado, com a situação ao lado
   // (Pendente até a empresa preencher) e o formulário aparece ao clicar.
   const preenchido = (id) => $(id).value.trim() !== '';
+  // Todos os documentos obrigatórios (itens 1 a 9) com arquivo: nenhum item ainda "Pendente".
+  const documentosEnviados = () => Boolean(document.querySelector('#documentos .doc-upload__situacao'))
+    && !document.querySelector('#documentos .doc-upload__situacao.is-pendente');
   const SECOES = [
     { titulo: 'anexo4-titulo', bloco: '.anexo-secao', ok: 'Concluído',
       pronto: () => ['area_m2', 'nome_empresarial', 'cnpj', 'endereco_correspondencia', 'email', 'telefone',
-        'administrador_nome', 'administrador_cpf', 'representante_cargo', 'preenchimento_nome', 'cnae'].every(preenchido) },
+        'administrador_nome', 'administrador_cpf', 'representante_cargo', 'preenchimento_nome', 'cnae'].every(preenchido)
+        && documentosEnviados() },
     { bloco: '#declaracao', ok: 'Ciente',
       pronto: () => ['ocupacao_percentual', 'declaracao_cidade', 'declaracao_uf'].every(preenchido) && $('declaracao_aceita').checked },
     { bloco: '#conhecimento-objeto', ok: 'Ciente',
@@ -549,6 +553,7 @@
   }
   $('form-solicitacao').addEventListener('input', atualizarSecoes);
   $('form-solicitacao').addEventListener('change', atualizarSecoes);
+  new MutationObserver(atualizarSecoes).observe($('documentos'), { childList: true, subtree: true });
   atualizarSecoes();
 
   // Seções que ficam abertas no formulário (itens 1 a 9 e documentação complementar):
