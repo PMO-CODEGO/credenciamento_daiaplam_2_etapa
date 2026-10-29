@@ -1,5 +1,4 @@
-// Documentos do Anexo II (itens 1 a 9 na tela; incisos II a X do edital) e documentação
-// complementar (opcional, depois do Anexo XIII): envio, visualização e remoção.
+// Documentos do Anexo II (incisos II a X): envio, visualização e remoção.
 // Cada arquivo é salvo no servidor assim que é enviado (não depende do
 // botão "Salvar solicitação"). A lista de incisos vem da API.
 const DianotDocumentos = (function () {
@@ -11,8 +10,7 @@ const DianotDocumentos = (function () {
   let token = null;
   try { token = sessionStorage.getItem(CHAVE); } catch (_) {}
 
-  let config = { tipos: [], complementar: null, max_arquivos_por_tipo: 5, max_arquivos_complementar: 4, max_mb: 20 };
-  const limiteDe = (t) => (t.tipo === 'complementar' ? config.max_arquivos_complementar : config.max_arquivos_por_tipo);
+  let config = { tipos: [], max_arquivos_por_tipo: 5, max_mb: 20 };
 
   function sessaoExpirada() {
     try { sessionStorage.removeItem(CHAVE); } catch (_) {}
@@ -34,32 +32,10 @@ const DianotDocumentos = (function () {
   function render() {
     const raiz = $('documentos');
     raiz.innerHTML = '';
-    // Os itens vão sendo liberados em ordem: cada campo só abre depois que todos os itens
-    // obrigatórios anteriores tiverem arquivo (o opcional não segura o seguinte). Os itens
-    // ainda bloqueados ficam escondidos, a não ser que já tenham arquivo (ex.: o Item 1 foi
-    // removido depois), para os arquivos enviados continuarem visíveis.
-    let faltando = null; // primeiro obrigatório ainda sem arquivo
-    let escondidos = 0;
-    config.tipos.forEach((t) => {
-      if (faltando && !t.arquivos.length) { escondidos += 1; return; }
-      raiz.appendChild(item(t, { bloqueadoPor: faltando }));
-      if (!faltando && t.obrigatorio && !t.arquivos.length) faltando = t;
-    });
-    if (escondidos) {
-      const nota = document.createElement('p');
-      nota.className = 'doc-upload__nota';
-      nota.textContent = `Os demais campos de envio aparecem aqui depois que você enviar o ${faltando.rotulo.split(' — ')[0]}.`;
-      raiz.appendChild(nota);
-    }
-    // A documentação complementar já tem título na página: o rótulo do campo fica só para leitores de tela.
-    const complementar = $('documentos-complementar');
-    if (complementar && config.complementar) {
-      complementar.innerHTML = '';
-      complementar.appendChild(item(config.complementar, { rotuloOculto: true }));
-    }
+    config.tipos.forEach((t) => raiz.appendChild(item(t)));
   }
 
-  function item(t, { rotuloOculto = false, bloqueadoPor = null } = {}) {
+  function item(t) {
     const campo = document.createElement('div');
     campo.className = 'field doc-upload';
     campo.dataset.tipo = t.tipo;
@@ -68,18 +44,11 @@ const DianotDocumentos = (function () {
     rotulo.className = 'doc-upload__rotulo';
     rotulo.id = `rotulo-doc-${t.tipo}`;
     rotulo.textContent = t.rotulo;
-    if (rotuloOculto) rotulo.classList.add('visualmente-oculto');
-    else if (!t.obrigatorio) {
+    if (!t.obrigatorio) {
       const opc = document.createElement('span');
       opc.className = 'doc-upload__opcional';
       opc.textContent = 'Opcional';
       rotulo.append(' ', opc);
-    } else {
-      // Obrigatório: "Pendente" até ter arquivo (sem ele não dá para finalizar), depois "Enviado".
-      const sit = document.createElement('span');
-      sit.className = `doc-upload__situacao ${t.arquivos.length ? 'is-ok' : 'is-pendente'}`;
-      sit.textContent = t.arquivos.length ? 'Enviado' : 'Pendente';
-      rotulo.append(' ', sit);
     }
     campo.appendChild(rotulo);
 
@@ -90,11 +59,10 @@ const DianotDocumentos = (function () {
       campo.appendChild(lista);
     }
 
-    const cheio = t.arquivos.length >= limiteDe(t);
+    const cheio = t.arquivos.length >= config.max_arquivos_por_tipo;
     const zona = document.createElement('label');
     zona.className = 'doc-upload__zona';
     zona.hidden = cheio;
-    if (bloqueadoPor) zona.classList.add('is-bloqueado');
     const input = document.createElement('input');
     input.type = 'file';
     input.id = `doc-${t.tipo}`;
@@ -102,17 +70,13 @@ const DianotDocumentos = (function () {
     input.multiple = true;
     input.className = 'visualmente-oculto';
     input.setAttribute('aria-labelledby', `${rotulo.id} acao-doc-${t.tipo}`);
-    input.disabled = Boolean(bloqueadoPor);
     const acao = document.createElement('span');
     acao.className = 'doc-upload__acao';
     acao.id = `acao-doc-${t.tipo}`;
     acao.textContent = t.arquivos.length ? 'Adicionar outro arquivo' : 'Escolher arquivo';
     const dica = document.createElement('span');
     dica.className = 'doc-upload__dica';
-    dica.textContent = bloqueadoPor
-      ? `Liberado depois que você enviar o ${bloqueadoPor.rotulo.split(' — ')[0]}.`
-      : 'ou arraste aqui';
-    if (bloqueadoPor) acao.textContent = '🔒 Bloqueado';
+    dica.textContent = 'ou arraste aqui';
     zona.append(input, acao, dica);
     campo.appendChild(zona);
 
@@ -126,7 +90,6 @@ const DianotDocumentos = (function () {
     zona.addEventListener('drop', (ev) => {
       ev.preventDefault();
       zona.classList.remove('is-arrastando');
-      if (bloqueadoPor) return;
       enviarVarios(t.tipo, [...ev.dataTransfer.files]);
     });
 
@@ -139,7 +102,7 @@ const DianotDocumentos = (function () {
     if (cheio) {
       const aviso = document.createElement('p');
       aviso.className = 'field__hint';
-      aviso.textContent = `Limite de ${limiteDe(t)} arquivos atingido. Remova um para enviar outro.`;
+      aviso.textContent = `Limite de ${config.max_arquivos_por_tipo} arquivos atingido. Remova um para enviar outro.`;
       campo.appendChild(aviso);
     }
 
@@ -180,9 +143,6 @@ const DianotDocumentos = (function () {
     config = await resp.json();
     render();
   }
-
-  // "Finalizar credenciamento" confere as pendências de novo (envio.js escuta este aviso).
-  const avisarMudanca = () => window.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
 
   function campoDe(tipo) { return document.querySelector(`.doc-upload[data-tipo="${tipo}"]`); }
 
@@ -238,7 +198,6 @@ const DianotDocumentos = (function () {
       }
     }
     try { await carregar(); } catch (_) {}
-    avisarMudanca();
     if (erroMsg) CodegoForm.erro(`doc-${tipo}`, erroMsg);
   }
 
@@ -268,7 +227,6 @@ const DianotDocumentos = (function () {
       if (resp.status === 401) return sessaoExpirada();
       if (!resp.ok && resp.status !== 404) throw new Error();
       await carregar();
-      avisarMudanca();
     } catch (_) {
       botao.disabled = false;
       CodegoForm.erro(`doc-${a.tipo}`, 'Não foi possível remover. Tente novamente.');
