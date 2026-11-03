@@ -247,7 +247,7 @@
 
   // ---------- Arquivo próprio (upload) ----------
   const tamanho = (b) => (b < 1048576 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1048576).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
-  let limites = { max_arquivos: 5, max_mb: 20 };
+  let limites = { max_arquivos: 5, max_mb: 10 };
 
   // Dois envios na Opção 1: o EVTF assinado (PDF ou imagem) e o mesmo formulário em
   // Excel editável, como pede o modelo do Anexo V.

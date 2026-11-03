@@ -44,7 +44,7 @@ class Settings(BaseSettings):
 
     # Documentos enviados (uploads): pasta no disco e tamanho máximo por arquivo.
     storage_dir: str = "/app/storage"
-    upload_max_mb: int = 20
+    upload_max_mb: int = 10
 
     @model_validator(mode="after")
     def _exigir_chave_em_producao(self):

@@ -518,7 +518,7 @@ function preencherFormulario(dados) {
 // ---------------------------------------------------------------------------
 // Situação do anexo, ciência e arquivo próprio
 // ---------------------------------------------------------------------------
-let limites = { max_arquivos: 5, max_mb: 20 };
+let limites = { max_arquivos: 5, max_mb: 10 };
 const tamanho = (b) => (b < 1048576 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1048576).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
 
 function mostrarSituacao(estado) {
