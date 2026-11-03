@@ -2475,6 +2475,32 @@ input[readonly] {
   margin: 0;
 }
 
+/* Tela da equipe: apagar cadastro (ex.: de teste) */
+.det-apagar .field__hint {
+  margin: 0 0 10px;
+}
+
+.btn-perigo {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-perigo:hover {
+  background: #fbeceb;
+}
+
+.btn-perigo:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .det-linha {
   display: grid;
   grid-template-columns: 240px 1fr;

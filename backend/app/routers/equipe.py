@@ -1,9 +1,11 @@
 """Tela da equipe da CODEGO (equipe.html): acompanhar os credenciamentos.
 
-Login próprio (tabela equipe, usuários criados por app.scripts.equipe) e só
-leitura: lista todas as empresas cadastradas com a situação de cada uma e, em
-cada empresa, os dados, os documentos, os PDFs dos incisos e os comprovantes.
+Login próprio (tabela equipe, usuários criados por app.scripts.equipe): lista todas as
+empresas cadastradas com a situação de cada uma e, em cada empresa, os dados, os
+documentos, os PDFs dos incisos e os comprovantes. A única alteração possível é apagar um
+cadastro (ex.: de teste), com o CNPJ digitado para confirmar.
 """
+import logging
 import os
 from datetime import datetime
 
@@ -15,7 +17,9 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.orm import Cronograma, Documento, Envio, Equipe, Evtf, Mce, Rascunho, Solicitacao, Usuario
+from app.models.orm import (
+    CienciaAnexo, Cronograma, Documento, Envio, Equipe, Evtf, Mce, Rascunho, Solicitacao, Usuario,
+)
 from app.routers import cronograma as cronograma_rotas
 from app.routers import documentos as documentos_rotas
 from app.routers import evtf as evtf_rotas
@@ -169,6 +173,29 @@ def empresa(empresa_id: int, _m: Equipe = Depends(membro_atual), db: Session = D
         "envios": [{"id": v.id, "protocolo": v.protocolo, "enviado_em": v.enviado_em} for v in envios],
         "pendencias": envio_servico.pendencias(db, e),
     }
+
+
+class ApagarEmpresaIn(BaseModel):
+    cnpj: str  # digitado pela equipe para confirmar
+
+
+@router.post("/equipe/empresas/{empresa_id}/apagar", status_code=204)
+def apagar_empresa(empresa_id: int, payload: ApagarEmpresaIn, membro: Equipe = Depends(membro_atual),
+                   db: Session = Depends(get_db)):
+    """Apaga o cadastro da empresa (ex.: cadastros de teste): todos os dados, os envios e os
+    arquivos enviados. Só com o CNPJ da empresa digitado para confirmar. Não tem volta."""
+    e = _empresa(db, empresa_id)
+    if "".join(c for c in payload.cnpj if c.isdigit()) != e.cnpj:
+        raise HTTPException(status_code=422, detail="O CNPJ digitado não é o desta empresa.")
+    arquivos = [d.arquivo for d in db.query(Documento).filter(Documento.usuario_id == e.id)]
+    for modelo in (CienciaAnexo, Rascunho, Envio, Documento, Evtf, Cronograma, Mce, Solicitacao):
+        db.query(modelo).filter(modelo.usuario_id == e.id).delete(synchronize_session=False)
+    db.delete(e)
+    db.commit()
+    for relativo in arquivos:
+        docs.remover(relativo)
+    logging.getLogger("credenciamento.equipe").warning(
+        "Cadastro apagado por %s: %s (CNPJ %s, %s arquivo(s)).", membro.email, e.nome_empresarial, e.cnpj, len(arquivos))
 
 
 # ------------------------------------------------------------------ downloads

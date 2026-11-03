@@ -1,6 +1,6 @@
 // Tela da equipe da CODEGO: login próprio (separado das empresas), lista de todas
 // as empresas com a situação e, ao clicar numa, os dados, documentos e comprovantes.
-// Só leitura: nada aqui altera o credenciamento das empresas.
+// Só leitura, exceto "Apagar cadastro" (ex.: cadastros de teste), que pede o CNPJ para confirmar.
 (function () {
   const API = window.CODEGO_API_BASE_URL;
   const CHAVE = 'dianot_equipe_token';
@@ -239,12 +239,46 @@
       ? `<ul class="det-pendencias">${d.pendencias.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>`
       : '<p class="painel-ok">Nenhuma.</p>'}</section>`);
 
+    partes.push(`<section class="det-secao det-apagar"><h4>Apagar cadastro</h4>
+      <p class="field__hint">Apaga a empresa e tudo o que ela enviou (dados, documentos${d.envios.length ? ', protocolos e comprovantes' : ''}). Use para cadastros de teste. Não tem como desfazer.</p>
+      <button type="button" class="btn-perigo" data-apagar="${d.resumo.id}" data-nome="${esc(c.nome_empresarial)}" data-finalizado="${d.envios.length ? '1' : ''}">Apagar este cadastro</button>
+    </section>`);
+
     return `<div class="det">${partes.join('')}</div>`;
+  }
+
+  async function apagar(botao) {
+    const { apagar: id, nome, finalizado } = botao.dataset;
+    const aviso = finalizado ? `ATENÇÃO: "${nome}" já FINALIZOU o envio. O protocolo e o comprovante também serão apagados.
+
+` : '';
+    const digitado = window.prompt(`${aviso}Para apagar o cadastro de "${nome}" e tudo o que a empresa enviou, digite o CNPJ dela:`);
+    if (digitado === null) return;
+    botao.disabled = true;
+    try {
+      const resp = await fetch(`${API}/api/equipe/empresas/${id}/apagar`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cnpj: digitado }),
+      });
+      if (resp.status === 401) { mostrarLogin('Sua sessão expirou. Entre novamente.'); return; }
+      if (!resp.ok) {
+        const dados = await resp.json().catch(() => null);
+        throw new Error((dados && dados.detail) || 'Não foi possível apagar.');
+      }
+      window.alert(`Cadastro de "${nome}" apagado.`);
+      carregar();
+    } catch (e) {
+      window.alert(e.message);
+      botao.disabled = false;
+    }
   }
 
   $('lista-empresas').addEventListener('click', (ev) => {
     const botao = ev.target.closest('[data-abrir]');
     if (botao) { abrir(botao.dataset.abrir, botao); return; }
+    const apagarBtn = ev.target.closest('[data-apagar]');
+    if (apagarBtn) { apagar(apagarBtn); return; }
     const linha = ev.target.closest('.painel-linha');
     if (linha) alternarDetalhe(linha);
   });
