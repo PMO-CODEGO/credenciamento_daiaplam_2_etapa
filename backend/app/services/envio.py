@@ -15,6 +15,7 @@ from weasyprint import HTML
 from app.models.orm import Cronograma, Documento, Envio, Evtf, Mce, Solicitacao, Usuario
 from app.services import assinatura as selo
 from app.services import ciencias
+from app.services.cnae import formatar as formatar_cnae
 from app.services import documentos as docs
 from app.services import rascunho as rascunhos
 
@@ -261,7 +262,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
             "endereco": sol.endereco_correspondencia,
             "distrito": sol.distrito,
             "area_m2": f"{float(sol.area_m2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."),
-            "cnae": f"{sol.cnae_codigo} — {sol.cnae_descricao}",
+            "cnae": f"{formatar_cnae(sol.cnae_codigo)} — {sol.cnae_descricao}",
             "administrador": f"{sol.administrador_nome} (CPF {_cpf_mascarado(sol.administrador_cpf)})",
             "representante": sol.representante_nome or "",
             "cargo": sol.representante_cargo or "",

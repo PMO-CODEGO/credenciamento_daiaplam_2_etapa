@@ -14,6 +14,7 @@ from app.schemas.mce import MceIn
 from app.schemas.mce_estado import CienciaIn, MceEstado
 from app.schemas.validacoes import formatar_numero_br
 from app.services import documentos as docs
+from app.services.cnae import formatar as formatar_cnae
 from app.services.mce_pdf import gerar_pdf
 
 router = APIRouter()
@@ -33,7 +34,7 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | Non
             email=sol.email,
             responsavel_nome=sol.representante_nome or sol.administrador_nome,
             responsavel_cargo=sol.representante_cargo or usuario.representante_cargo or "",
-            cnae_principal=sol.cnae_codigo,
+            cnae_principal=formatar_cnae(sol.cnae_codigo),
             atividade_principal=sol.cnae_descricao,
             area_total_terreno=formatar_numero_br(float(sol.area_m2)),
             local_cidade_uf=sol.declaracao_cidade or "",

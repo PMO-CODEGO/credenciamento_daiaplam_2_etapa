@@ -51,10 +51,8 @@
     if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
     return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
   };
-  const mascaraCnae = (v) => {
-    const d = digitos(v).slice(0, 7);
-    return d.replace(/^(\d{4})(\d)/, '$1-$2').replace(/^(\d{4}-\d)(\d)/, '$1/$2');
-  };
+  // Código da classe, como no Anexo X: 5 dígitos ("2121-1").
+  const mascaraCnae = (v) => digitos(v).slice(0, 5).replace(/^(\d{4})(\d)/, '$1-$2');
   $('administrador_cpf').addEventListener('input', (e) => (e.target.value = mascaraCpf(e.target.value)));
   $('preenchimento_cpf').addEventListener('input', (e) => (e.target.value = mascaraCpf(e.target.value)));
   $('telefone').addEventListener('input', (e) => (e.target.value = mascaraTel(e.target.value)));
@@ -116,7 +114,7 @@
     const d = digitos($('cnae').value);
     if (cnaeValido && cnaeValido.codigo === d) return; // já confirmado
     cnaeValido = null; $('cnae_descricao').value = '';
-    if (d.length !== 7) { statusCnae(d.length ? 'O CNAE tem 7 dígitos (ex.: 0000-0/00).' : '', d.length ? 'warn' : ''); return; }
+    if (d.length !== 5) { statusCnae(d.length ? 'O CNAE tem 5 dígitos, como no Anexo X (ex.: 0000-0).' : '', d.length ? 'warn' : ''); return; }
     const minha = ++seq;
     statusCnae('Conferindo na tabela de CNAEs…');
     try {
@@ -152,7 +150,7 @@
     }, 300);
   });
   $('cnae').addEventListener('change', () => { if (!/[A-Za-zÀ-ÿ]/.test($('cnae').value)) conferirCnae(); });
-  $('cnae').addEventListener('blur', () => { if (!cnaeValido && digitos($('cnae').value).length === 7) conferirCnae(); });
+  $('cnae').addEventListener('blur', () => { if (!cnaeValido && digitos($('cnae').value).length === 5) conferirCnae(); });
 
   // ---------- Declaração de compromisso ----------
   const UNIDADES = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez',

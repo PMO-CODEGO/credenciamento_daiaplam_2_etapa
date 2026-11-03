@@ -22,7 +22,7 @@ class Usuario(Base):
 
 
 class Cnae(Base):
-    """Tabela de CNAEs aceitos (Anexo X). Código com 7 dígitos, só números."""
+    """Tabela de CNAEs aceitos (Anexo X). Código da classe, com 5 dígitos, só números."""
 
     __tablename__ = "cnaes"
 
