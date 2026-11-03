@@ -19,7 +19,7 @@
   const dataHora = (iso) => (iso ? new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '—');
   const area = (v) => (v == null ? '—' : `${Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²`);
   const tamanho = (b) => (b < 1048576 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1048576).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} MB`);
-  const SITUACAO = { finalizado: 'Finalizado', preenchendo: 'Preenchendo', cadastrado: 'Só cadastrado' };
+  const SITUACAO = { finalizado: 'Finalizado', preenchendo: 'Em preenchimento', cadastrado: 'Apenas cadastro (login)' };
 
   // ---------- Sessão ----------
   function mostrarLogin(msg) {
