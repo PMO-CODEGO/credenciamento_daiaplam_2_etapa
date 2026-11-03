@@ -2619,6 +2619,16 @@ input[readonly] {
   font-size: 14px;
 }
 
+.modelo-download ol {
+  margin: 0 0 14px;
+  padding-left: 22px;
+  font-size: 14px;
+}
+
+.modelo-download li + li {
+  margin-top: 4px;
+}
+
 .modelo-download .btn-secondary {
   display: inline-block;
   text-decoration: none;

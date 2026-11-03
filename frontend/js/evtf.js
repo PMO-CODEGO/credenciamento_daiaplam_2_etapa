@@ -252,8 +252,8 @@
   // Dois envios na Opção 1: o EVTF assinado (PDF ou imagem) e o mesmo formulário em
   // Excel editável, como pede o modelo do Anexo V.
   const ENVIOS = [
-    { tipo: 'evtf', raiz: 'upload-evtf', chave: 'arquivos', aceita: '.pdf,.jpg,.jpeg,.png' },
-    { tipo: 'evtf_excel', raiz: 'upload-evtf-excel', chave: 'arquivos_excel', aceita: '.xlsx,.xls' },
+    { tipo: 'evtf', raiz: 'upload-evtf', titulo: 'titulo-evtf', chave: 'arquivos', aceita: '.pdf,.jpg,.jpeg,.png' },
+    { tipo: 'evtf_excel', raiz: 'upload-evtf-excel', titulo: 'titulo-evtf-excel', chave: 'arquivos_excel', aceita: '.xlsx,.xls' },
   ];
 
   function desenharArquivos(estado) {
@@ -263,6 +263,16 @@
   }
 
   function desenharCampo(envio, arquivos, maximo) {
+    // Os dois arquivos são obrigatórios: cada campo mostra "Pendente" até receber um arquivo.
+    const titulo = $(envio.titulo);
+    let selo = titulo.querySelector('.doc-upload__situacao');
+    if (!selo) {
+      selo = document.createElement('span');
+      titulo.appendChild(selo);
+    }
+    selo.className = `doc-upload__situacao ${arquivos.length ? 'is-ok' : 'is-pendente'}`;
+    selo.textContent = arquivos.length ? 'Enviado' : 'Pendente';
+
     const raiz = $(envio.raiz);
     raiz.innerHTML = '';
     const campo = document.createElement('div');
