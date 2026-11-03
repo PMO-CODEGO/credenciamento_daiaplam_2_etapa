@@ -155,11 +155,24 @@
               <p class="field__error" data-error-for="representante_cargo"></p>
             </div>
           </div>
+          <h4 class="section-title">Responsável pelo preenchimento</h4>
+          <p class="section-desc">Quem está preenchendo este formulário (pode ser outra pessoa, como o contador).</p>
           <div class="field">
-            <label for="preenchimento_nome">Responsável pelo preenchimento</label>
+            <label for="preenchimento_nome">Nome</label>
             <input type="text" id="preenchimento_nome" name="preenchimento_nome" maxlength="255" autocomplete="off">
-            <p class="field__hint">Nome de quem está preenchendo este formulário (pode ser outra pessoa, como o contador).</p>
             <p class="field__error" data-error-for="preenchimento_nome"></p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="preenchimento_cpf">CPF</label>
+              <input type="text" id="preenchimento_cpf" name="preenchimento_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off">
+              <p class="field__error" data-error-for="preenchimento_cpf"></p>
+            </div>
+            <div class="field">
+              <label for="preenchimento_cargo">Cargo</label>
+              <input type="text" id="preenchimento_cargo" name="preenchimento_cargo" maxlength="100" placeholder="Ex.: Contador" autocomplete="off">
+              <p class="field__error" data-error-for="preenchimento_cargo"></p>
+            </div>
           </div>
 
           <h4 class="section-title">Nº do CNAE / Descrição da atividade</h4>

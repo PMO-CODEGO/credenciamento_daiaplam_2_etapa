@@ -17,7 +17,10 @@ class SolicitacaoIn(BaseModel):
     administrador_nome: str = Field(min_length=3, max_length=255)
     administrador_cpf: str
     cnae: str  # código; a descrição vem sempre da tabela de CNAEs
-    preenchimento_nome: str = Field(min_length=3, max_length=255)  # responsável pelo preenchimento
+    # Responsável pelo preenchimento
+    preenchimento_nome: str = Field(min_length=3, max_length=255)
+    preenchimento_cpf: str
+    preenchimento_cargo: str = Field(min_length=2, max_length=100)
 
     # Declaração de compromisso
     representante_nome: str = Field(min_length=3, max_length=255)
@@ -39,7 +42,7 @@ class SolicitacaoIn(BaseModel):
 
     @field_validator("nome_empresarial", "endereco_correspondencia", "administrador_nome",
                      "representante_nome", "representante_cargo", "declaracao_cidade", "sede_endereco",
-                     "preenchimento_nome")
+                     "preenchimento_nome", "preenchimento_cargo")
     @classmethod
     def _espacos(cls, v):
         return " ".join(v.split())
@@ -52,7 +55,7 @@ class SolicitacaoIn(BaseModel):
             raise ValueError("CNPJ inválido.")
         return d
 
-    @field_validator("administrador_cpf")
+    @field_validator("administrador_cpf", "preenchimento_cpf")
     @classmethod
     def _cpf(cls, v):
         d = somente_digitos(v)
@@ -99,6 +102,8 @@ class SolicitacaoOut(BaseModel):
     cnae_codigo: str
     cnae_descricao: str
     preenchimento_nome: str | None = None
+    preenchimento_cpf: str | None = None
+    preenchimento_cargo: str | None = None
     representante_nome: str | None = None
     representante_cargo: str | None = None
     ocupacao_percentual: int | None = None

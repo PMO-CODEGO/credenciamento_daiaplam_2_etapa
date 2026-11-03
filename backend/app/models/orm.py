@@ -53,7 +53,10 @@ class Solicitacao(Base):
 
     cnae_codigo = Column(String(7), ForeignKey("cnaes.codigo"), nullable=False)
     cnae_descricao = Column(String(500), nullable=False)
-    preenchimento_nome = Column(String(255))  # responsável pelo preenchimento (pode ser outra pessoa, ex.: contador)
+    # Responsável pelo preenchimento (pode ser outra pessoa, ex.: contador)
+    preenchimento_nome = Column(String(255))
+    preenchimento_cpf = Column(String(11))
+    preenchimento_cargo = Column(String(100))
 
     # Declaração de compromisso (Anexo V do Regulamento), aceita no formulário.
     # Colunas aceitam nulo só por causa das solicitações salvas antes dela.

@@ -36,6 +36,18 @@ def _cpf_mascarado(d: str) -> str:
     return f"{d[:3]}.***.***-{d[-2:]}" if len(d) == 11 else "***"
 
 
+def _responsavel(sol) -> str:
+    """Responsável pelo preenchimento: "Nome — Cargo (CPF 123.***.***-45)"."""
+    if not sol.preenchimento_nome:
+        return ""
+    texto = sol.preenchimento_nome
+    if sol.preenchimento_cargo:
+        texto += f" — {sol.preenchimento_cargo}"
+    if sol.preenchimento_cpf:
+        texto += f" (CPF {_cpf_mascarado(sol.preenchimento_cpf)})"
+    return texto
+
+
 def _tel(d: str) -> str:
     if len(d) == 11:
         return f"({d[:2]}) {d[2:7]}-{d[7:]}"
@@ -253,7 +265,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
             "administrador": f"{sol.administrador_nome} (CPF {_cpf_mascarado(sol.administrador_cpf)})",
             "representante": sol.representante_nome or "",
             "cargo": sol.representante_cargo or "",
-            "preenchimento": sol.preenchimento_nome or "",
+            "preenchimento": _responsavel(sol),
         },
         "incisos": incisos,
         "declaracoes": declaracoes,
@@ -263,7 +275,7 @@ def montar_resumo(db: Session, usuario: Usuario) -> dict:
 def declaracao_final(db: Session, usuario: Usuario, aceita_em: datetime) -> dict:
     """Linha do comprovante para o "Li e Concordo" da declaração final de responsabilidade."""
     sol = db.query(Solicitacao).filter(Solicitacao.usuario_id == usuario.id).first()
-    quem = sol.preenchimento_nome if sol and sol.preenchimento_nome else ""
+    quem = _responsavel(sol) if sol else ""
     return {
         "rotulo": 'Declaração de responsabilidade pelo preenchimento ("Li e Concordo")',
         "detalhe": f"Responsável pelo preenchimento: {quem}." if quem else "",

@@ -26,7 +26,9 @@ ROTULOS = {
     "cnae": "CNAE",
     "representante_nome": "Nome do representante legal",
     "representante_cargo": "Cargo do representante",
-    "preenchimento_nome": "Responsável pelo preenchimento",
+    "preenchimento_nome": "Nome do responsável pelo preenchimento",
+    "preenchimento_cpf": "CPF do responsável pelo preenchimento",
+    "preenchimento_cargo": "Cargo do responsável pelo preenchimento",
     "ocupacao_percentual": "Percentual de ocupação",
     "declaracao_cidade": "Cidade da assinatura",
     "declaracao_uf": "Estado",
@@ -108,6 +110,8 @@ def gravar(db: Session, usuario: Usuario, payload: SolicitacaoIn, c: Cnae) -> So
     sol.cnae_codigo = c.codigo
     sol.cnae_descricao = c.descricao
     sol.preenchimento_nome = payload.preenchimento_nome
+    sol.preenchimento_cpf = payload.preenchimento_cpf
+    sol.preenchimento_cargo = payload.preenchimento_cargo
     sol.representante_nome = payload.representante_nome
     sol.representante_cargo = payload.representante_cargo
     sol.ocupacao_percentual = payload.ocupacao_percentual

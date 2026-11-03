@@ -33,6 +33,8 @@ COLUNAS = {
         ("liquidacao_prazo_meses", "INT NULL"),
         ("liquidacao_aceita_em", "DATETIME NULL"),
         ("preenchimento_nome", "VARCHAR(255) NULL"),
+        ("preenchimento_cpf", "VARCHAR(11) NULL"),
+        ("preenchimento_cargo", "VARCHAR(100) NULL"),
         ("liquidacao_forma", "VARCHAR(10) NULL"),
     ],
 }

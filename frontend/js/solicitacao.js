@@ -56,6 +56,7 @@
     return d.replace(/^(\d{4})(\d)/, '$1-$2').replace(/^(\d{4}-\d)(\d)/, '$1/$2');
   };
   $('administrador_cpf').addEventListener('input', (e) => (e.target.value = mascaraCpf(e.target.value)));
+  $('preenchimento_cpf').addEventListener('input', (e) => (e.target.value = mascaraCpf(e.target.value)));
   $('telefone').addEventListener('input', (e) => (e.target.value = mascaraTel(e.target.value)));
 
   // Área: aceita 1000, 1.000,5 ou 1000,50 -> exibe 1.000,50. Devolve "1000.50" ou null.
@@ -325,6 +326,8 @@
     $('email').value = s.email;
     $('telefone').value = mascaraTel(s.telefone);
     $('preenchimento_nome').value = s.preenchimento_nome || '';
+    $('preenchimento_cpf').value = s.preenchimento_cpf ? mascaraCpf(s.preenchimento_cpf) : '';
+    $('preenchimento_cargo').value = s.preenchimento_cargo || '';
     $('administrador_nome').value = s.administrador_nome;
     $('administrador_cpf').value = mascaraCpf(s.administrador_cpf);
     $('cnae').value = mascaraCnae(s.cnae_codigo);
@@ -361,6 +364,8 @@
       .forEach((k) => { if (tem(k)) $(k).value = d[k]; });
     if (tem('telefone')) $('telefone').value = mascaraTel(d.telefone);
     if (tem('preenchimento_nome')) $('preenchimento_nome').value = d.preenchimento_nome;
+    if (tem('preenchimento_cpf')) $('preenchimento_cpf').value = mascaraCpf(d.preenchimento_cpf);
+    if (tem('preenchimento_cargo')) $('preenchimento_cargo').value = d.preenchimento_cargo;
     if (tem('administrador_cpf')) $('administrador_cpf').value = mascaraCpf(d.administrador_cpf);
     if (tem('ocupacao_percentual')) $('ocupacao_percentual').value = String(d.ocupacao_percentual);
     if (tem('liquidacao_prazo_meses')) $('liquidacao_prazo_meses').value = String(d.liquidacao_prazo_meses);
@@ -529,7 +534,7 @@
   const SECOES = [
     { titulo: 'anexo4-titulo', bloco: '.anexo-secao', ok: 'Concluído',
       pronto: () => ['area_m2', 'nome_empresarial', 'cnpj', 'endereco_correspondencia', 'email', 'telefone',
-        'administrador_nome', 'administrador_cpf', 'representante_cargo', 'preenchimento_nome', 'cnae'].every(preenchido)
+        'administrador_nome', 'administrador_cpf', 'representante_cargo', 'preenchimento_nome', 'preenchimento_cpf', 'preenchimento_cargo', 'cnae'].every(preenchido)
         && documentosEnviados() },
     { bloco: '#declaracao', ok: 'Ciente',
       pronto: () => ['ocupacao_percentual', 'declaracao_cidade', 'declaracao_uf'].every(preenchido) && $('declaracao_aceita').checked },
@@ -815,6 +820,8 @@
       administrador_cpf: digitos($('administrador_cpf').value),
       cnae: digitos($('cnae').value),
       preenchimento_nome: $('preenchimento_nome').value.trim(),
+      preenchimento_cpf: digitos($('preenchimento_cpf').value),
+      preenchimento_cargo: $('preenchimento_cargo').value.trim(),
       representante_nome: $('representante_nome').value.trim(),
       representante_cargo: $('representante_cargo').value.trim(),
       ocupacao_percentual: percentual() || null,

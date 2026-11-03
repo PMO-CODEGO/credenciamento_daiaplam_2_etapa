@@ -190,7 +190,9 @@
         ${linhaDado('Telefone / e-mail', `${esc(tel(s.telefone))} · ${esc(s.email)}`)}
         ${linhaDado('Administrador', `${esc(s.administrador_nome)} — CPF ${esc(cpf(s.administrador_cpf))}`)}
         ${linhaDado('CNAE', `${esc(s.cnae_codigo)} — ${esc(s.cnae_descricao)}`)}
-        ${linhaDado('Responsável pelo preenchimento', esc(s.preenchimento_nome || '—'))}
+        ${linhaDado('Responsável pelo preenchimento', s.preenchimento_nome
+          ? `${esc(s.preenchimento_nome)}${s.preenchimento_cargo ? ` — ${esc(s.preenchimento_cargo)}` : ''}${s.preenchimento_cpf ? ` — CPF ${esc(cpf(s.preenchimento_cpf))}` : ''}`
+          : '—')}
       </dl></section>`);
       partes.push(`<section class="det-secao"><h4>Declarações</h4><dl>
         ${linhaDado('Anexo VI - POA — Taxa de ocupação', s.ocupacao_percentual ? `${s.ocupacao_percentual}% · assinada em ${dataHora(s.declaracao_aceita_em)}` : '—')}
