@@ -169,6 +169,14 @@
   const linhaDado = (rotulo, valor) => `<div class="det-linha"><dt>${esc(rotulo)}</dt><dd>${valor}</dd></div>`;
   const arquivoBtn = (a) => `<li><button type="button" class="det-arquivo" data-abrir="/api/equipe/documentos/${a.id}/arquivo">${esc(a.nome_original)}</button> <small>${tamanho(a.tamanho)} · ${dataHora(a.data_envio)}</small></li>`;
 
+  // Empresa que finalizou mais de uma vez: o que mudou em relação ao envio anterior.
+  function mudancasHtml(envio, anterior) {
+    if (!anterior) return '';
+    const titulo = `Diferenças em relação a ${esc(anterior.protocolo)}`;
+    if (!envio.mudancas.length) return `<p class="det-mudancas__vazio"><small>${titulo}: nenhuma.</small></p>`;
+    return `<div class="det-mudancas"><small>${titulo}:</small><ul>${envio.mudancas.map((m) => `<li>${esc(m)}</li>`).join('')}</ul></div>`;
+  }
+
   function detalheHtml(d) {
     const c = d.cadastro;
     const s = d.solicitacao;
@@ -233,7 +241,8 @@
     partes.push(`<section class="det-secao"><h4>Envios (protocolos)</h4>${d.envios.length ? `<ul class="det-docs">${d.envios.map((v, k) => `
       <li><strong>${esc(v.protocolo)}</strong> — ${dataHora(v.enviado_em)}${k === 0 ? ' <small>(mais recente)</small>' : ''}
         <button type="button" class="det-arquivo" data-abrir="/api/equipe/envios/${v.id}/comprovante.pdf">Comprovante (PDF)</button>
-        <button type="button" class="det-arquivo" data-email="${v.id}" data-protocolo="${esc(v.protocolo)}">Enviar por e-mail à CODEGO</button></li>`).join('')}</ul>`
+        <button type="button" class="det-arquivo" data-email="${v.id}" data-protocolo="${esc(v.protocolo)}">Enviar por e-mail à CODEGO</button>
+        ${mudancasHtml(v, d.envios[k + 1])}</li>`).join('')}</ul>`
       : '<p class="field__hint">Ainda não finalizou o credenciamento.</p>'}</section>`);
 
     partes.push(`<section class="det-secao"><h4>Pendências para finalizar</h4>${d.pendencias.length

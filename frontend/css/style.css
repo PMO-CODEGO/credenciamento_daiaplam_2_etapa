@@ -2475,6 +2475,25 @@ input[readonly] {
   margin: 0;
 }
 
+/* Tela da equipe: diferenças entre um envio e o anterior */
+.det-mudancas {
+  margin: 6px 0 4px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--gold-dark);
+  background: #f6eedc;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.det-mudancas ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
+.det-mudancas__vazio {
+  margin: 4px 0;
+}
+
 /* Tela da equipe: apagar cadastro (ex.: de teste) */
 .det-apagar .field__hint {
   margin: 0 0 10px;

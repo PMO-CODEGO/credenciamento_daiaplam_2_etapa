@@ -284,6 +284,59 @@ def declaracao_final(db: Session, usuario: Usuario, aceita_em: datetime) -> dict
     }
 
 
+# ---------------------------------------------------------------- comparação entre envios
+CAMPOS_EMPRESA = {
+    "razao_social": "Razão social", "email": "E-mail", "telefone": "Telefone",
+    "endereco": "Endereço para correspondência", "distrito": "Distrito", "area_m2": "Área solicitada (m²)",
+    "cnae": "CNAE", "administrador": "Administrador", "representante": "Representante legal",
+    "cargo": "Cargo do representante", "preenchimento": "Responsável pelo preenchimento",
+}
+
+
+def diferencas(anterior: dict, atual: dict) -> list[str]:
+    """O que mudou de um envio para o seguinte, a partir do retrato guardado em cada um."""
+    mudancas = []
+    ea, eb = anterior.get("empresa", {}), atual.get("empresa", {})
+    for campo, rotulo in CAMPOS_EMPRESA.items():
+        antes, agora = ea.get(campo) or "", eb.get(campo) or ""
+        if antes != agora:
+            if campo == "telefone":
+                antes, agora = _tel(antes), _tel(agora)
+            mudancas.append(f"{rotulo}: “{antes or '—'}” → “{agora or '—'}”")
+
+    incisos_a = {i["rotulo"]: i for i in anterior.get("incisos", [])}
+    for i in atual.get("incisos", []):
+        rotulo, antes = i["rotulo"], incisos_a.get(i["rotulo"], {"arquivos": []})
+        # Arquivo pelo nome; mesmo nome com conteúdo diferente = substituído.
+        conteudo = lambda a: a.get("sha256") or a.get("tamanho")
+        antes_por_nome = {a["nome"]: conteudo(a) for a in antes["arquivos"]}
+        agora_por_nome = {a["nome"]: conteudo(a) for a in i["arquivos"]}
+        for texto, nomes in (
+            ("arquivo(s) novo(s)", [n for n in agora_por_nome if n not in antes_por_nome]),
+            ("arquivo(s) substituído(s)", [n for n in agora_por_nome if n in antes_por_nome and agora_por_nome[n] != antes_por_nome[n]]),
+            ("arquivo(s) retirado(s)", [n for n in antes_por_nome if n not in agora_por_nome]),
+        ):
+            if nomes:
+                mudancas.append(f"{rotulo}: {texto} — {', '.join(nomes)}")
+        if i.get("formulario_em") and antes.get("formulario_em") and i["formulario_em"] != antes["formulario_em"]:
+            mudancas.append(f"{rotulo}: formulário alterado em {data_hora(i['formulario_em'])}")
+        elif i.get("formulario_em") and not antes.get("formulario_em") and rotulo in incisos_a:
+            mudancas.append(f"{rotulo}: passou a ser preenchido pelo formulário")
+
+    declaracoes_a = {d["rotulo"]: d for d in anterior.get("declaracoes", [])}
+    for d in atual.get("declaracoes", []):
+        if d["rotulo"].startswith("Declaração de responsabilidade pelo preenchimento"):
+            continue  # o "Li e Concordo" é aceito de novo a cada envio
+        antes = declaracoes_a.get(d["rotulo"])
+        if antes is None:
+            mudancas.append(f"{d['rotulo']}: nova")
+        elif (antes.get("detalhe") or "") != (d.get("detalhe") or ""):
+            mudancas.append(f"{d['rotulo']}: “{antes.get('detalhe') or '—'}” → “{d.get('detalhe') or '—'}”")
+        elif antes.get("assinada_em") != d.get("assinada_em"):
+            mudancas.append(f"{d['rotulo']}: aceita de novo em {data_hora(d['assinada_em']) or '—'}")
+    return mudancas
+
+
 def gerar_protocolo(db: Session) -> str:
     ano = datetime.now().year
     while True:

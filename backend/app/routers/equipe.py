@@ -172,7 +172,10 @@ def empresa(empresa_id: int, _m: Equipe = Depends(membro_atual), db: Session = D
                     "ciencia": mce.ciencia, "ciencia_em": mce.ciencia_em},
         },
         "ciencias": ciencias.listar(db, e),
-        "envios": [{"id": v.id, "protocolo": v.protocolo, "enviado_em": v.enviado_em} for v in envios],
+        # Do mais recente para o mais antigo; cada um com o que mudou em relação ao anterior.
+        "envios": [{"id": v.id, "protocolo": v.protocolo, "enviado_em": v.enviado_em,
+                    "mudancas": envio_servico.diferencas(envios[k + 1].resumo, v.resumo) if k + 1 < len(envios) else None}
+                   for k, v in enumerate(envios)],
         "pendencias": envio_servico.pendencias(db, e),
     }
 
