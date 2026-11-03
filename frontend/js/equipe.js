@@ -3,7 +3,7 @@
 // Só leitura, exceto "Apagar cadastro" (ex.: cadastros de teste), que pede o CNPJ para confirmar.
 (function () {
   const API = window.CODEGO_API_BASE_URL;
-  const CHAVE = 'dianot_equipe_token';
+  const CHAVE = 'daiaplam_equipe_token';
   const $ = (id) => document.getElementById(id);
   const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 

@@ -74,7 +74,7 @@ def gerar_pdf(dados: MceIn, cnpj_usuario: str) -> bytes:
     agora = datetime.now()
     html = _env.get_template("mce.html").render(
         fundo_data_uri=_fundo(),
-        rodape=f"DIANOT 2ª etapa — CNPJ {_cnpj(cnpj_usuario)}",
+        rodape=f"DAIAPLAM 2ª etapa — CNPJ {_cnpj(cnpj_usuario)}",
         secoes=secoes,
         local=dados.local_cidade_uf,
         data=f"{agora.day:02d} de {MESES_PT[agora.month - 1]} de {agora.year}",

@@ -1,7 +1,7 @@
 // Login, cadastro e sessão (JWT guardado só na aba: sessionStorage).
 const CodegoAuth = (function () {
   const API = () => window.CODEGO_API_BASE_URL;
-  const CHAVE = 'dianot_token';
+  const CHAVE = 'daiaplam_token';
   let recaptchaId = null;
   let recaptchaAtivo = false;
 

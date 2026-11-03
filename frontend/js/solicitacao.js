@@ -1,7 +1,7 @@
 // Página inicial (após o login): formulário de solicitação de área.
 (function () {
   const API = window.CODEGO_API_BASE_URL;
-  const CHAVE = 'dianot_token';
+  const CHAVE = 'daiaplam_token';
   const $ = (id) => document.getElementById(id);
   const digitos = (v) => (v || '').replace(/\D/g, '');
 
@@ -527,7 +527,7 @@
   // (Pendente até a empresa preencher) e o formulário aparece ao clicar.
   const preenchido = (id) => $(id).value.trim() !== '';
   // Todos os documentos obrigatórios (itens 1 a 9) com arquivo.
-  const documentosEnviados = () => DianotDocumentos.todosEnviados();
+  const documentosEnviados = () => DaiaplamDocumentos.todosEnviados();
   const SECOES = [
     { titulo: 'anexo4-titulo', bloco: '.anexo-secao', ok: 'Concluído',
       pronto: () => ['area_m2', 'nome_empresarial', 'cnpj', 'endereco_correspondencia', 'email', 'telefone',
@@ -660,7 +660,7 @@
         const r = await api(`/api/anexos/${anexo}/ciencia`, { method: 'PUT', body: JSON.stringify({ ciente: caixa.checked }) });
         mostrarCiencias(r.anexos);
         // "Finalizar credenciamento" confere as pendências de novo.
-        window.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
+        window.postMessage({ tipo: 'daiaplam:inciso-atualizado' }, window.location.origin);
       } catch (err) {
         caixa.checked = !caixa.checked;
         erro.textContent = err.message || 'Não foi possível salvar. Tente de novo.';
@@ -788,7 +788,7 @@
 
   // A página do painel avisa quando salvou algo: atualiza a situação do inciso.
   window.addEventListener('message', (ev) => {
-    if (ev.origin !== window.location.origin || !ev.data || ev.data.tipo !== 'dianot:inciso-atualizado') return;
+    if (ev.origin !== window.location.origin || !ev.data || ev.data.tipo !== 'daiaplam:inciso-atualizado') return;
     const botao = botoesInciso.find((b) => {
       const iframe = b.nextElementSibling.querySelector('iframe');
       return iframe && iframe.contentWindow === ev.source;
@@ -879,7 +879,7 @@
         }
         $('feedback').hidden = true;
         // "Finalizar credenciamento" confere as pendências de novo.
-        window.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
+        window.postMessage({ tipo: 'daiaplam:inciso-atualizado' }, window.location.origin);
       } catch (_) {
         alterado = true;
         indicador('erro', 'Não foi possível salvar agora. Tentando de novo…');

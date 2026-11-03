@@ -1,4 +1,4 @@
-# Credenciamento DIANOT — 2ª etapa (CODEGO)
+# Credenciamento DAIAPLAM — 2ª etapa (CODEGO)
 
 Sistema de credenciamento (2ª etapa) da CODEGO, no mesmo estilo e formato do
 [sistema_cadastral_codego](https://github.com/PMO-CODEGO/sistema_cadastral_codego).

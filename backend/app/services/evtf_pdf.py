@@ -58,7 +58,7 @@ def gerar_pdf(dados: EvtfIn, local: str) -> bytes:
 
     html = _env.get_template("evtf.html").render(
         logo_data_uri=_logo(),
-        rodape=f"Credenciamento DIANOT 2ª etapa — CNPJ {v['cnpj']}",
+        rodape=f"Credenciamento DAIAPLAM 2ª etapa — CNPJ {v['cnpj']}",
         cidade_data=f"{local}, {datetime.now():%d/%m/%Y}",
         **v,
     )

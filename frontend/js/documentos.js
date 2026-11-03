@@ -1,9 +1,9 @@
 // Documentos do Anexo II (incisos II a X): envio, visualização e remoção.
 // Cada arquivo é salvo no servidor assim que é enviado (não depende do
 // botão "Salvar solicitação"). A lista de incisos vem da API.
-const DianotDocumentos = (function () {
+const DaiaplamDocumentos = (function () {
   const API = window.CODEGO_API_BASE_URL;
-  const CHAVE = 'dianot_token';
+  const CHAVE = 'daiaplam_token';
   const $ = (id) => document.getElementById(id);
   const ACEITOS = '.pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png';
 

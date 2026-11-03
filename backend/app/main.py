@@ -37,8 +37,8 @@ with SessionLocal() as _db:
     sincronizar_cnaes(_db)
 
 app = FastAPI(
-    title="Credenciamento DIANOT 2ª etapa",
-    description="API do Credenciamento DIANOT 2ª etapa (CODEGO).",
+    title="Credenciamento DAIAPLAM 2ª etapa",
+    description="API do Credenciamento DAIAPLAM 2ª etapa (CODEGO).",
     version="0.1.0",
     # Documentação interativa (/docs) só fora de produção.
     docs_url=None if settings.app_env == "production" else "/docs",

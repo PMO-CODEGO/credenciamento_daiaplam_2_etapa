@@ -22,7 +22,7 @@ from app.services import rascunho as rascunhos
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "..", "templates")
 _env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=True)
 
-PREFIXO_PROTOCOLO = "DIANOT"
+PREFIXO_PROTOCOLO = "DAIAPLAM"
 MESES_PT = [
     "janeiro", "fevereiro", "março", "abril", "maio", "junho",
     "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",

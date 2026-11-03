@@ -3,7 +3,7 @@
 // telas do Cronograma e do MCE.
 (function () {
   const API = window.CODEGO_API_BASE_URL;
-  const CHAVE = 'dianot_token';
+  const CHAVE = 'daiaplam_token';
   const $ = (id) => document.getElementById(id);
   const digitos = (v) => (v || '').replace(/\D/g, '');
 

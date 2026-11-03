@@ -1,7 +1,7 @@
 // Envio final: checklist do que já foi feito e do que falta, protocolo e comprovante em PDF.
 (function () {
   const API = window.CODEGO_API_BASE_URL;
-  const CHAVE = 'dianot_token';
+  const CHAVE = 'daiaplam_token';
   const $ = (id) => document.getElementById(id);
   let token = null;
   try { token = sessionStorage.getItem(CHAVE); } catch (_) { /* sem sessionStorage */ }
@@ -95,7 +95,7 @@
   // confere de novo ao voltar para a aba, quando um painel avisa e de tempos em tempos.
   window.addEventListener('focus', atualizar);
   window.addEventListener('message', (e) => {
-    if (e.origin === window.location.origin && e.data && e.data.tipo === 'dianot:inciso-atualizado') atualizar();
+    if (e.origin === window.location.origin && e.data && e.data.tipo === 'daiaplam:inciso-atualizado') atualizar();
   });
   setInterval(() => { if (!document.hidden) atualizar(); }, 10000);
   atualizar();

@@ -25,7 +25,7 @@
     const resposta = await fetchOriginal(url, opcoes);
     const metodo = (opcoes.method || 'GET').toUpperCase();
     if (resposta.ok && metodo !== 'GET' && String(url).includes('/api/')) {
-      window.parent.postMessage({ tipo: 'dianot:inciso-atualizado' }, window.location.origin);
+      window.parent.postMessage({ tipo: 'daiaplam:inciso-atualizado' }, window.location.origin);
     }
     return resposta;
   };

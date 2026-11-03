@@ -3,7 +3,7 @@
 // é redesenhada quando a estrutura muda, para não perder o foco ao digitar.
 (function () {
   const API = window.CODEGO_API_BASE_URL;
-  const CHAVE = 'dianot_token';
+  const CHAVE = 'daiaplam_token';
   const $ = (id) => document.getElementById(id);
   const MESES_ABREV = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 

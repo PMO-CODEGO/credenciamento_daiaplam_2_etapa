@@ -61,7 +61,7 @@
   }
 
   let token = null;
-  try { token = sessionStorage.getItem('dianot_token'); } catch (_) {}
+  try { token = sessionStorage.getItem('daiaplam_token'); } catch (_) {}
   if (!token) return;
   fetch(`${window.CODEGO_API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
     .then((r) => (r.ok ? r.json() : null))

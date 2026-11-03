@@ -30,7 +30,7 @@ def _sugestao(usuario: Usuario, sol: Solicitacao | None, crono: Cronograma | Non
         "responsavel_nome": usuario.representante_nome or "",
         "responsavel_cpf": usuario.representante_cpf or "",
         "responsavel_cargo": usuario.representante_cargo or "",
-        "distrito_industrial": "DIANOT 2ª etapa",
+        "distrito_industrial": "DAIAPLAM 2ª etapa",
     }
     if sol is not None:
         s.update(

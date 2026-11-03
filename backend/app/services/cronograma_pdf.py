@@ -69,7 +69,7 @@ def gerar_pdf(dados: CronogramaIn, cnpj: str) -> bytes:
 
     html = _env.get_template("cronograma.html").render(
         logo_data_uri=_logo(),
-        rodape=f"Credenciamento DIANOT 2ª etapa — CNPJ {_cnpj(cnpj)}",
+        rodape=f"Credenciamento DAIAPLAM 2ª etapa — CNPJ {_cnpj(cnpj)}",
         nome_empresa=dados.nome_empresa,
         endereco=dados.endereco,
         area_empresa=dados.area_empresa,

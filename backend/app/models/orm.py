@@ -37,7 +37,7 @@ class Solicitacao(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False, unique=True)
-    distrito = Column(String(100), nullable=False, default="DIANOT 2ª ETAPA")
+    distrito = Column(String(100), nullable=False, default="DAIAPLAM 2ª ETAPA")
     area_m2 = Column(Numeric(14, 2), nullable=False)
 
     # Dados cadastrais da empresa

@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     mysql_host: str = "db"
     mysql_port: int = 3306
-    mysql_database: str = "credenciamento_dianot"
+    mysql_database: str = "credenciamento_daiaplam"
     mysql_user: str = "codego_app"
     mysql_password: str = "change_me"
     # Banco gerenciado fora da máquina (ex.: Aiven): conexão com SSL.
@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     email_provider: str = ""
     brevo_api_key: str = ""
     brevo_sender_email: str = ""  # remetente verificado na Brevo
-    brevo_sender_name: str = "Credenciamento DIANOT - CODEGO"
+    brevo_sender_name: str = "Credenciamento DAIAPLAM - CODEGO"
     # Cópia de cada envio finalizado (respostas + arquivos) para a CODEGO. Vazio = não manda.
     email_codego: str = "edital@codego.com.br"
     # Endereço público do site (aparece no e-mail de cadastro). Opcional.

@@ -1,5 +1,5 @@
-﻿# Backup do Credenciamento DIANOT: banco de dados + documentos enviados.
-# Uso:  .\deploy\backup.ps1 [-Destino C:\backups\credenciamento-dianot] [-ManterDias 30]
+# Backup do Credenciamento DAIAPLAM: banco de dados + documentos enviados.
+# Uso:  .\deploy\backup.ps1 [-Destino C:\backups\credenciamento-daiaplam] [-ManterDias 30]
 # Cria uma pasta por data com banco.sql e arquivos.tgz e apaga as pastas de
 # backup com mais de -ManterDias dias. Agendamento diário: ver deploy\README.md.
 #
@@ -7,7 +7,7 @@
 # pasta de destino para outro lugar (compartilhamento de rede, outro servidor).
 
 param(
-    [string]$Destino = 'C:\backups\credenciamento-dianot',
+    [string]$Destino = 'C:\backups\credenciamento-daiaplam',
     [int]$ManterDias = 30
 )
 

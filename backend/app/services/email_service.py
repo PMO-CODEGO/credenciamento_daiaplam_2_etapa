@@ -73,7 +73,7 @@ def _moldura(corpo: str) -> str:
         '<div style="font-family:Arial,sans-serif;color:#1a1a1a;font-size:14px;line-height:1.6;">'
         f"{corpo}"
         "<p>Atenciosamente,<br>Companhia de Desenvolvimento Econômico de Goiás (CODEGO)</p>"
-        '<p style="color:#666;font-size:12px;">Mensagem automática do Credenciamento DIANOT — 2ª etapa. '
+        '<p style="color:#666;font-size:12px;">Mensagem automática do Credenciamento DAIAPLAM — 2ª etapa. '
         "Não responda a este e-mail.</p></div>"
     )
 
@@ -89,13 +89,13 @@ def enviar_boas_vindas(email: str, nome_empresarial: str, cnpj: str, senha: str)
             if settings.site_url else "")
     corpo = (
         f"<p>Olá,</p><p>O cadastro da empresa <strong>{escape(nome_empresarial)}</strong> no "
-        "<strong>Credenciamento DIANOT — 2ª etapa</strong> foi realizado com sucesso.</p>"
+        "<strong>Credenciamento DAIAPLAM — 2ª etapa</strong> foi realizado com sucesso.</p>"
         f"<p>Login (CNPJ): <strong>{escape(_cnpj(cnpj))}</strong><br>"
         f'Senha: <span style="font-family:monospace;background:#f2f2f2;padding:2px 8px;">{escape(senha)}</span></p>'
         f"{site}"
         "<p>Guarde este e-mail em local seguro e não compartilhe a senha.</p>"
     )
-    return enviar_email(email, "Credenciamento DIANOT — cadastro realizado", _moldura(corpo))
+    return enviar_email(email, "Credenciamento DAIAPLAM — cadastro realizado", _moldura(corpo))
 
 
 def enviar_comprovante(email: str, nome_empresarial: str, protocolo: str, pdf: bytes | None) -> tuple[bool, str | None]:
@@ -108,7 +108,7 @@ def enviar_comprovante(email: str, nome_empresarial: str, protocolo: str, pdf: b
            "<p>O comprovante em PDF pode ser baixado no sistema, na tela de envio final.</p>")
     )
     anexos = [(f"comprovante_{protocolo}.pdf", pdf)] if pdf else None
-    return enviar_email(email, f"Credenciamento DIANOT — comprovante de envio — Protocolo {protocolo}",
+    return enviar_email(email, f"Credenciamento DAIAPLAM — comprovante de envio — Protocolo {protocolo}",
                         _moldura(corpo), anexos)
 
 
@@ -199,7 +199,7 @@ def enviar_para_codego(destino: str, resumo: dict, protocolo: str, enviado_em: s
     ) if fora else ""
     corpo = (
         f"<p>A empresa <strong>{escape(razao)}</strong> finalizou o envio do "
-        f"Credenciamento DIANOT — 2ª etapa em {escape(enviado_em)}.</p>"
+        f"Credenciamento DAIAPLAM — 2ª etapa em {escape(enviado_em)}.</p>"
         '<p style="font-family:monospace;background:#f2f2f2;padding:8px 12px;display:inline-block;">'
         f"Protocolo: <strong>{escape(protocolo)}</strong></p>"
         f"<h3>Dados da empresa</h3>{dados}"
@@ -209,7 +209,7 @@ def enviar_para_codego(destino: str, resumo: dict, protocolo: str, enviado_em: s
         "e os arquivos enviados pela empresa.</p>"
         f"{aviso_fora}"
     )
-    assunto = f"Credenciamento DIANOT — envio finalizado — {razao} — Protocolo {protocolo}"
+    assunto = f"Credenciamento DAIAPLAM — envio finalizado — {razao} — Protocolo {protocolo}"
     for n, parte in enumerate(partes, start=1):
         anexos = []
         for nome, conteudo in parte:

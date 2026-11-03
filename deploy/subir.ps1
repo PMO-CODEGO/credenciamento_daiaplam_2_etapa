@@ -1,4 +1,4 @@
-﻿# Sobe (ou atualiza) o Credenciamento DIANOT na VM.
+# Sobe (ou atualiza) o Credenciamento DAIAPLAM na VM.
 # Uso, na pasta do projeto:  .\deploy\subir.ps1
 # Depois de um "git pull", rodar de novo: o site e o backend ficam dentro da
 # imagem, então só valem depois que ela é montada de novo (--build).

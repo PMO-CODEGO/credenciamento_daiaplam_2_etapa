@@ -1,4 +1,4 @@
--- Schema inicial: Credenciamento DIANOT 2ª etapa
+-- Schema inicial: Credenciamento DAIAPLAM 2ª etapa
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS cnaes (
 CREATE TABLE IF NOT EXISTS solicitacoes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL UNIQUE,
-    distrito VARCHAR(100) NOT NULL DEFAULT 'DIANOT 2ª ETAPA',
+    distrito VARCHAR(100) NOT NULL DEFAULT 'DAIAPLAM 2ª ETAPA',
     area_m2 DECIMAL(14,2) NOT NULL,
     nome_empresarial VARCHAR(255) NOT NULL,
     cnpj VARCHAR(14) NOT NULL,

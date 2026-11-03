@@ -1,4 +1,4 @@
-# Publicação do Credenciamento DIANOT na VM da CODEGO
+# Publicação do Credenciamento DAIAPLAM na VM da CODEGO
 
 Guia para colocar o sistema no ar na máquina virtual Windows da CODEGO
 (`CODEGO000001`, IP interno `192.168.0.245`): primeiro na rede interna e
@@ -10,7 +10,7 @@ depois, com o TI, para fora (domínio e https).
 VM 192.168.0.245
 ├─ asent-jur (C:\Users\joao.siviero\asent-jur\projeto)
 │    └─ nginx_codego nas portas 80/443 — certificado interno assentjur.codego.local
-└─ Credenciamento (C:\credenciamento_dianot_2_etapa, deploy/docker-compose.prod.yml)
+└─ Credenciamento (C:\credenciamento_daiaplam_2_etapa, deploy/docker-compose.prod.yml)
      ├─ backend (FastAPI): site + /api na porta 8081
      └─ db (MySQL próprio, separado do asent-jur)
 ```
@@ -44,7 +44,7 @@ Arquivos desta pasta:
 
 Feito em 21/10/2026:
 
-- Repositório clonado em `C:\credenciamento_dianot_2_etapa`.
+- Repositório clonado em `C:\credenciamento_daiaplam_2_etapa`.
 - Acesso de leitura ao GitHub por uma chave só deste repositório
   (`~\.ssh\credenciamento_deploy`, apelido `github-credenciamento` no
   `~\.ssh\config`; cadastrada como *deploy key* somente leitura). O
@@ -61,7 +61,7 @@ Para instalar do zero em outra máquina, ver o passo 9.
 No PowerShell da VM (Área de Trabalho Remota):
 
 ```powershell
-cd C:\credenciamento_dianot_2_etapa
+cd C:\credenciamento_daiaplam_2_etapa
 .\deploy\subir.ps1
 ```
 
@@ -97,7 +97,7 @@ comprovante em PDF.
 Quando houver mudanças no GitHub (na VM, Área de Trabalho Remota):
 
 ```powershell
-cd C:\credenciamento_dianot_2_etapa
+cd C:\credenciamento_daiaplam_2_etapa
 .\deploy\backup.ps1
 git pull
 .\deploy\subir.ps1
@@ -116,7 +116,7 @@ git pull
 .\deploy\backup.ps1
 ```
 
-Cria `C:\backups\credenciamento-dianot\<data>\` com:
+Cria `C:\backups\credenciamento-daiaplam\<data>\` com:
 - `banco.sql` — o banco inteiro;
 - `arquivos.tgz` — os documentos enviados pelas empresas.
 
@@ -126,9 +126,9 @@ Backups com mais de 30 dias são apagados (`-ManterDias` muda isso;
 **Agendar todo dia às 2h30** (PowerShell como administrador):
 
 ```powershell
-$acao = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File C:\credenciamento_dianot_2_etapa\deploy\backup.ps1'
+$acao = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File C:\credenciamento_daiaplam_2_etapa\deploy\backup.ps1'
 $quando = New-ScheduledTaskTrigger -Daily -At 2:30am
-Register-ScheduledTask -TaskName 'Backup Credenciamento DIANOT' -Action $acao -Trigger $quando -User $env:USERNAME -RunLevel Highest
+Register-ScheduledTask -TaskName 'Backup Credenciamento DAIAPLAM' -Action $acao -Trigger $quando -User $env:USERNAME -RunLevel Highest
 ```
 
 > Backup na mesma VM não protege contra perda da VM. Use `-Destino
@@ -139,7 +139,7 @@ Register-ScheduledTask -TaskName 'Backup Credenciamento DIANOT' -Action $acao -T
 
 ```powershell
 $compose = @('compose','-f','deploy\docker-compose.prod.yml','--env-file','.env')
-$pasta = 'C:\backups\credenciamento-dianot\<data>'
+$pasta = 'C:\backups\credenciamento-daiaplam\<data>'
 # banco
 docker cp "$pasta\banco.sql" "$(docker @compose ps -q db):/tmp/banco.sql"
 docker @compose exec -T db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /tmp/banco.sql'
@@ -152,7 +152,7 @@ docker @compose exec -T backend tar xzf /tmp/arquivos.tgz -C /app
 
 ## 6. Comandos úteis
 
-Na pasta `C:\credenciamento_dianot_2_etapa`:
+Na pasta `C:\credenciamento_daiaplam_2_etapa`:
 
 ```powershell
 $compose = @('compose','-f','deploy\docker-compose.prod.yml','--env-file','.env')
@@ -178,7 +178,7 @@ empresas, e a tela é só de leitura.
 Os usuários são criados na VM. Funciona também por SSH (não baixa imagens):
 
 ```powershell
-cd C:\credenciamento_dianot_2_etapa
+cd C:\credenciamento_daiaplam_2_etapa
 $compose = @('compose','-f','deploy\docker-compose.prod.yml','--env-file','.env')
 
 docker @compose exec backend python -m app.scripts.equipe criar --nome "Fulana de Tal" --email fulana@codego.com.br
@@ -202,7 +202,7 @@ nginx do asent-jur usa um certificado interno (`assentjur.codego.local`).
 
 Texto pronto para o TI:
 
-> Para publicar o Credenciamento DIANOT, que está na VM **192.168.0.245**
+> Para publicar o Credenciamento DAIAPLAM, que está na VM **192.168.0.245**
 > (porta interna 8081), precisamos:
 >
 > 1. Um subdomínio (ex.: **`credenciamento.codego.com.br`**) com registro DNS
@@ -261,8 +261,8 @@ não reconhece o endereço `192.168.0.245`.
 2. Acesso de leitura ao repositório (privado): uma *deploy key* como a do passo 1.
 3. ```powershell
    cd C:\
-   git clone git@github-credenciamento:PMO-CODEGO/credenciamento_dianot_2_etapa.git
-   cd C:\credenciamento_dianot_2_etapa
+   git clone git@github-credenciamento:PMO-CODEGO/credenciamento_daiaplam_2_etapa.git
+   cd C:\credenciamento_daiaplam_2_etapa
    copy .env.example .env
    notepad .env
    ```

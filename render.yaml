@@ -3,7 +3,7 @@
 # arquivo e precisam de DISCO PERSISTENTE (no plano grátis o disco é apagado a cada deploy).
 services:
   - type: web
-    name: credenciamento-dianot
+    name: credenciamento-daiaplam
     runtime: docker
     plan: starter
     region: oregon

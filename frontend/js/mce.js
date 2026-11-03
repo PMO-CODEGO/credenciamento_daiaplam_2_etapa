@@ -1,7 +1,7 @@
 // Anexo VII — MCE: formulário (PDF gerado), arquivo próprio e ciência da rede de água e esgoto.
 // A parte de validação/máscaras vem do formulário do sistema cadastral.
 const API_BASE_URL = window.CODEGO_API_BASE_URL; // definido em js/config.js
-const CHAVE_TOKEN = 'dianot_token';
+const CHAVE_TOKEN = 'daiaplam_token';
 let token = null;
 try { token = sessionStorage.getItem(CHAVE_TOKEN); } catch (_) { /* sem sessionStorage */ }
 function sair() {
