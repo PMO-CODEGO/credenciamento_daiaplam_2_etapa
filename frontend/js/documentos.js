@@ -251,5 +251,9 @@ const DianotDocumentos = (function () {
     });
   }
 
-  return { conferirObrigatorios };
+  // Todos os obrigatórios com arquivo (sem marcar erro na tela). Antes de carregar: false.
+  const todosEnviados = () => config.tipos.length > 0
+    && config.tipos.every((t) => !t.obrigatorio || t.arquivos.length > 0);
+
+  return { conferirObrigatorios, todosEnviados };
 })();

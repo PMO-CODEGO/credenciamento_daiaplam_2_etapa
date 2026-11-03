@@ -526,9 +526,8 @@
   // Cada um vira um card igual ao dos anexos de leitura: fechado, com a situação ao lado
   // (Pendente até a empresa preencher) e o formulário aparece ao clicar.
   const preenchido = (id) => $(id).value.trim() !== '';
-  // Todos os documentos obrigatórios (itens 1 a 9) com arquivo: nenhum item ainda "Pendente".
-  const documentosEnviados = () => Boolean(document.querySelector('#documentos .doc-upload__situacao'))
-    && !document.querySelector('#documentos .doc-upload__situacao.is-pendente');
+  // Todos os documentos obrigatórios (itens 1 a 9) com arquivo.
+  const documentosEnviados = () => DianotDocumentos.todosEnviados();
   const SECOES = [
     { titulo: 'anexo4-titulo', bloco: '.anexo-secao', ok: 'Concluído',
       pronto: () => ['area_m2', 'nome_empresarial', 'cnpj', 'endereco_correspondencia', 'email', 'telefone',
