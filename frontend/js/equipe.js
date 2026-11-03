@@ -232,7 +232,8 @@
 
     partes.push(`<section class="det-secao"><h4>Envios (protocolos)</h4>${d.envios.length ? `<ul class="det-docs">${d.envios.map((v, k) => `
       <li><strong>${esc(v.protocolo)}</strong> — ${dataHora(v.enviado_em)}${k === 0 ? ' <small>(mais recente)</small>' : ''}
-        <button type="button" class="det-arquivo" data-abrir="/api/equipe/envios/${v.id}/comprovante.pdf">Comprovante (PDF)</button></li>`).join('')}</ul>`
+        <button type="button" class="det-arquivo" data-abrir="/api/equipe/envios/${v.id}/comprovante.pdf">Comprovante (PDF)</button>
+        <button type="button" class="det-arquivo" data-email="${v.id}" data-protocolo="${esc(v.protocolo)}">Enviar por e-mail à CODEGO</button></li>`).join('')}</ul>`
       : '<p class="field__hint">Ainda não finalizou o credenciamento.</p>'}</section>`);
 
     partes.push(`<section class="det-secao"><h4>Pendências para finalizar</h4>${d.pendencias.length
@@ -274,7 +275,27 @@
     }
   }
 
+  // E-mail do envio para a CODEGO (edital@...), com as respostas e os arquivos.
+  async function enviarEmail(botao) {
+    if (!window.confirm(`Enviar o protocolo ${botao.dataset.protocolo} por e-mail para a CODEGO, com as respostas e os arquivos?`)) return;
+    botao.disabled = true;
+    try {
+      const resp = await fetch(`${API}/api/equipe/envios/${botao.dataset.email}/enviar-codego`, {
+        method: 'POST', headers: { Authorization: `Bearer ${token}` },
+      });
+      if (resp.status === 401) { mostrarLogin('Sua sessão expirou. Entre novamente.'); return; }
+      const dados = await resp.json().catch(() => null);
+      if (!resp.ok) throw new Error((dados && dados.detail) || 'Não foi possível enviar.');
+      botao.textContent = `E-mail pedido para ${dados.destino}`;
+    } catch (e) {
+      window.alert(e.message);
+      botao.disabled = false;
+    }
+  }
+
   $('lista-empresas').addEventListener('click', (ev) => {
+    const emailBtn = ev.target.closest('[data-email]');
+    if (emailBtn) { enviarEmail(emailBtn); return; }
     const botao = ev.target.closest('[data-abrir]');
     if (botao) { abrir(botao.dataset.abrir, botao); return; }
     const apagarBtn = ev.target.closest('[data-apagar]');

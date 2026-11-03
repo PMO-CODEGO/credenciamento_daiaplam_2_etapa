@@ -86,10 +86,13 @@ def _converter_para_classe(db: Session) -> None:
     classe do Anexo X (5 dígitos), com a descrição da tabela."""
     classes = {c.codigo: c.descricao for c in db.query(Cnae).filter(func.length(Cnae.codigo) == DIGITOS)}
     mudou = 0
-    for sol in db.query(Solicitacao).filter(func.length(Solicitacao.cnae_codigo) == 7):
-        classe = sol.cnae_codigo[:DIGITOS]
+    for sol_id, codigo in db.query(Solicitacao.id, Solicitacao.cnae_codigo).filter(func.length(Solicitacao.cnae_codigo) == 7):
+        classe = codigo[:DIGITOS]
         if classe in classes:
-            sol.cnae_codigo, sol.cnae_descricao = classe, classes[classe]
+            # A data de atualização fica como está: não foi a empresa que alterou.
+            db.query(Solicitacao).filter(Solicitacao.id == sol_id).update(
+                {"cnae_codigo": classe, "cnae_descricao": classes[classe],
+                 "data_atualizacao": Solicitacao.data_atualizacao}, synchronize_session=False)
             mudou += 1
     if mudou:
         db.commit()

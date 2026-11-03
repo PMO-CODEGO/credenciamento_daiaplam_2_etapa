@@ -9,7 +9,7 @@ import logging
 import os
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi.responses import FileResponse, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
@@ -27,7 +27,9 @@ from app.routers import mce as mce_rotas
 from app.schemas.solicitacao import SolicitacaoOut
 from app.services import ciencias
 from app.services import documentos as docs
+from app.config import settings
 from app.services import envio as envio_servico
+from app.services.email_service import email_ativo, enviar_para_codego
 from app.services.seguranca import (
     PAPEL_EQUIPE,
     LimiteTentativas,
@@ -228,3 +230,21 @@ def comprovante(envio_id: int, _m: Equipe = Depends(membro_atual), db: Session =
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="comprovante_{envio.protocolo}.pdf"'},
     )
+
+
+@router.post("/equipe/envios/{envio_id}/enviar-codego", status_code=202)
+def enviar_codego(envio_id: int, tarefas: BackgroundTasks, membro: Equipe = Depends(membro_atual),
+                  db: Session = Depends(get_db)):
+    """Manda (de novo) para a CODEGO o e-mail do envio finalizado, com as respostas e os arquivos.
+    Serve para os envios feitos antes do e-mail automático, ou se o automático falhou."""
+    envio = db.get(Envio, envio_id)
+    if envio is None:
+        raise HTTPException(status_code=404, detail="Envio não encontrado.")
+    if not email_ativo() or not settings.email_codego:
+        raise HTTPException(status_code=503, detail="O envio de e-mail não está ligado no servidor (EMAIL_PROVIDER / EMAIL_CODEGO).")
+    pdf = envio_servico.gerar_pdf(envio, db)
+    tarefas.add_task(enviar_para_codego, settings.email_codego, envio.resumo, envio.protocolo,
+                     envio_servico.data_hora(envio.enviado_em), pdf, envio_servico.arquivos_enviados(db, envio.usuario_id))
+    logging.getLogger("credenciamento.equipe").info(
+        "E-mail do protocolo %s pedido por %s para %s.", envio.protocolo, membro.email, settings.email_codego)
+    return {"destino": settings.email_codego}
