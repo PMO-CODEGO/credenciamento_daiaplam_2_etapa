@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     brevo_api_key: str = ""
     brevo_sender_email: str = ""  # remetente verificado na Brevo
     brevo_sender_name: str = "Credenciamento DIANOT - CODEGO"
+    # Cópia de cada envio finalizado (respostas + arquivos) para a CODEGO. Vazio = não manda.
+    email_codego: str = "edital@codego.com.br"
     # Endereço público do site (aparece no e-mail de cadastro). Opcional.
     site_url: str = ""
 

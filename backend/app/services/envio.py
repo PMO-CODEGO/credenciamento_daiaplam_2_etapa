@@ -292,6 +292,28 @@ def gerar_protocolo(db: Session) -> str:
 
 
 # ---------------------------------------------------------------- PDF
+# Prefixo do nome de cada arquivo no e-mail para a CODEGO, para saber a que item ele pertence.
+PREFIXOS_DE_ARQUIVO = {
+    **{chave: nome.split(" — ")[0] for chave, nome in NOMES_CURTOS.items()},
+    "evtf": "Anexo V - EVTF assinado",
+    "evtf_excel": "Anexo V - EVTF Excel",
+    "inciso12": "Anexo VI A - CFO",
+    "inciso13": "Anexo VII - MCE",
+    docs.TIPO_COMPLEMENTAR: "Complementar",
+}
+
+
+def arquivos_enviados(db: Session, usuario_id: int) -> list[tuple[str, str]]:
+    """Arquivos que a empresa enviou, como (nome para o e-mail, caminho no disco), na ordem do edital."""
+    ordem = list(PREFIXOS_DE_ARQUIVO)
+    arquivos = db.query(Documento).filter(Documento.usuario_id == usuario_id).all()
+    arquivos.sort(key=lambda a: (ordem.index(a.tipo) if a.tipo in ordem else len(ordem), a.data_envio, a.id))
+    return [
+        (f"{PREFIXOS_DE_ARQUIVO.get(a.tipo, a.tipo)} - {a.nome_original}", docs.caminho_absoluto(a.arquivo))
+        for a in arquivos
+    ]
+
+
 def _tamanho(b: int) -> str:
     return f"{max(1, round(b / 1024))} KB" if b < 1048576 else f"{b / 1048576:.1f} MB".replace(".", ",")
 

@@ -11,7 +11,8 @@ from app.models.orm import Envio, Usuario
 from app.routers.auth import usuario_atual
 from app.schemas.envio import EnvioEstado, EnvioIn
 from app.services import envio as servico
-from app.services.email_service import email_ativo, enviar_comprovante
+from app.config import settings
+from app.services.email_service import email_ativo, enviar_comprovante, enviar_para_codego
 
 router = APIRouter()
 
@@ -62,13 +63,17 @@ def finalizar(tarefas: BackgroundTasks, payload: EnvioIn | None = None, usuario:
 
 
 def _avisar_por_email(tarefas: BackgroundTasks, db: Session, usuario: Usuario) -> None:
-    """Comprovante por e-mail (com o PDF). Qualquer falha aqui não desfaz o envio já registrado."""
+    """Comprovante por e-mail (com o PDF) para a empresa e, com as respostas e os arquivos, para a
+    CODEGO (EMAIL_CODEGO). Qualquer falha aqui não desfaz o envio já registrado."""
     if not email_ativo():
         return
     try:
         ultimo = _ultimo(db, usuario)
         pdf = servico.gerar_pdf(ultimo, db)
         tarefas.add_task(enviar_comprovante, usuario.email, usuario.nome_empresarial, ultimo.protocolo, pdf)
+        if settings.email_codego:
+            tarefas.add_task(enviar_para_codego, settings.email_codego, ultimo.resumo, ultimo.protocolo,
+                             servico.data_hora(ultimo.enviado_em), pdf, servico.arquivos_enviados(db, usuario.id))
     except Exception:
         logging.getLogger("credenciamento.email").exception("Não foi possível preparar o e-mail do comprovante.")
 

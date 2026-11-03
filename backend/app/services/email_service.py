@@ -6,6 +6,7 @@ e o motivo vai para o log. Desligado por padrão (EMAIL_PROVIDER vazio) para rod
 """
 import base64
 import logging
+import os
 from html import escape
 
 import requests
@@ -109,3 +110,122 @@ def enviar_comprovante(email: str, nome_empresarial: str, protocolo: str, pdf: b
     anexos = [(f"comprovante_{protocolo}.pdf", pdf)] if pdf else None
     return enviar_email(email, f"Credenciamento DIANOT — comprovante de envio — Protocolo {protocolo}",
                         _moldura(corpo), anexos)
+
+
+# A Brevo aceita até 20 MB por mensagem, e o anexo cresce 1/3 ao virar base64. Acima disto
+# os arquivos seguem em mais de um e-mail ("parte 2 de 3").
+LIMITE_POR_EMAIL = 14 * 1024 * 1024
+
+
+def _telefone(d: str) -> str:
+    if len(d) == 11:
+        return f"({d[:2]}) {d[2:7]}-{d[7:]}"
+    if len(d) == 10:
+        return f"({d[:2]}) {d[2:6]}-{d[6:]}"
+    return d
+
+
+def _tabela(linhas: list[tuple[str, str]]) -> str:
+    celulas = "".join(
+        f'<tr><td style="padding:4px 12px 4px 0;color:#555;vertical-align:top;">{escape(rotulo)}</td>'
+        f'<td style="padding:4px 0;">{escape(valor)}</td></tr>'
+        for rotulo, valor in linhas if valor
+    )
+    return f'<table style="border-collapse:collapse;font-size:14px;">{celulas}</table>'
+
+
+def _em_partes(pdf: bytes | None, protocolo: str, arquivos: list[tuple[str, str]]):
+    """Divide os anexos em e-mails de até LIMITE_POR_EMAIL. Devolve (partes, não anexados).
+    Cada parte é uma lista de (nome, caminho ou bytes); o relatório em PDF vai na primeira."""
+    partes: list[list] = [[]]
+    usado = 0
+    if pdf:
+        partes[0].append((f"Relatorio_{protocolo}.pdf", pdf))
+        usado = len(pdf)
+    fora = []
+    for nome, caminho in arquivos:
+        try:
+            tamanho = os.path.getsize(caminho)
+        except OSError:
+            fora.append((nome, "arquivo não encontrado no servidor"))
+            continue
+        if tamanho > LIMITE_POR_EMAIL:
+            fora.append((nome, "grande demais para o e-mail"))
+            continue
+        if usado + tamanho > LIMITE_POR_EMAIL and partes[-1]:
+            partes.append([])
+            usado = 0
+        partes[-1].append((nome, caminho))
+        usado += tamanho
+    return partes, fora
+
+
+def enviar_para_codego(destino: str, resumo: dict, protocolo: str, enviado_em: str,
+                       pdf: bytes | None, arquivos: list[tuple[str, str]]) -> None:
+    """Cópia do envio finalizado para a CODEGO: as respostas no corpo e, como anexos, o relatório
+    final em PDF e todos os arquivos que a empresa enviou."""
+    emp = resumo["empresa"]
+    razao = emp.get("razao_social", "")
+    dados = _tabela([
+        ("Razão social", razao),
+        ("CNPJ", _cnpj(emp.get("cnpj", ""))),
+        ("E-mail", emp.get("email", "")),
+        ("Telefone", _telefone(emp.get("telefone", ""))),
+        ("Endereço para correspondência", emp.get("endereco", "")),
+        ("Distrito", emp.get("distrito", "")),
+        ("Área solicitada", f"{emp['area_m2']} m²" if emp.get("area_m2") else ""),
+        ("CNAE", emp.get("cnae", "")),
+        ("Administrador / representante legal", emp.get("administrador", "")),
+        ("Cargo", emp.get("cargo", "")),
+        ("Responsável pelo preenchimento", emp.get("preenchimento", "")),
+    ])
+    declaracoes = "".join(
+        f"<li>{escape(d['rotulo'])}{' — ' + escape(d['detalhe']) if d.get('detalhe') else ''}</li>"
+        for d in resumo.get("declaracoes", [])
+    )
+
+    def situacao(item: dict) -> str:
+        if item["arquivos"]:
+            return ", ".join(a["nome"] for a in item["arquivos"])
+        return "preenchido no formulário" if item.get("situacao") == "formulario" else "não enviado"
+
+    documentos = "".join(
+        f"<li>{escape(i['rotulo'])}: {escape(situacao(i))}</li>" for i in resumo.get("incisos", [])
+    )
+    partes, fora = _em_partes(pdf, protocolo, arquivos)
+    aviso_fora = (
+        "<p><strong>Arquivos que não foram anexados</strong> (baixe na tela da equipe do sistema):</p><ul>"
+        + "".join(f"<li>{escape(n)} ({escape(m)})</li>" for n, m in fora) + "</ul>"
+    ) if fora else ""
+    corpo = (
+        f"<p>A empresa <strong>{escape(razao)}</strong> finalizou o envio do "
+        f"Credenciamento DIANOT — 2ª etapa em {escape(enviado_em)}.</p>"
+        '<p style="font-family:monospace;background:#f2f2f2;padding:8px 12px;display:inline-block;">'
+        f"Protocolo: <strong>{escape(protocolo)}</strong></p>"
+        f"<h3>Dados da empresa</h3>{dados}"
+        f"<h3>Declarações e ciências</h3><ul>{declaracoes}</ul>"
+        f"<h3>Documentos e formulários</h3><ul>{documentos}</ul>"
+        "<p>Seguem em anexo o relatório final em PDF (comprovante e anexos preenchidos pelo formulário) "
+        "e os arquivos enviados pela empresa.</p>"
+        f"{aviso_fora}"
+    )
+    assunto = f"Credenciamento DIANOT — envio finalizado — {razao} — Protocolo {protocolo}"
+    for n, parte in enumerate(partes, start=1):
+        anexos = []
+        for nome, conteudo in parte:
+            if isinstance(conteudo, bytes):
+                anexos.append((nome, conteudo))
+                continue
+            try:
+                with open(conteudo, "rb") as f:
+                    anexos.append((nome, f.read()))
+            except OSError:
+                logger.warning("Arquivo não encontrado para o e-mail da CODEGO: %s", nome)
+        if len(partes) == 1:
+            enviar_email(destino, assunto, _moldura(corpo), anexos or None)
+            continue
+        texto = corpo if n == 1 else (
+            f"<p>Continuação dos anexos do envio da empresa <strong>{escape(razao)}</strong> "
+            f"(Protocolo {escape(protocolo)}).</p>"
+        )
+        enviar_email(destino, f"{assunto} (parte {n} de {len(partes)})", _moldura(texto), anexos or None)
